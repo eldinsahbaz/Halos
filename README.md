@@ -1,0 +1,2 @@
+# Halos
+Halos is an application that adopts principles similar to that of Uber or Airbnb. It is essentially a market place where tourists may connect to services others provide or connect with locals! We work to enhance the tourist experience by allowing you to take mobily guided tours that either we generate based on your location, you create yourself, or you purchase from our store. Users may create and upload tours to the store for other to download! The store features free and paid tours, single and group tours - chaperoned by a local or not.   
