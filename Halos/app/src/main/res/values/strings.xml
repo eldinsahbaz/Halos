@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Halos</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="title_activity_halos_map">Map</string>
+</resources>
