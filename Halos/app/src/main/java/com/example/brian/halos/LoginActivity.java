@@ -18,10 +18,10 @@ import android.widget.Toast;
 
 // Google Maps API Key AIzaSyCGlh3TOI8yioBEDhR9Scr6RlZMokqF6js
 
-
 public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     Button createAccountButton;
+    Button forgotPwButton;
 
     EditText username;
     EditText password;
@@ -41,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
                 // AUTHENTICATE HERE
                 Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
                 startActivity(i);
+
+                //Toast.makeText(LoginActivity.this, "FIRED LOGIN", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -51,9 +53,22 @@ public class LoginActivity extends AppCompatActivity {
                 // CREATE ACCOUNT HERE
                 Intent i = new Intent(getApplicationContext(), CreateAccountActivity.class);
                 startActivity(i);
+
+                //Toast.makeText(LoginActivity.this, "FIRED CREATE ACCOUNT", Toast.LENGTH_SHORT).show();
             }
         });
 
+        forgotPwButton = (Button) findViewById(R.id.btn_forgot_password);
+        forgotPwButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Go to retrieve password activity
+                Intent i = new Intent(getApplicationContext(), RetrievePasswordActivity.class);
+                startActivity(i);
+
+                //Toast.makeText(LoginActivity.this, "FIRED FORGOT PASSWORD", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 }

@@ -22,11 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".WelcomeActivity"
-            android:label="@string/title_activity_welcome"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".CreateAccountActivity"></activity>
+        <activity android:name=".CreateAccountActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -41,7 +37,8 @@
 
         <activity
             android:name=".HalosMapActivity"
-            android:label="@string/title_activity_halos_map"></activity>
+            android:label="@string/title_activity_halos_map" />
+        <activity android:name=".RetrievePasswordActivity"></activity>
     </application>
 
 </manifest>
