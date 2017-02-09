@@ -15,6 +15,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
+import okhttp3.Authenticator;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Credentials;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.Route;
+
 
 // Google Maps API Key AIzaSyCGlh3TOI8yioBEDhR9Scr6RlZMokqF6js
 
@@ -25,6 +39,8 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText username;
     EditText password;
+
+    OkHttpClient client = new OkHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +59,9 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
 
                 //Toast.makeText(LoginActivity.this, "FIRED LOGIN", Toast.LENGTH_SHORT).show();
+
+                // TODO: MUST RUN THIS ON THREAD OTHER THAN MAIN THREAD
+                //authenticate(username.getText().toString(), password.getText().toString());
             }
         });
 
@@ -50,11 +69,9 @@ public class LoginActivity extends AppCompatActivity {
         createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // CREATE ACCOUNT HERE
+                // This takes user to create account activity
                 Intent i = new Intent(getApplicationContext(), CreateAccountActivity.class);
                 startActivity(i);
-
-                //Toast.makeText(LoginActivity.this, "FIRED CREATE ACCOUNT", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -65,10 +82,9 @@ public class LoginActivity extends AppCompatActivity {
                 // Go to retrieve password activity
                 Intent i = new Intent(getApplicationContext(), RetrievePasswordActivity.class);
                 startActivity(i);
-
-                //Toast.makeText(LoginActivity.this, "FIRED FORGOT PASSWORD", Toast.LENGTH_SHORT).show();
             }
         });
 
     }
+
 }
