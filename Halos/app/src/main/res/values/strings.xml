@@ -3,4 +3,8 @@
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="title_activity_halos_map">Map</string>
     <string name="title_activity_retrieve_password">RetrievePasswordActivity</string>
+    <string name="Home">Home </string>
+    <string name="User_Profile">User Profile </string>
+    <string name="Store">Store</string>
+    <string name="Logout">Logout</string>
 </resources>
