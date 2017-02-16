@@ -57,9 +57,11 @@ public class CreateAccountActivity extends AppCompatActivity {
                 String password = mPassword1.getText().toString();
                 String email = mEmail.getText().toString();
 
+                User user = new User(username, password, email);
+
                 if (mPassword1.getText().toString().equals(mPassword2.getText().toString())) {
                     // CreateAccount cannot be run on main thread -> see code below, it extends AsyncTask
-                    Account account = new Account(username, password, email);
+                    Account account = new Account(user);
                     account.execute();
                 }
                 else {
@@ -70,24 +72,21 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     private class Account extends AsyncTask<Void, Void, String> {
-        String username;
-        String password;
-        String email;
+        User user;
 
-        protected Account(String u, String p, String e) {
-            username = u;
-            password = p;
-            email = e;
+        protected Account(User u) {
+            user = u;
         }
 
         @Override
         protected String doInBackground(Void... params) {
             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
             Map<String, String> json_params = new HashMap<String, String>();
-            json_params.put("username", username);
-            json_params.put("password", password);
-            json_params.put("email", email);
-            // TODO: need to have an id associated and maybe other things (cookies, ip, etc)
+            json_params.put("username", user.getName());
+            json_params.put("password", user.getPassword());
+            json_params.put("email", user.getEmail());
+            json_params.put("radius", Integer.toString(user.getRadius()));
+            // TODO: need to have an id associated and maybe other things (travelled, guided, etc + cookies, ip, etc)
             // TODO: need to encrypt data going over the wire
 
             JSONObject json_parameter = new JSONObject(json_params);

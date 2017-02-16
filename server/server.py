@@ -1,5 +1,6 @@
 #!flask/bin/python
 from flask import Flask, request, jsonify
+from flask_restful import reqparse
 from pymongo import MongoClient
 from datetime import datetime
 from OpenSSL import SSL
@@ -26,25 +27,83 @@ db = client.test
 places = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=43.0481,-76.1474&radius=500&type=restaurant&key=AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ')
 
 @app.route('/places', methods=['GET'])
-def get_resp():
+def get_places():
     return app.response_class(places.content, content_type='application/json')
 
-# if the account has already been created
-@app.route('/login/<username>', methods=['GET'])
-def show_user_profile(username):
+
+@app.route('/login/auth', methods=['get'])
+def create_cm():
+    username = request.args.get('user')
+    password = request.args.get('pw')
     auth = db.auth
     user = auth.find_one({
-        'username'  :    username
+        'username'  : username
     })
     if user:
-        output = {
-            'username'  : user['username'],
-            'passowrd'  : user['password'],
-            'email'     : user['email']
-        }
+        # output = 'Attempt login for %s' % username
+        # return output
+        if password == user['password']:
+            output = {
+                'result'    :   'correct password'
+            }
+        else:
+            output = {
+                'result'    : 'incorrect password'
+            }
     else:
-        output = 'User: %s not found', username
-    return jsonify({'result' :   output})
+        output = {
+            'result'        : 'User not found'
+        }
+    return jsonify(output)
+
+# if the account has already been created
+@app.route('/login/auth', methods=['GET'])
+# def show_user_profile(username):
+#     auth = db.auth
+#     user = auth.find_one({
+#         'username'  :    username
+#     })
+#     if user:
+#         output = {
+#             'username'  : user['username'],
+#             'passowrd'  : user['password'],
+#             'email'     : user['email']
+#         }
+#     else:
+#         output = 'User: %s not found', username
+#     return jsonify({'result' :   output})
+def authenticate_user(args):
+    args = request.args
+    print (args) # For debugging
+    username = args['user']
+    password = args['pw']
+    return jsonify(dict(data=[username, password])) # or whatever is required
+
+    # parser = reqparse.RequestParser()
+    # parser.add_argument('user',  required=True)
+    # parser.add_argument('pw', required=True)
+    # args = parser.parse_args()
+
+    # username = args['user']
+    # password = args['pw']
+    # auth = db.auth
+    # user = auth.find_one({
+    #     'username'  : username
+    # })
+    # if user:
+    #     # output = 'Attempt login for %s' % username
+    #     # return output
+    #     if password == user['password']:
+    #         output = {
+    #             'result'    :   'correct password'
+    #         }
+    #     else:
+    #         output = {
+    #             'result'    : 'incorrect password'
+    #         }
+    # else:
+    #     output = 'User: %s not found' % username
+    #     return output
 
 # this method is for creating a new account
 @app.route('/login/new', methods=['POST'])
@@ -54,17 +113,20 @@ def new_login():
     username = request.json['username']
     password = request.json['password']
     email = request.json['email']
+    # radius = request.json['radius']
     # insert_one function throws an error with the return type (not sure why!)
     user_id = auth.insert({
         'username' : username,
         'password' : password,
-        'email'    : email
+        'email'    : email,
+        'radius'   : radius
     })
     new_user = auth.find_one({'_id' : user_id})
     output = {
         'username'  : new_user['username'],
         'password'  : new_user['password'],
         'email'     : new_user['email']
+        # 'radius'    : new_user['radius']
     }
     return jsonify({
         'result'    : output
@@ -79,11 +141,16 @@ def get_all_users():
             'username'  : user['username'],
             'password'  : user['password'],
             'email'     : user['email']
+            # 'radius'    : user['radius']
         })
     return jsonify({
         'result'    : output
     })
 
+@app.route('/addtour', methods=['POST'])
+def add_tour():
+    tours = db.tours
+    # Add tour stuff
 
 
 

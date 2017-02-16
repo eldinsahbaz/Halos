@@ -2,7 +2,6 @@ package com.example.brian.halos;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,7 +21,6 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -178,11 +176,11 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 startActivity(intent1);
                 return true ;
             case R.id.store:
-                Intent intent2 = new Intent(this, Store.class);
+                Intent intent2 = new Intent(this, StoreActivity.class);
                 startActivity(intent2);
                 return true ;
             case R.id.profile:
-                Intent intent3 = new Intent(this, UserProfile.class);
+                Intent intent3 = new Intent(this, UserProfileActivity.class);
                 startActivity(intent3);
                 return true ;
             case R.id.Logout:

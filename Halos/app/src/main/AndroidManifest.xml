@@ -41,10 +41,14 @@
             android:label="@string/title_activity_halos_map" />
         <activity android:name=".RetrievePasswordActivity" />
         <activity
-            android:name=".Store"
+            android:name=".StoreActivity"
             android:label="Store" />
-        <activity android:name=".UserProfile"
-            android:label="Your Profile"></activity>
+        <activity
+            android:name=".UserProfileActivity"
+            android:label="Your Profile" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="Settings" />
     </application>
 
 </manifest>

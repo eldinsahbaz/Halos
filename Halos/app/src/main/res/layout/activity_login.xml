@@ -28,9 +28,8 @@
             android:layout_marginTop="0dp"
             android:layout_marginBottom="8dp"
             android:background="@color/white"
-            android:id="@+id/input_email"
-            android:inputType="textEmailAddress"
-            android:hint="Email" />
+            android:id="@+id/input_username"
+            android:hint="Username" />
 
         <!--  Password Label android.support.design.widget.-->
         <EditText
