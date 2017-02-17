@@ -7,4 +7,5 @@
     <string name="User_Profile">User Profile </string>
     <string name="Store">Store</string>
     <string name="Logout">Logout</string>
+    <string name="NameLabel">User Name Here</string>
 </resources>

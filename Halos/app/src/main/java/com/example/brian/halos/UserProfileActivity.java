@@ -50,4 +50,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    // TODO: Add functionality to search for users; Ray said something about using fragments instead of TabView for the tabs?
+    // Tabs wont show because they don't have any activities within them. Need to program in either placeholder "dummy" activities for the tabs?
+
 }
