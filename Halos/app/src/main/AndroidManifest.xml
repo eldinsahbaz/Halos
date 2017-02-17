@@ -9,6 +9,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -49,6 +50,14 @@
         <activity
             android:name=".SettingsActivity"
             android:label="Settings" />
+        <activity
+            android:name=".Checkout_Store"
+            android:label="Store" />
+        <activity
+            android:name="com.paypal.android.MEP.PayPalActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".ConfirmationActivity"></activity>
     </application>
 
 </manifest>

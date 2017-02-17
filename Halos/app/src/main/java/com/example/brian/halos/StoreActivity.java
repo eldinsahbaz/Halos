@@ -42,6 +42,9 @@ public class StoreActivity extends AppCompatActivity {
                 Intent intent4 = new Intent(this, LoginActivity.class);
                 startActivity(intent4);
                 return true ;
+            case R.id.checkout:
+                Intent intent5 = new Intent(this, Checkout_Store.class);
+                startActivity(intent5);
             default :
 // If we got here , the user ’s action was not recognized .
 // Invoke the superclass to handle it .
