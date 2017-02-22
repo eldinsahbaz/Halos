@@ -157,7 +157,41 @@ def put_settings():
 @app.route('/addtour', methods=['POST'])
 def add_tour():
     tours = db.tours
-    # TODO: Add tour stuff, just need to know the json structure then this will take ~10 minutes
+
+    # get all tour arguments from url parameters
+    contact_info = request.json['contact']
+    guides = request.json['guides']
+    tourists = request.json['tourists']
+    min_occ = request.json['min']
+    max_occ = request.json['max']
+    occ     = request.json['occ']
+    landmarks = request.json['landmarks']
+    radius = request.json['radius']
+    est_dur = request.json['dur']
+    start_date = request.json['start-date']
+    end_date = request.json['end-date']
+    start_time = request.json['start-time']
+    end_time = request.json['end-time']
+    price = request.json['price']
+    cover_photo = request.json['photo'] # TODO: not sure how to get image file over the network
+    #  put these params into the collection
+    user_id = auth.insert({
+        'contact_info' : contact_info,
+        'guides'    : [],
+        'tourists'  : [],
+        'min_occ'   : min_occ,
+    	'max_occ'  	: max_occ,
+    	'occ'       : occ,
+    	'landmarks'	: [],
+    	'radius'	: radius,
+    	'est_dur'	: est_dur,
+        'start_date': start_date,
+        'end-date'  : end-date,
+        'start_time': start_time,
+        'end_time'  : end_time,
+        'price'     : price,
+        'cover_photo' : cover_photo
+    })
 
 
 if __name__ == '__main__':

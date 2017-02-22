@@ -1,6 +1,8 @@
 package com.example.brian.halos;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,11 +30,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-// PLACES API KEY FOR ANDROID: AIzaSyDCMZlOV0A3k7FnhD1OKX1zsUHH8kJ2VH0
-//       WEB SERVICES API KEY: AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ
 
 
-public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
 
@@ -41,15 +42,20 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_halos_map);
+        
         //Setup Toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.menu);
         setSupportActionBar(toolbar);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         OkHttpClient client = new OkHttpClient();
+
+        // Acquire a reference to the system Location Manager
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         int radius = 1000;
         String key = "AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ";
@@ -61,7 +67,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 + "&type=" + type
                 + "&keyword=" + keyword
                 + "&key=" + key;
-        //String url = "http://10.0.2.2:5000/places";
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -69,13 +74,11 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-//                       Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.i("TAG", e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-//                       Toast.makeText(LoginActivity.this, response.body().string(), Toast.LENGTH_SHORT).show();
                 // create an array of Locations from the json response
                 // hash each location ID to see if it is in our database, if it is not then add it
 
