@@ -88,20 +88,8 @@ def new_login():
     	'shopping_cart'	: []
     })
     new_user = auth.find_one({'_id' : user_id})
-    output = {
-        '_id'       : str(new_user['_id']),
-        'username'  : new_user['username'],
-        'password'  : new_user['password'],
-        'email'     : new_user['email'],
-        'radius'    : new_user['radius'],
-    	'rating'  	: new_user['rating'],
-    	'travelled' : new_user['travelled'],
-    	'created'	: new_user['created'],
-    	'guided'	: new_user['guided'],
-    	'shopping_cart'	: new_user['shopping_cart']
-    }
-    return jsonify({
-        'result'    : output
+    return jsonify(response = {
+        'result'    : 'account created successfully'
     })
 
 @app.route('/users', methods=['GET'])

@@ -36,6 +36,8 @@ public class CreateAccountActivity extends AppCompatActivity {
     EditText mPassword1;
     EditText mPassword2;
 
+    String retVal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,23 +103,57 @@ public class CreateAccountActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Log.e("Server Failure Response", call.request().body().toString());
+                    retVal = "cannot connect to server";
 
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    Log.e("response", response.body().string());
+                    String usernameTaken = "username is taken";
+                    String emailTaken = "email is already linked to an account";
+                    String accountCreated = "account created successfully";
+
+                    // get the response data from the server
+                    String responseData = response.body().string();
+
+                    Log.e("LoginActivity.java", "onResponse:" + responseData);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        JSONObject respObject = jsonObject.getJSONObject("response");
+                        String result = respObject.getString("result");
+
+                        retVal = result;
+
+                        if (result.equals(accountCreated)) {
+                            Log.e("LoginActivity.java", "result: " + result);
+
+                            Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
+                            startActivity(i);
+                        } else if (result.equals(emailTaken)){
+                            Log.e("LoginActivity.java: " + result, emailTaken);
+                            retVal = result;
+                        } else if (result.equals(usernameTaken)) {
+                            Log.e("LoginActivity.java: " + result, usernameTaken);
+                            retVal = result;
+                        }
+
+                    } catch (Exception e){
+                        Log.e("LoginActivity.java", "Exception Thrown: " + e);
+                        retVal = e.toString();
+                    }
+
                 }
 
 
             });
-            return "ok";
+            return retVal;
         }
 
         @Override
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
-            Toast.makeText(CreateAccountActivity.this, "Account Created", Toast.LENGTH_LONG).show();
+            Toast.makeText(CreateAccountActivity.this, result, Toast.LENGTH_LONG).show();
         }
 
         @Override
