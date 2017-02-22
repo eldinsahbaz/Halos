@@ -15,12 +15,17 @@
         android:orderInCategory="102"
         android:id="@+id/store" />
     <item
-        android:title="@string/Logout"
+        android:title="Settings"
         android:orderInCategory="103"
-        android:id="@+id/Logout" />
-    <item android:title="Item"
+        android:id="@+id/activity_settings"/>
+    <item
+        android:title="Item"
         android:orderInCategory="104"
         android:id="@+id/checkout"
         />
+    <item
+        android:title="@string/Logout"
+        android:orderInCategory="105"
+        android:id="@+id/Logout" />
 
 </menu>

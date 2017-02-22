@@ -33,7 +33,9 @@ public class Tour {
     int occupancy;
     LinkedList<Location> landmarks;
     int radius;
-//    TODO:DURATIONS AND TIMES
+//    TODO:DURATIONS AND TIMES AND COVER PHOTO
+//    TODO: add ratings functions
+    int ratings;
     double price;
 
 

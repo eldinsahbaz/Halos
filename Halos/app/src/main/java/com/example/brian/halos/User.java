@@ -238,7 +238,7 @@ public class User {
         return radius;
     }
 
-    // TODO: Need to get all user information from server, THIS IS ABSOLUTELY ESSENTIAL
+    // TODO: Need to get all user information from server
     public int getUserInfo(String username) {
 
         return -1;                          // unsuccesful user info retrieval

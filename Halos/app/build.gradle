@@ -30,9 +30,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:support-annotations:25.1.0'
     compile 'com.android.support:design:25.1.0'
-    compile 'com.google.android.gms:play-services:9.6.0'
-    // was previously 10.0.1 on APK 23
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
-    // dependency: must download OkHttp!!
+    compile 'com.google.android.gms:play-services:9.6.0'            // was previously 10.0.1 on APK 23
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'                     // dependency: must download OkHttp!!
+    compile 'com.google.code.gson:gson:2.8.0'                       // easy json parsing
     testCompile 'junit:junit:4.12'
 }

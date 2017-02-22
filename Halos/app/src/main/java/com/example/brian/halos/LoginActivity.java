@@ -16,11 +16,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.Authenticator;
 import okhttp3.Call;
@@ -33,9 +35,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.Route;
-
-
-// Google Maps API Key AIzaSyCGlh3TOI8yioBEDhR9Scr6RlZMokqF6js
+//
+//import com.google.gson.JsonDeserializationContext;
+//import com.google.gson.JsonDeserializer;
+//import com.google.gson.JsonElement;
+//import com.google.gson.JsonParseException;
 
 public class LoginActivity extends AppCompatActivity {
     Button loginButton;
@@ -46,6 +50,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText password;
 
     OkHttpClient client = new OkHttpClient();
+
+    String retVal = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +65,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // AUTHENTICATE HERE
-                Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
-                startActivity(i);
 
-//                Account account = new Account(username.getText().toString(), password.getText().toString());
-//                account.execute();
-                //Toast.makeText(LoginActivity.this, "FIRED LOGIN", Toast.LENGTH_SHORT).show();
-
-                // if login is succesful, get user info
-//                TODO: parse user info to User object
+                Account account = new Account(username.getText().toString(), password.getText().toString());
+                account.execute();
             }
         });
 
@@ -103,38 +102,65 @@ public class LoginActivity extends AppCompatActivity {
             password = p;
         }
 
+
         @Override
         protected String doInBackground(Void... params) {
             // TODO: need to have an id associated and maybe other things (cookies, ip, etc)
             // TODO: need to encrypt data going over the wire
             Request request = new Request.Builder()
-                    .url("http://10.0.2.2:12344/login/" + username)
+                    .url("http://10.0.2.2:12344/login/auth?user=" + username + "&pw=" + password)
                     .addHeader("content-type", "application/json; charset=utf-8")
                     .build();
+
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Log.e("Server Failure Response", call.request().body().toString());
+                    retVal = "cannot connect to server";
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    Log.e("response", response.body().string());
-                    if (response.toString() == "Attempt login for " + username) {
-                        Log.e("User authenticated:", username);
+                    // get the response data from the server
+                    String responseData = response.body().string();
+                    String correctResponse =  "login successful";
+
+                    Log.e("LoginActivity.java", "onResponse:" + responseData);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        JSONObject respObject = jsonObject.getJSONObject("response");
+                        String result = respObject.getString("result");
+
+                        retVal = result;
+
+                        if (result.equals(correctResponse)) {
+                            Log.e("LoginActivity.java", "result: " + result);
+
+                            Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
+                            startActivity(i);
+                        } else {
+                            Log.e("LoginActivity.java: " + result, correctResponse);
+                            retVal = result;
+                        }
+
+                    } catch (Exception e){
+                        Log.e("LoginActivity.java", "Exception Thrown: " + e);
+                        retVal = e.toString();
                     }
-                    // parse response
                 }
 
             });
-            return "ok";
+
+            return retVal;
         }
 
         @Override
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
-            Toast.makeText(LoginActivity.this, "Account Created", Toast.LENGTH_LONG).show();
+            // TODO: toast is always one action behind? maybe try on real phone
+            Toast.makeText(LoginActivity.this, result.toString(), Toast.LENGTH_LONG).show();
         }
 
         @Override
