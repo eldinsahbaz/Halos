@@ -2,9 +2,11 @@ package com.example.brian.halos;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
+import android.content.pm.PackageManager;
+import android.location.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,11 +35,21 @@ import okhttp3.Response;
 
 
 
-public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
     private OkHttpClient client = new OkHttpClient();
+
+    private android.location.LocationManager locationManager;
+    private android.location.LocationListener locationListener;
+    private android.location.Location location;
+
+    private double lat;
+    private double lng;
+
+    private long minTime = 1000;
+    private float minDistance = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,18 +68,16 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         OkHttpClient client = new OkHttpClient();
 
         // Acquire a reference to the system Location Manager
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new HalosLocationlistener();
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, locationListener);
+        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Log.e("LOCATION: ", location.toString());
 
-        int radius = 1000;
-        String key = "AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ";
-        String location = "43.0481,-76.1474";
-        String type = "restaurant";
-        String keyword = "italian";
-        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + location
-                + "&radius=" + radius
-                + "&type=" + type
-                + "&keyword=" + keyword
-                + "&key=" + key;
+        String url = "http://10.0.2.2:12344/places";
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -89,33 +100,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         // TODO: Make an array or list of location objects for all places with given parameters
     }
 
-    public String putJson(String url, String json) throws IOException{
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, json);
-
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .put(body)
-                .build();
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
-
-    public String postJson(String url, String json) throws IOException{
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
-
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -134,36 +118,12 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.addMarker(new MarkerOptions().position(syracuse).title("Marker in Syracuse, NY"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(syracuse));
 
-        LatLng another_marker = new LatLng(43.0481, -77.1474);
-        mMap.addMarker(new MarkerOptions().position(another_marker).title("Marker somewhere around Syracuse, NY"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(another_marker));
 
         //  TODO: for each location in the prviously created array or list of locations
         //      new LatLng = location from JSON
         //      title = name from JSON
         //      addMarker(name)
         //      moveCamera(name)
-    }
-
-    private class RunOffMainThread extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected String doInBackground(Void... params) {
-            return "Executed";
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // TODO: Toast saying task was executed
-            // Must check that the location was processed to the database before making announcement
-            Toast.makeText(HalosMapActivity.this, "Executed", Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
     }
 
     public boolean onCreateOptionsMenu ( Menu menu ) {
@@ -198,9 +158,38 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 startActivity(intent6);
                 return true ;
             default :
-// If we got here , the user ’s action was not recognized .
-// Invoke the superclass to handle it .
+                // If we got here , the user ’s action was not recognized .
+                // Invoke the superclass to handle it .
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private class HalosLocationlistener implements android.location.LocationListener {
+        @Override
+        public void onLocationChanged(android.location.Location location) {
+            if(location != null){
+                lat = location.getLatitude();
+                lng = location.getLongitude();
+
+                Log.e("HalosMapActivity.java", "Latitude: " + lat);
+                Log.e("HalosMapActivity.java", "Longitude: " + lng);
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    }
 }
+

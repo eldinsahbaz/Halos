@@ -38,16 +38,20 @@ public class StoreActivity extends AppCompatActivity {
                 Intent intent3 = new Intent(this, UserProfileActivity.class);
                 startActivity(intent3);
                 return true ;
-            case R.id.Logout:
-                Intent intent4 = new Intent(this, LoginActivity.class);
+            case R.id.activity_settings:
+                Intent intent4 = new Intent(this, SettingsActivity.class);
                 startActivity(intent4);
                 return true ;
             case R.id.checkout:
                 Intent intent5 = new Intent(this, Checkout_Store.class);
                 startActivity(intent5);
+            case R.id.Logout:
+                Intent intent6 = new Intent(this, LoginActivity.class);
+                startActivity(intent6);
+                return true ;
             default :
-// If we got here , the user ’s action was not recognized .
-// Invoke the superclass to handle it .
+                // If we got here , the user ’s action was not recognized .
+                // Invoke the superclass to handle it .
                 return super.onOptionsItemSelected(item);
         }
     }
