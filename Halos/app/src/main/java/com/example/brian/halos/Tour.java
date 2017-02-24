@@ -1,5 +1,7 @@
 package com.example.brian.halos;
 
+import android.widget.ImageView;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -65,8 +67,10 @@ public class Tour {
         occupancy = 0;
         landmarks = new LinkedList<Location>();
         radius = 1000;                                  // radius measured in meters
+
         double price = 0.0;                             // free by default
     }
+
 
 //    def SetContactInfo(self, info):
 //            if isinstance(info, type(dict())):

@@ -5,53 +5,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/menu"
+        android:layout_width ="match_parent"
+        android:layout_height ="?attr/actionBarSize"
+        android:background ="?attr/colorPrimary"
+        android:elevation ="4dp"
+        android:theme ="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme ="@style/ThemeOverlay.AppCompat.Light" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/RecycleView_Container"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/menu"
+        android:layout_alignParentBottom="true">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/menu"
-            android:layout_width ="match_parent"
-            android:layout_height ="?attr/actionBarSize"
-            android:background ="?attr/colorPrimary"
-            android:elevation ="4dp"
-            android:theme ="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme ="@style/ThemeOverlay.AppCompat.Light"
-            android:layout_weight="1" />
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
+        <android.support.v4.view.ViewPager
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabMode="scrollable">
+            android:id="@+id/Store_Viewpager"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/menu">
 
-            <android.support.design.widget.TabItem
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Hot Tours" />
+            <android.support.v4.view.PagerTitleStrip
+                android:layout_width="match_parent"
+                android:id="@+id/TabTitleStrip"
+                android:layout_height="50dp"
+                android:layout_gravity="top" />
 
-            <android.support.design.widget.TabItem
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Top Paid" />
+        </android.support.v4.view.ViewPager>
+    </FrameLayout>
+    </RelativeLayout>
 
-            <android.support.design.widget.TabItem
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Top Free" />
-
-            <android.support.design.widget.TabItem
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Explore" />
-            <android.support.design.widget.TabItem
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Checkout" />
-        </android.support.design.widget.TabLayout>
-    </android.support.design.widget.AppBarLayout>
 
 </android.support.design.widget.CoordinatorLayout>
 

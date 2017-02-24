@@ -60,6 +60,7 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
 
     private void getPayment() {
         //Getting the amount from editText
+        //Change to Tour amount.
         paymentAmount = editTextAmount.getText().toString();
 
         //Creating a paypalpayment

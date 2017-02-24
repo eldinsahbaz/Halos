@@ -111,7 +111,8 @@ public class LoginActivity extends AppCompatActivity {
                     .url("http://10.0.2.2:12344/login/auth?user=" + username + "&pw=" + password)
                     .addHeader("content-type", "application/json; charset=utf-8")
                     .build();
-
+            //10.0.2.2:12344
+            //128.230.248.24:12344
 
             client.newCall(request).enqueue(new Callback() {
                 @Override

@@ -81,7 +81,7 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_dark_disabled"
+        app:srcCompat="@drawable/default_person"
         android:id="@+id/imageView"
         android:layout_marginStart="33dp"
         android:layout_above="@+id/ratingBar"

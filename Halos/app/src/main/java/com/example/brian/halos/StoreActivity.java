@@ -1,21 +1,33 @@
 package com.example.brian.halos;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class StoreActivity extends AppCompatActivity {
+import java.util.List;
+import java.util.Vector;
 
+public class StoreActivity extends AppCompatActivity {
+    final int limit = 5;
+    //MIGHT need FragmentInteractionListerner for all tabs- due to replacing this layouts container
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
         Toolbar toolbar = (Toolbar)findViewById(R.id.menu);
         setSupportActionBar(toolbar);
+        ViewPager viewpager = (ViewPager)findViewById(R.id.Store_Viewpager);
+        Store_TabAdapter store_adapter= new Store_TabAdapter(getSupportFragmentManager());
+        viewpager.setAdapter(store_adapter);
+        viewpager.setOffscreenPageLimit(limit);
     }
+
+
 
 
     public boolean onCreateOptionsMenu ( Menu menu ) {
