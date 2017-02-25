@@ -147,6 +147,7 @@ def add_tour():
     tours = db.tours
 
     # get all tour arguments from url parameters
+    # TODO: NAME?
     contact_info = request.json['contact']
     guides = request.json['guides']
     tourists = request.json['tourists']

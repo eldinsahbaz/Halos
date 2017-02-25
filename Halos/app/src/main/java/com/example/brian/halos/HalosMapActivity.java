@@ -45,11 +45,11 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     private android.location.LocationListener locationListener;
     private android.location.Location location;
 
-    private double lat;
-    private double lng;
+    private double lat = 40.7128;
+    private double lng = -74.0059;
 
     private long minTime = 1000;
-    private float minDistance = 0;
+    private float minDistance = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +67,25 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         OkHttpClient client = new OkHttpClient();
 
+        Log.e("***STARTING LOCATION", "*********");
         // Acquire a reference to the system Location Manager
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy( Criteria.ACCURACY_COARSE );
+        String provider = locationManager.getBestProvider( criteria, true );
+//        provider = locationManager.getAllProviders().get(0);
+        if ( provider == null ) {
+            Log.e("HalosMapActivity", "No location provider found!" );
+            return;
+        }
+
         locationListener = new HalosLocationlistener();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.e("HalosMapActivity", "No Location Permission Given!");
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, locationListener);
-        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         Log.e("LOCATION: ", location.toString());
 
         String url = "http://10.0.2.2:12344/places";
@@ -114,9 +125,10 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng syracuse = new LatLng(43.0481, -76.1474);
+        LatLng syracuse = new LatLng(lat, lng);
         mMap.addMarker(new MarkerOptions().position(syracuse).title("Marker in Syracuse, NY"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(syracuse));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
 
 
         //  TODO: for each location in the prviously created array or list of locations
