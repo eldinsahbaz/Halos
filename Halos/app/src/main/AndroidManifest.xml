@@ -7,10 +7,12 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COURSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:allowBackup="true"
@@ -54,13 +56,15 @@
         <activity
             android:name=".Checkout_Store"
             android:label="Store" />
- <!--       <activity
+        <!--
+            <activity
             android:name="com.paypal.android.MEP.PayPalActivity"
             android:configChanges="keyboardHidden|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
             Might not Need- Don't remove.
-     -->
-        <activity android:name=".ConfirmationActivity"></activity>
+        -->
+        <activity android:name=".ConfirmationActivity" />
+        <activity android:name=".LocationTestActivity"></activity>
     </application>
 
 </manifest>

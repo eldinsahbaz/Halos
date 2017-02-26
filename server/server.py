@@ -39,6 +39,17 @@ def delete_users():
     auth.remove( { } )
     return jsonify(response = {'result' : 'removed'})
 
+# clears single account from database
+# used when user deactivates account
+@app.route('/delete_user', methods=['PUT'])
+def delete_user():
+    auth = db.auth
+    username = request.args.get('user')
+    password = request.args.get('pw')
+    # TODO: remove this user from collection
+    auth.remove( { } )
+    return jsonify(response = {'result' : 'removed'})
+
 #################### LOGIN RELATED API CALLS ####################
 # login to an existing account
 @app.route('/login/auth', methods=['GET'])

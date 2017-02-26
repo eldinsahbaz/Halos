@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.e("Server Failure Response", call.request().body().toString());
+                    Log.e("Server Failure Response", e.getMessage());
                     retVal = "cannot connect to server";
                 }
 

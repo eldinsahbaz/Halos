@@ -1,43 +1,5 @@
 package com.example.brian.halos;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.*;
-import android.location.Location;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -56,11 +18,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import org.json.JSONObject;
-
 import java.text.DateFormat;
 import java.util.Date;
-
 
 /**
  * Getting Location Updates.
@@ -76,21 +35,9 @@ import java.util.Date;
  * uses Google Play services for authentication, see
  * https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart.
  */
-public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener  {
+public class LocationTestActivity extends AppCompatActivity implements
+        ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
-    // map used for this activity
-    protected GoogleMap mMap;
-
-    // maps marker for users current location
-    protected Marker mCurrentLocationMarker;
-
-    // need a location manager to handle location requests, and provider to get the location
-    protected LocationManager locationManager;
-    protected String provider;
-
-    private OkHttpClient client = new OkHttpClient();
-
-    // give a tag for debugging purposes
     protected static final String TAG = "location-updates-sample";
 
     /**
@@ -124,23 +71,31 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
      */
     protected Location mCurrentLocation;
 
+    // UI Widgets.
+    protected Button mStartUpdatesButton;
+    protected Button mStopUpdatesButton;
+    protected TextView mLastUpdateTimeTextView;
+    protected TextView mLatitudeTextView;
+    protected TextView mLongitudeTextView;
+
+    // Labels.
+    protected String mLatitudeLabel;
+    protected String mLongitudeLabel;
+    protected String mLastUpdateTimeLabel;
+
     /**
      * Tracks the status of the location updates request. Value changes when the user presses the
      * Start Updates and Stop Updates buttons.
      */
-    protected Boolean mRequestingLocationUpdates = true;
+    protected Boolean mRequestingLocationUpdates;
 
     /**
      * Time when the location was updated represented as a String.
      */
     protected String mLastUpdateTime;
 
-    // return value used for server call
-    protected String mRetVal;
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Update values using data stored in the Bundle.
@@ -150,18 +105,26 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         // API.
         buildGoogleApiClient();
 
-        setContentView(R.layout.activity_halos_map);
+//        // need to request initial locations
+//        startLocationUpdates();
 
-        //Setup Toolbar
-        Toolbar toolbar = (Toolbar)findViewById(R.id.menu);
-        setSupportActionBar(toolbar);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        setContentView(R.layout.activity_location_test);
 
-        // TODO: Make an array or list of location objects for all places with given parameters
+        // Locate the UI widgets.
+        mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
+        mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
+        mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
+        mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
+        mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
+
+        // Set labels.
+        mLatitudeLabel = getResources().getString(R.string.latitude_label);
+        mLongitudeLabel = getResources().getString(R.string.longitude_label);
+        mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
+
+        mRequestingLocationUpdates = false;
+        mLastUpdateTime = "";
     }
 
     /**
@@ -177,6 +140,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
             if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
                 mRequestingLocationUpdates = savedInstanceState.getBoolean(
                         REQUESTING_LOCATION_UPDATES_KEY);
+                setButtonsEnabledState();
             }
 
             // Update the value of mCurrentLocation from the Bundle and update the UI to show the
@@ -241,6 +205,30 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     /**
+     * Handles the Start Updates button and requests start of location updates. Does nothing if
+     * updates have already been requested.
+     */
+    public void startUpdatesButtonHandler(View view) {
+        if (!mRequestingLocationUpdates) {
+            mRequestingLocationUpdates = true;
+            setButtonsEnabledState();
+            startLocationUpdates();
+        }
+    }
+
+    /**
+     * Handles the Stop Updates button, and requests removal of location updates. Does nothing if
+     * updates were not previously requested.
+     */
+    public void stopUpdatesButtonHandler(View view) {
+        if (mRequestingLocationUpdates) {
+            mRequestingLocationUpdates = false;
+            setButtonsEnabledState();
+            stopLocationUpdates();
+        }
+    }
+
+    /**
      * Requests location updates from the FusedLocationApi.
      */
     protected void startLocationUpdates() {
@@ -258,36 +246,31 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     /**
+     * Ensures that only one button is enabled at any time. The Start Updates button is enabled
+     * if the user is not requesting location updates. The Stop Updates button is enabled if the
+     * user is requesting location updates.
+     */
+    private void setButtonsEnabledState() {
+        if (mRequestingLocationUpdates) {
+            mStartUpdatesButton.setEnabled(false);
+            mStopUpdatesButton.setEnabled(true);
+        } else {
+            mStartUpdatesButton.setEnabled(true);
+            mStopUpdatesButton.setEnabled(false);
+        }
+    }
+
+    /**
      * Updates the latitude, the longitude, and the last location time in the UI.
      */
     private void updateUI() {
+        Log.e(TAG, "WHERE AM I?");
+        Log.e(TAG, mLatitudeTextView.toString());
         Log.e(TAG, mCurrentLocation.toString());
-        Log.e(TAG, "LNG: " + String.valueOf(mCurrentLocation.getLongitude()));
-        Log.e(TAG, "LAT: " + String.valueOf(mCurrentLocation.getLatitude()));
-
-
-        // get lat and long for current location
-        double currentLatitude = 43.0392;   //mCurrentLocation.getLatitude();        //43.0392;
-        double currentLongitude = -76.1351;  //mCurrentLocation.getLongitude();      //-76.1351;
-        LatLng currentLocation = new LatLng(
-                currentLatitude,
-                currentLongitude);
-
-        // remove the old location marker
-        mCurrentLocationMarker.remove();
-
-        // update the marker location on the map
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(currentLocation);
-        markerOptions.title("Current Location");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-        mCurrentLocationMarker = mMap.addMarker(markerOptions);
-
-        // Move the camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
-
-        Log.e(TAG, "Maps Markers Updated");
+        mLatitudeTextView.setText(String.valueOf(mCurrentLocation.getLatitude()));
+        mLongitudeTextView.setText(String.valueOf(mCurrentLocation.getLongitude()));
+        mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
+                mLastUpdateTime));
     }
 
     /**
@@ -374,9 +357,9 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         // If the user presses the Start Updates button before GoogleApiClient connects, we set
         // mRequestingLocationUpdates to true (see startUpdatesButtonHandler()). Here, we check
         // the value of mRequestingLocationUpdates and if it is true, we start location updates.
-//        if (mRequestingLocationUpdates) {
-//            startLocationUpdates();
-//        }
+        if (mRequestingLocationUpdates) {
+            startLocationUpdates();
+        }
     }
 
     /**
@@ -387,15 +370,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
-
-//        // initialize new OkHttpClient for rest calls when location changes
-//        client = new OkHttpClient();
-//
-//        // fire the call to the server
-//        PlacesRequest placesRequest = new PlacesRequest();
-//        placesRequest.execute();
-
-        Toast.makeText(this, "Location Updated",
+        Toast.makeText(this, "LOCATION UPDATED",
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -414,25 +389,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
 
-    //    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        // TODO Auto-generated method stub
-
-    }
-
-    //    @Override
-    public void onProviderEnabled(String provider) {
-        Toast.makeText(this, "Enabled new provider " + provider,
-                Toast.LENGTH_SHORT).show();
-
-    }
-
-    //    @Override
-    public void onProviderDisabled(String provider) {
-        Toast.makeText(this, "Disabled provider " + provider,
-                Toast.LENGTH_SHORT).show();
-    }
-
 
     /**
      * Stores activity data in the Bundle.
@@ -443,179 +399,4 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
         super.onSaveInstanceState(savedInstanceState);
     }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Syracuse, NY.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        Log.e(TAG, "Map is Ready");
-
-        double currentLatitude = 0.0;
-        double currentLongitude = 0.0;
-        LatLng currentLocation = new LatLng(
-                currentLatitude,
-                currentLongitude);
-
-        if (mCurrentLocation == null) {
-            currentLatitude = 40.4406;
-            currentLongitude = -79.9959;
-            currentLocation = new LatLng(
-                    currentLatitude,
-                    currentLongitude);
-        } else {
-            currentLatitude = mCurrentLocation.getLatitude();
-            currentLongitude = mCurrentLocation.getLongitude();
-            currentLocation = new LatLng(
-                    currentLatitude,
-                    currentLongitude);
-        }
-
-        // Add a marker in current location and move the camera
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(currentLocation);
-        markerOptions.title("I Am Here");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrentLocationMarker = mMap.addMarker(markerOptions);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
-
-
-        //  TODO: for each location in the prviously created array or list of locations
-        //      new LatLng = location from JSON
-        //      title = name from JSON
-        //      addMarker(name)
-        //      moveCamera(name)
-    }
-
-    public void updateMap(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // clear the map of the original placeholder markers
-//        mMap.clear();
-
-        // get lat and long for current location
-        double currentLatitude = mCurrentLocation.getLatitude();
-        double currentLongitude = mCurrentLocation.getLongitude();
-        LatLng currentLocation = new LatLng(
-                currentLatitude,
-                currentLongitude);
-
-        //Place current location marker
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(currentLocation);
-        markerOptions.title("I Am Here");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrentLocationMarker = mMap.addMarker(markerOptions);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
-    }
-
-    public boolean onCreateOptionsMenu ( Menu menu ) {
-        getMenuInflater().inflate(R.menu.toolbar,menu );
-        return true ;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected ( MenuItem item ) {
-        switch( item.getItemId() ) {
-            case R.id.Home:
-                Intent intent1 = new Intent(this, HalosMapActivity.class);
-                startActivity(intent1);
-                return true ;
-            case R.id.store:
-                Intent intent2 = new Intent(this, StoreActivity.class);
-                startActivity(intent2);
-                return true ;
-            case R.id.profile:
-                Intent intent3 = new Intent(this, UserProfileActivity.class);
-                startActivity(intent3);
-                return true ;
-            case R.id.activity_settings:
-                Intent intent4 = new Intent(this, SettingsActivity.class);
-                startActivity(intent4);
-                return true ;
-            case R.id.checkout:
-                Intent intent5 = new Intent(this, Checkout_Store.class);
-                startActivity(intent5);
-            case R.id.Logout:
-                Intent intent6 = new Intent(this, LoginActivity.class);
-                startActivity(intent6);
-                return true ;
-            default :
-                // If we got here , the user ’s action was not recognized .
-                // Invoke the superclass to handle it .
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    // this handles the call to the server
-    private class PlacesRequest extends AsyncTask<Void, Void, String> {
-
-        protected PlacesRequest() {
-        }
-
-
-        @Override
-        protected String doInBackground(Void... params) {
-            // TODO: need to have an id associated and maybe other things (cookies, ip, etc)
-            // TODO: need to encrypt data going over the wire
-            Request request = new Request.Builder()
-                    .url("http://10.0.2.2:12344/places")
-                    .addHeader("content-type", "application/json; charset=utf-8")
-                    .build();
-            //10.0.2.2:12344
-            //128.230.248.24:12344
-
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.e("Server Failure Response", e.getMessage());
-                    mRetVal = "cannot connect to server";
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    // get the response data from the server
-                    String responseData = response.body().string();
-
-                    // create an array of Locations from the json response
-                    // hash each location ID to see if it is in our database, if it is not then add it
-
-                    Log.i("TAG", response.body().string());
-                }
-
-            });
-
-            // TODO: Make an array or list of location objects for all places with given parameters
-
-
-            return mRetVal;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // TODO: Must check that the location was processed to the database before making announcement
-            // TODO: toast is always one action behind? maybe try on real phone
-            Toast.makeText(HalosMapActivity.this, result.toString(), Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
-    }
-
 }
-
