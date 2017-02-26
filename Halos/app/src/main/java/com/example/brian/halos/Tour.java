@@ -1,5 +1,7 @@
 package com.example.brian.halos;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.ImageView;
 
 import java.util.HashMap;
@@ -9,7 +11,7 @@ import java.util.LinkedList;
  * Created by brian on 2/9/17.
  */
 
-public class Tour {
+public class Tour implements Parcelable {
 //
 //    class Tour():
 //    __ContactInfo = None
@@ -350,6 +352,16 @@ public class Tour {
 //            return self.__Price
     public double getPrice() {
         return price;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
     }
 
 //    def SetCoverPhoto(self, photoPath):

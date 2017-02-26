@@ -20,11 +20,13 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "Parameter";
     RecyclerView recyclerView;
-    public List<Tour> hotTourlist;
+    public List<Tour> hotTourlist = new ArrayList<Tour>();;
     Tour test1 = new Tour();
     Tour test2 = new Tour();
     Tour test3 = new Tour();
     Tour test4 = new Tour();
+    Tour test5 = new Tour();
+    Tour test6 = new Tour();
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -61,6 +63,8 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
         hotTourlist.add(test2);
         hotTourlist.add(test3);
         hotTourlist.add(test4);
+        hotTourlist.add(test5);
+        hotTourlist.add(test6);
         final View view = inflater.inflate(R.layout.fragment_store__tab__hot_tours, container, false);
         recyclerView = (RecyclerView)view.findViewById(R.id.RecycleView_HotTours);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -73,7 +77,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
                 Tour DisplayTour = hotTourlist.get(position);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.RecycleView_Container,Tour_Display_Frag.newInstance(DisplayTour))
-                        .commit();
+                        .addToBackStack(null).commit();
             }
         });
         return view;

@@ -1,6 +1,7 @@
 package com.example.brian.halos;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,9 @@ import android.view.MenuItem;
 import java.util.List;
 import java.util.Vector;
 
-public class StoreActivity extends AppCompatActivity {
+public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTours.OnFragmentInteractionListener,
+        Tour_Display_Frag.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInteractionListener,
+        Store_Tab_Explore.OnFragmentInteractionListener,Store_Tab_TopFree.OnFragmentInteractionListener,Store_Tab_Checkout.OnFragmentInteractionListener{
     final int limit = 5;
     //MIGHT need FragmentInteractionListerner for all tabs- due to replacing this layouts container
     @Override
@@ -66,5 +69,10 @@ public class StoreActivity extends AppCompatActivity {
                 // Invoke the superclass to handle it .
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
