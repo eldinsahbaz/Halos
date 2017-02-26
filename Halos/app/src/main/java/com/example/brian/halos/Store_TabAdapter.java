@@ -1,5 +1,6 @@
 package com.example.brian.halos;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -8,9 +9,10 @@ import android.support.v4.app.FragmentPagerAdapter;
  * Created by raych on 2/24/2017.
  */
 
-public class Store_TabAdapter extends FragmentPagerAdapter{
+public class Store_TabAdapter extends FragmentPagerAdapter implements Store_Tab_TopFree.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInteractionListener,
+        Store_Tab_Explore.OnFragmentInteractionListener,Store_Tab_HotTours.OnFragmentInteractionListener,Store_Tab_Checkout.OnFragmentInteractionListener{
     final int tab_count =5;  //number of tabs in Store Activity
-    private String tab_titles[] = new String[] {"Hot Tours","Top Paid","Top Free","Top Free","Explore","Checkout"};
+    private String tab_titles[] = new String[] {"Hot Tours","Top Paid","Top Free","Explore","Checkout"};
     public Store_TabAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -46,4 +48,8 @@ public class Store_TabAdapter extends FragmentPagerAdapter{
     return tab_titles[position];
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

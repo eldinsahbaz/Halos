@@ -17,7 +17,7 @@ import android.view.ViewGroup;
  * Use the {@link Store_Tab_TopPaid#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Store_Tab_TopPaid extends Fragment {
+public class Store_Tab_TopPaid extends Fragment implements Tour_Display_Frag.OnFragmentInteractionListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -89,6 +89,11 @@ public class Store_Tab_TopPaid extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     /**

@@ -41,7 +41,7 @@ public class Tour_Display_Frag extends Fragment {
     public static Tour_Display_Frag newInstance(Tour tour) {
         Tour_Display_Frag fragment = new Tour_Display_Frag();
         Bundle args = new Bundle();
-        args.putSerializable(TOUR_OBJECT , (Serializable) tour);
+        args.putParcelable(TOUR_OBJECT , tour);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,7 +60,7 @@ public class Tour_Display_Frag extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tour__display_, container, false);
         Bundle bundle = getArguments();
-        Tour Tourdata = (Tour) bundle.getSerializable(TOUR_OBJECT);
+        Tour Tourdata = (Tour) bundle.getParcelable(TOUR_OBJECT);
         ImageView imageView= (ImageView)view.findViewById(R.id.Frag_Tour_Pic);
         TextView title = (TextView)view.findViewById(R.id.frag_tour_title);
         TextView Description = (TextView)view.findViewById(R.id.frag_tour_description);

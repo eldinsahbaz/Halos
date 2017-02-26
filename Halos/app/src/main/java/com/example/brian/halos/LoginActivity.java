@@ -90,7 +90,15 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
+        //REMOVE BYPASSER BUTTON
+        Button bypasser =(Button) findViewById(R.id.bypasser);
+        bypasser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent map = new Intent(getApplicationContext(),HalosMapActivity.class);
+                startActivity(map);
+            }
+        });
     }
 
     private class Account extends AsyncTask<Void, Void, String> {
