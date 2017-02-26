@@ -359,8 +359,19 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         // is displayed as the activity is re-created.
         if (mCurrentLocation == null) {
             try {
-                mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                Log.e(TAG, LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).toString());
+
+                if (LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient) == null) {
+                    // will likely fall to this the first time the emulator starts because there is no location in the emulator
+                    // thus we give it a default location (Syracuse University)
+                    mCurrentLocation = new Location("");
+                    mCurrentLocation.setLatitude(43.0392);
+                    mCurrentLocation.setLongitude(-76.1351);
+                }
+                else {
+                    // Gets the last known location on the device
+                    mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                    Log.e(TAG, LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).toString());
+                }
 
                 mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
                 Log.e(TAG, DateFormat.getTimeInstance().format(new Date()).toString());
