@@ -96,7 +96,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 100000;
 
     /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
@@ -191,7 +191,10 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
             if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
                 mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
             }
+
+            Log.e("UpdateValueFromBundle", mCurrentLocation.toString());
             updateUI();
+            Log.e("UpdateValueFromBundle X", mCurrentLocation.toString());
         }
     }
 
@@ -267,8 +270,11 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
 
         // get lat and long for current location
-        double currentLatitude = 43.0392;   //mCurrentLocation.getLatitude();        //43.0392;
-        double currentLongitude = -76.1351;  //mCurrentLocation.getLongitude();      //-76.1351;
+        // TODO: harcoding values below works, getting values from mCurrentLocation doesn't
+        // makes no sense because they are the exact same values and types
+        // but blank map activity shows up when using mCurrentLocation
+        double currentLatitude = (double) mCurrentLocation.getLatitude();        //43.0392;
+        double currentLongitude = (double) mCurrentLocation.getLongitude();      //-76.1351;
         LatLng currentLocation = new LatLng(
                 currentLatitude,
                 currentLongitude);
@@ -361,11 +367,11 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
             try {
 
                 if (LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient) == null) {
-                    // will likely fall to this the first time the emulator starts because there is no location in the emulator
+                    // will likely fail to this the first time the emulator starts because there is no location in the emulator
                     // thus we give it a default location (Syracuse University)
                     mCurrentLocation = new Location("");
                     mCurrentLocation.setLatitude(43.0392);
-                    mCurrentLocation.setLongitude(-76.1351);
+                    mCurrentLocation.setLongitude(-76.3351);
                 }
                 else {
                     // Gets the last known location on the device
@@ -376,6 +382,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
                 Log.e(TAG, DateFormat.getTimeInstance().format(new Date()).toString());
 
+                Log.e("OnConnected", mCurrentLocation.toString());
                 updateUI();
             } catch (SecurityException e) {
                 Log.e("LocationActivity", e.getMessage());
@@ -396,8 +403,10 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        Log.e("OnLocationChanged Start", mCurrentLocation.toString());
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
+        Log.e("OnLocationChanged Done", mCurrentLocation.toString());
 
 //        // initialize new OkHttpClient for rest calls when location changes
 //        client = new OkHttpClient();

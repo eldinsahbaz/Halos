@@ -94,6 +94,8 @@ public class CreateAccountActivity extends AppCompatActivity {
             JSONObject json_parameter = new JSONObject(json_params);
             RequestBody json_body = RequestBody.create(JSON, json_parameter.toString());
             Request request = new Request.Builder()
+                    // if you want to run on local use http://10.0.2.2:12344
+                    // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
                     .url("http://10.0.2.2:12344/login/new")
                     .post(json_body)
                     .addHeader("content-type", "application/json; charset=utf-8")

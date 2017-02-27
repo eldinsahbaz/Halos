@@ -116,6 +116,8 @@ public class LoginActivity extends AppCompatActivity {
             // TODO: need to have an id associated and maybe other things (cookies, ip, etc)
             // TODO: need to encrypt data going over the wire
             Request request = new Request.Builder()
+                    // if you want to run on local use http://10.0.2.2:12344
+                    // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
                     .url("http://10.0.2.2:12344/login/auth?user=" + username + "&pw=" + password)
                     .addHeader("content-type", "application/json; charset=utf-8")
                     .build();
