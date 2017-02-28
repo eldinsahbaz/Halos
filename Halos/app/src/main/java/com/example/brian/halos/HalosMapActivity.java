@@ -677,7 +677,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         @Override
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
-            Toast.makeText(HalosMapActivity.this, result, Toast.LENGTH_LONG).show();
         }
 
         @Override

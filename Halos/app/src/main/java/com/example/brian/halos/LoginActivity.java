@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
 
     OkHttpClient client = new OkHttpClient();
 
-    String retVal = "";
+    String retVal = "Welcome to Halos";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(map);
             }
         });
+        Toast.makeText(LoginActivity.this, retVal.toString(), Toast.LENGTH_LONG).show();
     }
 
     // this is so the user cannot just go back to the app once they log out
@@ -135,6 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onFailure(Call call, IOException e) {
                     Log.e("Server Failure Response", e.getMessage());
                     retVal = "cannot connect to server";
+                    Log.e("LoginActivity", retVal);
                 }
 
                 @Override
@@ -160,11 +162,13 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             Log.e("LoginActivity.java: " + result, correctResponse);
                             retVal = result;
+                            Log.e("LoginActivity", retVal);
                         }
 
                     } catch (Exception e){
                         Log.e("LoginActivity.java", "Exception Thrown: " + e);
                         retVal = e.toString();
+                        Log.e("LoginActivity", retVal);
                     }
                 }
 
@@ -177,7 +181,15 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
             // TODO: toast is always one action behind? maybe try on real phone
-            Toast.makeText(LoginActivity.this, result.toString(), Toast.LENGTH_LONG).show();
+            // Hold for time to update result
+            try {
+                Log.i("LoginActivity", "Waiting for process to catch up");
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Log.e("LoginActivity retVal", retVal);
+            Toast.makeText(LoginActivity.this, retVal, Toast.LENGTH_LONG).show();
         }
 
         @Override
