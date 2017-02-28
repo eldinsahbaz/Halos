@@ -43,7 +43,7 @@
 
         <activity
             android:name=".HalosMapActivity"
-            android:label="@string/title_activity_halos_map" />
+            android:label="Home" />
         <activity android:name=".RetrievePasswordActivity" />
         <activity
             android:name=".StoreActivity"
@@ -65,7 +65,8 @@
             Might not Need- Don't remove.
         -->
         <activity android:name=".ConfirmationActivity" />
-        <activity android:name=".LocationTestActivity"></activity>
+        <activity android:name=".LocationTestActivity" />
+        <activity android:name=".CreateTourActivity"></activity>
     </application>
 
 </manifest>
