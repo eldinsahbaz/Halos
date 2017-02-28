@@ -101,6 +101,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // this is so the user cannot just go back to the app once they log out
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(false);
+    }
+
     private class Account extends AsyncTask<Void, Void, String> {
         String username;
         String password;

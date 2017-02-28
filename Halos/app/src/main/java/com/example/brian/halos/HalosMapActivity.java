@@ -60,6 +60,8 @@ import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -293,7 +295,18 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
 
+        // now get all of the places of interest withing users radius
+        getNearbyPlaces();
+
         Log.e(TAG, "Maps Markers Updated");
+    }
+
+    /**
+     *
+     */
+    protected void getNearbyPlaces() {
+        PlacesRequest placesRequest = new PlacesRequest();
+        placesRequest.execute();
     }
 
     /**
@@ -581,53 +594,90 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     // this handles the call to the server
     private class PlacesRequest extends AsyncTask<Void, Void, String> {
+        User user;
+
+        OkHttpClient client = new OkHttpClient();
 
         protected PlacesRequest() {
-        }
 
+        }
 
         @Override
         protected String doInBackground(Void... params) {
-            // TODO: need to have an id associated and maybe other things (cookies, ip, etc)
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            Map<String, String> json_params = new HashMap<String, String>();
+            json_params.put("lat", String.valueOf(mCurrentLocation.getLatitude()));
+            json_params.put("lng", String.valueOf(mCurrentLocation.getLongitude()));
+//            json_params.put("radius", String.valueOf(user.getRadius()));
+//            json_params.put("keywords", "TODO");    // TODO: need to set up keywords
+            // TODO: need to have an id associated and maybe other things (travelled, guided, etc + cookies, ip, etc)
             // TODO: need to encrypt data going over the wire
+
+            JSONObject json_parameter = new JSONObject(json_params);
+            RequestBody json_body = RequestBody.create(JSON, json_parameter.toString());
             Request request = new Request.Builder()
-                    .url("http://10.0.2.2:12344/places")
+                    // if you want to run on local use http://10.0.2.2:12344
+                    // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
+                    .url("http://10.0.2.2:12344/get_places")
+                    .post(json_body)
                     .addHeader("content-type", "application/json; charset=utf-8")
                     .build();
-            //10.0.2.2:12344
-            //128.230.248.24:12344
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.e("Server Failure Response", e.getMessage());
+                    Log.e("Server Failure Response", call.request().body().toString());
                     mRetVal = "cannot connect to server";
+
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    String usernameTaken = "username is taken";
+                    String emailTaken = "email is already linked to an account";
+                    String accountCreated = "account created successfully";
+
                     // get the response data from the server
                     String responseData = response.body().string();
 
-                    // create an array of Locations from the json response
-                    // hash each location ID to see if it is in our database, if it is not then add it
+                    Log.e(TAG, "onResponse:" + responseData);
 
-                    Log.i("TAG", response.body().string());
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        JSONObject respObject = jsonObject.getJSONObject("response");
+                        String result = respObject.getString("result");
+
+                        mRetVal = result;
+
+                        if (result.equals(accountCreated)) {
+                            Log.e(TAG, "result: " + result);
+
+                            Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
+                            startActivity(i);
+                        } else if (result.equals(emailTaken)){
+                            Log.e(TAG + result, emailTaken);
+                            mRetVal = result;
+                        } else if (result.equals(usernameTaken)) {
+                            Log.e(TAG + result, usernameTaken);
+                            mRetVal = result;
+                        }
+
+                    } catch (Exception e){
+                        Log.e(TAG, "Exception Thrown: " + e);
+                        mRetVal = e.toString();
+                    }
+
                 }
 
+
             });
-
-            // TODO: Make an array or list of location objects for all places with given parameters
-
-
             return mRetVal;
         }
 
         @Override
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
-            // TODO: toast is always one action behind? maybe try on real phone
-            Toast.makeText(HalosMapActivity.this, result.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(HalosMapActivity.this, result, Toast.LENGTH_LONG).show();
         }
 
         @Override

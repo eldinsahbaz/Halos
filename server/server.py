@@ -24,11 +24,24 @@ db = client.test
 # type = 'restaurant'
 # keyword = 'italian'
 # url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise&key=AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ'
+base_url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
+key = 'AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ'
 
 places = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=43.0481,-76.1474&radius=500&type=restaurant&key=AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ')
 
 @app.route('/places', methods=['GET'])
+def places():
+    return app.response_class(places.content, content_type='application/json')
+
+@app.route('/get_places', methods=['POST'])
 def get_places():
+    latitude = request.json['lat']
+    longitude = request.json['lng']
+    radius = str(1000)   # later change this, just have to decide which way to get radius
+    # place_type = request.json['type']
+    # keyword = request.json['keyword']
+    url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key
+    places = requests.get(url)
     return app.response_class(places.content, content_type='application/json')
 
 # clears the accounts database (NOT FOR PRODUCTION ONLY FOR TESTING PRUPOSES, WE SHOULD DELETE ONCE WE GET EVERYTHING WORKING!!!!!!!!)
