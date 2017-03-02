@@ -575,6 +575,43 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         return true ;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public boolean onOptionsItemSelected ( MenuItem item ) {
+        switch( item.getItemId() ) {
+            case R.id.Home:
+                Intent intent1 = new Intent(this, HalosMapActivity.class);
+                startActivity(intent1);
+                return true ;
+            case R.id.store:
+                Intent intent2 = new Intent(this, StoreActivity.class);
+                startActivity(intent2);
+                return true ;
+            case R.id.profile:
+                Intent intent3 = new Intent(this, UserProfileActivity.class);
+                startActivity(intent3);
+                return true ;
+            case R.id.activity_settings:
+                Intent intent4 = new Intent(this, SettingsActivity.class);
+                startActivity(intent4);
+                return true ;
+            case R.id.Logout:
+                Intent intent6 = new Intent(this, LoginActivity.class);
+                startActivity(intent6);
+                return true ;
+            case R.id.create_tour:
+                Intent intent7 = new Intent(this, CreateTourActivity.class);
+                startActivity(intent7);
+                return true;
+            default :
+                // If we got here , the user ’s action was not recognized .
+                // Invoke the superclass to handle it .
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+>>>>>>> 8bf57553e28cf1a1eaa1d39be9eeac2420b62bbd
     // this handles the call to the server
     private class PlacesRequest extends AsyncTask<Void, Void, String> {
         User user;

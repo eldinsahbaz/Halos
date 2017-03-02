@@ -57,13 +57,14 @@ public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTo
                 Intent intent4 = new Intent(this, SettingsActivity.class);
                 startActivity(intent4);
                 return true ;
-            case R.id.checkout:
-                Intent intent5 = new Intent(this, Checkout_Store.class);
-                startActivity(intent5);
             case R.id.Logout:
                 Intent intent6 = new Intent(this, LoginActivity.class);
                 startActivity(intent6);
                 return true ;
+            case R.id.create_tour:
+                Intent intent7 = new Intent(this, CreateTourActivity.class);
+                startActivity(intent7);
+                return true;
             default :
                 // If we got here , the user ’s action was not recognized .
                 // Invoke the superclass to handle it .
