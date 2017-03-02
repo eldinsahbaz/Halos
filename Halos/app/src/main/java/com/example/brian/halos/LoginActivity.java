@@ -90,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
         //REMOVE BYPASSER BUTTON
         Button bypasser =(Button) findViewById(R.id.bypasser);
         bypasser.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(map);
             }
         });
-        Toast.makeText(LoginActivity.this, retVal.toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(LoginActivity.this, retVal, Toast.LENGTH_LONG).show();
     }
 
     // this is so the user cannot just go back to the app once they log out
@@ -125,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
             Request request = new Request.Builder()
                     // if you want to run on local use http://10.0.2.2:12344
                     // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
-                    .url("http://10.0.2.2:12344/login/auth?user=" + username + "&pw=" + password)
+                    .url("http://lcs-vc-esahbaz.syr.edu:12344/login/auth?user=" + username + "&pw=" + password)
                     .addHeader("content-type", "application/json; charset=utf-8")
                     .build();
             //10.0.2.2:12344

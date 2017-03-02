@@ -7,6 +7,8 @@ import android.location.*;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -56,6 +58,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -93,12 +96,12 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     private OkHttpClient client = new OkHttpClient();
 
     // give a tag for debugging purposes
-    protected static final String TAG = "location-updates-sample";
+    protected static final String TAG = "Location Updates";
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 100000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000000;
 
     /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
@@ -270,7 +273,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         Log.e(TAG, "LNG: " + String.valueOf(mCurrentLocation.getLongitude()));
         Log.e(TAG, "LAT: " + String.valueOf(mCurrentLocation.getLatitude()));
 
-
         // get lat and long for current location
         // TODO: harcoding values below works, getting values from mCurrentLocation doesn't
         // makes no sense because they are the exact same values and types
@@ -307,6 +309,8 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     protected void getNearbyPlaces() {
         PlacesRequest placesRequest = new PlacesRequest();
         placesRequest.execute();
+
+
     }
 
     /**
@@ -554,9 +558,126 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
     }
 
+    public void addPlaces(double lat, double lng, String name) {
+        // format this places location
+        LatLng currentLocation = new LatLng(lat,lng);
+
+        // add this places location marker
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(currentLocation);
+        markerOptions.title(name);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        mCurrentLocationMarker = mMap.addMarker(markerOptions);
+    }
+
     public boolean onCreateOptionsMenu ( Menu menu ) {
         getMenuInflater().inflate(R.menu.toolbar,menu );
         return true ;
+    }
+
+    // this handles the call to the server
+    private class PlacesRequest extends AsyncTask<Void, Void, String> {
+        User user;
+
+        OkHttpClient client = new OkHttpClient();
+
+        protected PlacesRequest() {
+
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            Map<String, String> json_params = new HashMap<String, String>();
+            json_params.put("lat", String.valueOf(mCurrentLocation.getLatitude()));
+            json_params.put("lng", String.valueOf(mCurrentLocation.getLongitude()));
+//            json_params.put("radius", String.valueOf(user.getRadius()));
+//            json_params.put("keywords", "TODO");    // TODO: need to set up keywords
+            // TODO: need to have an id associated and maybe other things (travelled, guided, etc + cookies, ip, etc)
+            // TODO: need to encrypt data going over the wire
+
+            JSONObject json_parameter = new JSONObject(json_params);
+            RequestBody json_body = RequestBody.create(JSON, json_parameter.toString());
+            Request request = new Request.Builder()
+                    // if you want to run on local use http://10.0.2.2:12344
+                    // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
+                    .url("http://lcs-vc-esahbaz.syr.edu:12344/get_places")
+                    .post(json_body)
+                    .addHeader("content-type", "application/json; charset=utf-8")
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("Server Failure Response", call.request().body().toString());
+                    mRetVal = "cannot connect to server";
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    // get the response data from the server
+                    String responseData = response.body().string();
+
+                    Log.e(TAG, "onResponse:" + responseData);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        final JSONArray resArray = jsonObject.getJSONArray("results");
+                        Log.e("resObject", resArray.toString());
+
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // parse the places and add them to the map
+                                    for (int i = 0; i < resArray.length(); i++) {
+                                        try {
+                                            JSONObject resObject = resArray.getJSONObject(i);
+                                            JSONObject geoObject = resObject.getJSONObject("geometry");
+                                            String name = resObject.get("name").toString();
+                                            Log.e("resObject", name);
+                                            Log.e("geoObject", geoObject.toString());
+                                            JSONObject locObject = geoObject.getJSONObject("location");
+                                            Log.e("locObject", locObject.toString());
+                                            String lat = locObject.getString("lat");
+                                            String lng = locObject.getString("lng");
+                                            Log.e("locObject lat", lat);
+                                            Log.e("locObject lng", lng);
+                                            Log.e("----------------------", "new resObject " + i);
+
+                                            addPlaces(Double.valueOf(lat), Double.valueOf(lng), name);
+                                        } catch (Exception e) {
+                                            Log.e("Location Parse Handler", e.getMessage());
+                                        }
+                                }
+                                }
+                            });
+
+                        mRetVal = responseData;
+
+                    } catch (Exception e){
+                        Log.e(TAG, "Exception Thrown: " + e);
+                        mRetVal = e.toString();
+                    }
+
+                }
+
+
+            });
+            return mRetVal;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // TODO: Must check that the location was processed to the database before making announcement
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 
     @Override
@@ -590,100 +711,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 // Invoke the superclass to handle it .
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    // this handles the call to the server
-    private class PlacesRequest extends AsyncTask<Void, Void, String> {
-        User user;
-
-        OkHttpClient client = new OkHttpClient();
-
-        protected PlacesRequest() {
-
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-            Map<String, String> json_params = new HashMap<String, String>();
-            json_params.put("lat", String.valueOf(mCurrentLocation.getLatitude()));
-            json_params.put("lng", String.valueOf(mCurrentLocation.getLongitude()));
-//            json_params.put("radius", String.valueOf(user.getRadius()));
-//            json_params.put("keywords", "TODO");    // TODO: need to set up keywords
-            // TODO: need to have an id associated and maybe other things (travelled, guided, etc + cookies, ip, etc)
-            // TODO: need to encrypt data going over the wire
-
-            JSONObject json_parameter = new JSONObject(json_params);
-            RequestBody json_body = RequestBody.create(JSON, json_parameter.toString());
-            Request request = new Request.Builder()
-                    // if you want to run on local use http://10.0.2.2:12344
-                    // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
-                    .url("http://10.0.2.2:12344/get_places")
-                    .post(json_body)
-                    .addHeader("content-type", "application/json; charset=utf-8")
-                    .build();
-
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.e("Server Failure Response", call.request().body().toString());
-                    mRetVal = "cannot connect to server";
-
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String usernameTaken = "username is taken";
-                    String emailTaken = "email is already linked to an account";
-                    String accountCreated = "account created successfully";
-
-                    // get the response data from the server
-                    String responseData = response.body().string();
-
-                    Log.e(TAG, "onResponse:" + responseData);
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseData);
-                        JSONObject respObject = jsonObject.getJSONObject("response");
-                        String result = respObject.getString("result");
-
-                        mRetVal = result;
-
-                        if (result.equals(accountCreated)) {
-                            Log.e(TAG, "result: " + result);
-
-                            Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
-                            startActivity(i);
-                        } else if (result.equals(emailTaken)){
-                            Log.e(TAG + result, emailTaken);
-                            mRetVal = result;
-                        } else if (result.equals(usernameTaken)) {
-                            Log.e(TAG + result, usernameTaken);
-                            mRetVal = result;
-                        }
-
-                    } catch (Exception e){
-                        Log.e(TAG, "Exception Thrown: " + e);
-                        mRetVal = e.toString();
-                    }
-
-                }
-
-
-            });
-            return mRetVal;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // TODO: Must check that the location was processed to the database before making announcement
-        }
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
     }
 
 }

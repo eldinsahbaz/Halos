@@ -37,7 +37,7 @@ def places():
 def get_places():
     latitude = request.json['lat']
     longitude = request.json['lng']
-    radius = str(1000)   # later change this, just have to decide which way to get radius
+    radius = str(3000)   # later change this, just have to decide which way to get radius
     # place_type = request.json['type']
     # keyword = request.json['keyword']
     url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key
@@ -139,7 +139,7 @@ def get_all_users():
 
 
 #################### SETTINGS RELATED API CALLS ####################
-@app.route('/settings', methods=['PUT'])
+@app.route('/set_settings', methods=['PUT'])
 def put_settings():
     username = request.args.get('username')
     radius = request.args.get('radius')

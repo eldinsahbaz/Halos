@@ -39,9 +39,6 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-//                Setting setting = new Setting(username.getText().toString(), password.getText().toString());
-//                setting.execute();
-
                 Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
                 startActivity(i);
             }
@@ -63,7 +60,9 @@ public class SettingsActivity extends AppCompatActivity {
             // TODO: need to have an id associated and maybe other things (cookies, ip, etc)
             // TODO: need to encrypt data going over the wire
             Request request = new Request.Builder()
-                    .url("http://10.0.2.2:12344/login/auth?user=" + username + "&pw=" + password)
+                    // if you want to run on local use http://10.0.2.2:12344
+                    // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
+                    .url("http://lcs-vc-esahbaz.syr.edu:12344/login/auth?user=" + username + "&pw=" + password)
                     .addHeader("content-type", "application/json; charset=utf-8")
                     .build();
 

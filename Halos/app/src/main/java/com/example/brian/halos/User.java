@@ -20,18 +20,18 @@ public class User {
 //            __Guided = None
 //    __Cart = None
 //            __Radius = None
-    String name;
-    String password;        // TODO: all passwords should be encypted
-    String email;
+    private static String name;
+    private static String password;        // TODO: all passwords should be encypted
+    private static String email;
     // TODO: why are name and username different things?
     // TODO: profile picture
     // TODO: why does user have a rating variable, what are they rating
-    Map<Tour, Boolean> travelled;
-    Map<Tour, Boolean> created;       // TODO: maybe change these list to hash tables?
-    Map<Tour, Boolean> guided;
-    ShoppingCart userShoppingCart;
-    int rating;
-    int radius;
+    private static Map<Tour, Boolean> travelled;
+    private static Map<Tour, Boolean> created;       // TODO: maybe change these list to hash tables?
+    private static Map<Tour, Boolean> guided;
+    private static ShoppingCart userShoppingCart;
+    private static int rating;
+    private static int radius;
 
 //    def __init__(self):
 //    self.__Name = ""

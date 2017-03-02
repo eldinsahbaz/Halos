@@ -28,4 +28,13 @@
         android:layout_height="match_parent"
         tools:context="com.example.brian.halos.HalosMapActivity" />
 
+    <Button
+        android:id="@+id/tour_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/map"
+        android:layout_marginBottom="6dp"
+        android:layout_centerHorizontal="true"
+        android:text="Take Tour" />
+
 </RelativeLayout>
