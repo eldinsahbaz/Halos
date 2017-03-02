@@ -11,7 +11,7 @@ import java.util.LinkedList;
  * Created by brian on 2/9/17.
  */
 
-public class Tour {
+public class Tour implements Parcelable {
 //
 //    class Tour():
 //    __ContactInfo = None
@@ -42,6 +42,8 @@ public class Tour {
 //    TODO: add ratings functions
     int ratings;
     double price;
+
+
 
 //    def __init__(self):
 //    self.__ContactInfo = dict()
@@ -360,15 +362,27 @@ public class Tour {
         return price;
     }
 
-//    @Override
-//    public int describeContents() {
-//        return 0;
-//    }
-//
-//    @Override
-//    public void writeToParcel(Parcel parcel, int i) {
-//
-//    }
+
+    public static final Parcelable.Creator<Tour> CREATOR
+            = new Parcelable.Creator<Tour>() {
+        public Tour createFromParcel(Parcel in) {
+            return new Tour();
+        }
+
+        public Tour[] newArray(int size) {
+            return new Tour[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
+    }
 
 //    def SetCoverPhoto(self, photoPath):
 //            try:

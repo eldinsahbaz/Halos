@@ -568,6 +568,28 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         markerOptions.title(name);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrentLocationMarker = mMap.addMarker(markerOptions);
+
+
+        // add listener for more info on place
+        mMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
+
+        /**
+         * handle marker click event
+         */
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                try {
+                    marker.showInfoWindow();
+                    Log.e(TAG, "Info Window triggered");
+                    return true;
+                } catch (Exception e) {
+                    Log.e(TAG, "Info Window cannot be display");
+                    return false;
+                }
+            }
+
+        });
     }
 
     public boolean onCreateOptionsMenu ( Menu menu ) {
@@ -626,6 +648,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                         final JSONArray resArray = jsonObject.getJSONArray("results");
                         Log.e("resObject", resArray.toString());
 
+                            // handler lets us runn back on the UI thread
                             Handler handler = new Handler(Looper.getMainLooper());
                             handler.post(new Runnable() {
                                 @Override
