@@ -11,7 +11,7 @@ import java.util.LinkedList;
  * Created by brian on 2/9/17.
  */
 
-public class Tour implements Parcelable {
+public class Tour {
 //
 //    class Tour():
 //    __ContactInfo = None
@@ -29,6 +29,7 @@ public class Tour implements Parcelable {
 //    __EndTime = None
 //            __Price = None
 //    __CoverPhoto = None
+    String name;
     HashMap<String, String> contactInfo;
     LinkedList<User> guides;
     LinkedList<User> tourists;
@@ -41,8 +42,6 @@ public class Tour implements Parcelable {
 //    TODO: add ratings functions
     int ratings;
     double price;
-
-
 
 //    def __init__(self):
 //    self.__ContactInfo = dict()
@@ -61,6 +60,7 @@ public class Tour implements Parcelable {
 //    self.__Price = 0.0
 //    self.__CoverPhoto = Image.new("RGB", (512,512), "white")
     public  void Tour() {
+        name = "";
         contactInfo = new HashMap<String, String>();
         guides = new LinkedList<User>();
         tourists = new LinkedList<User>();
@@ -69,10 +69,16 @@ public class Tour implements Parcelable {
         occupancy = 0;
         landmarks = new LinkedList<Location>();
         radius = 1000;                                  // radius measured in meters
-
-        double price = 0.0;                             // free by default
+        price = 0.0;                             // free by default
     }
 
+    public void setName(String n) {
+        name = n;
+    }
+
+    public String getName() {
+        return name;
+    }
 
 //    def SetContactInfo(self, info):
 //            if isinstance(info, type(dict())):
@@ -354,15 +360,15 @@ public class Tour implements Parcelable {
         return price;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-
-    }
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel parcel, int i) {
+//
+//    }
 
 //    def SetCoverPhoto(self, photoPath):
 //            try:
