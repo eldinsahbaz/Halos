@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/popup_image"
         android:src="@drawable/nyc"
         android:scaleType="centerCrop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="350dp"
+        android:layout_height="150dp" />
 
     <TextView
         android:id="@+id/popup_name"
         android:hint="Name"
-        android:textSize="22dp"
+        android:textSize="18dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:layout_gravity="right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -21,7 +23,7 @@
     <TextView
         android:id="@+id/popup_desc"
         android:hint="Description"
-        android:textSize="16dp"
+        android:textSize="12dp"
         android:layout_gravity="right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -29,13 +31,15 @@
     <TextView
         android:id="@+id/popup_type"
         android:hint="Type"
+        android:textSize="10dp"
         android:layout_gravity="right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/popup_location"
+        android:id="@+id/popup_address"
         android:hint="Address"
+        android:textSize="10dp"
         android:layout_gravity="right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

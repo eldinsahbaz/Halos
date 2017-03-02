@@ -17,6 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -60,6 +62,7 @@ import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -569,10 +572,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrentLocationMarker = mMap.addMarker(markerOptions);
 
-
-        // add listener for more info on place
-        mMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
-
         /**
          * handle marker click event
          */
@@ -581,7 +580,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
             public boolean onMarkerClick(Marker marker) {
                 try {
                     marker.showInfoWindow();
-                    Log.e(TAG, "Info Window triggered");
+                    Log.i(TAG, "Info Window triggered");
                     return true;
                 } catch (Exception e) {
                     Log.e(TAG, "Info Window cannot be display");
@@ -589,6 +588,59 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 }
             }
 
+        });
+
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            // Use default InfoWindow frame
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            // Defines the contents of the InfoWindow
+            @Override
+            public View getInfoContents(Marker selectMarker) {
+                View v = getLayoutInflater().inflate(R.layout.landmark_pop_up, null);
+
+                // get the position of the marker selected
+                LatLng latLng = selectMarker.getPosition();
+
+                // move camera to center on the selected marker
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
+
+                TextView pName = (TextView) v.findViewById(R.id.popup_name);
+                TextView pDesc = (TextView) v.findViewById(R.id.popup_desc);
+                TextView pType = (TextView) v.findViewById(R.id.popup_type);
+                TextView pAddress = (TextView) v.findViewById(R.id.popup_address);
+
+                v.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                pName.setText(selectMarker.getTitle());
+                // likely call some sort of set to get type and desc from a name
+                pDesc.setText("Short description goes here if we can get one from Google");
+                pType.setText("Type");
+                pAddress.setText("Latitude:" + latLng.latitude + "\tLongitude: " + latLng.longitude);
+
+                Button add_btn  = (Button)v.findViewById(R.id.popup_add_tour_btn); // Here my button not work
+                add_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(HalosMapActivity.this, "Added to Tour", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                Button back_btn  = (Button)v.findViewById(R.id.popup_back_btn); // Here my button not work
+                back_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCurrentLocationMarker.hideInfoWindow();
+                    }
+                });
+
+                return v;
+            }
         });
     }
 
