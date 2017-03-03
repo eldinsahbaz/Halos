@@ -13,15 +13,15 @@ import android.graphics.Bitmap;
 //from PIL import Image
 
 public class Landmark {
-    protected static String description;
-    protected static String name;
-    protected static int rating;
-    protected static Bitmap coverPhoto;
+    protected String description;
+    protected String name;
+    protected double rating;
+    protected Bitmap coverPhoto;
     // TODO: hours
     // TODO: types
-    protected static boolean openNow;
-    protected static double latitude;
-    protected static double longitude;
+    protected boolean openNow;
+    protected double latitude;
+    protected double longitude;
 
 //    class Location():
 //    __Description = None
@@ -40,7 +40,7 @@ public class Landmark {
         longitude = 0.0;
     }
 
-    public Landmark(String n, int r, boolean open, double lat, double lng) {
+    public Landmark(String n, double r, boolean open, double lat, double lng) {
         name = n;
         rating = r;
         openNow = open;
@@ -100,13 +100,13 @@ public class Landmark {
 
 //    def SetRating(self, rating):
 //            (self.__Rating).AddVote(rating)
-    public void setRating(int rat) {
+    public void setRating(double rat) {
         rating = rat;
     }
 
 //    def GetRating(self):
 //            return (self.__Rating).GetRating()
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 

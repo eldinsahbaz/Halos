@@ -40,7 +40,7 @@ def get_places():
     radius = str(3000)   # later change this, just have to decide which way to get radius
     # place_type = request.json['type']
     # keyword = request.json['keyword']
-    url = base_url + 'location=' + latitude + ',' + longitude + '&type=' + 'church|restaurant|school' + '&radius=' + radius + '&key=' + key
+    url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key
     places = requests.get(url)
     return app.response_class(places.content, content_type='application/json')
 

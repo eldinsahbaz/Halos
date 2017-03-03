@@ -61,7 +61,7 @@ public class Tour implements Parcelable {
 //    self.__EndTime = datetime.time(0, 0)
 //    self.__Price = 0.0
 //    self.__CoverPhoto = Image.new("RGB", (512,512), "white")
-    public  void Tour() {
+    public void Tour() {
         name = "";
         contactInfo = new HashMap<String, String>();
         guides = new LinkedList<User>();
@@ -70,8 +70,8 @@ public class Tour implements Parcelable {
         maxOccupancy = 15;                              // just made it a realistic number, no reasoning behind it
         occupancy = 0;
         landmarks = new LinkedList<Landmark>();
-        radius = 1000;                                  // radius measured in meters
-        price = 0.0;                             // free by default
+        radius = 1000;                                  // radius measured in meters (input from android is converted from miles)
+        price = 0.0;                                    // free by default
     }
 
     public void setName(String n) {

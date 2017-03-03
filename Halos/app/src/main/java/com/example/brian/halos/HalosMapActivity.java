@@ -97,6 +97,9 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     // maps marker for users current location
     protected Marker mCurrentLocationMarker;
 
+    // marker currently being clicked
+    protected Marker mClickedLocationMarker;
+
     // need a location manager to handle location requests, and provider to get the location
     protected LocationManager locationManager;
     protected String provider;
@@ -157,7 +160,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     /**
      * set of locations currently on map
      */
-    protected HashSet<com.example.brian.halos.Landmark> mLocsOnMap;
+    protected HashMap<String, Landmark> mLocsOnMapSet;
 
 
     @Override
@@ -184,6 +187,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         // instantiate new tour object for user to add locations to
         tour = new Tour();
+        mLocsOnMapSet = new HashMap<>();
         // TODO: Make an array or list of location objects for all places with given parameters
     }
 
@@ -325,6 +329,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
      *
      */
     protected void getNearbyPlaces() {
+        // This is the API call
         PlacesRequest placesRequest = new PlacesRequest();
         placesRequest.execute();
 
@@ -573,7 +578,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
     }
 
-    public void addPlaces(double lat, double lng, String name) {
+    public void addPlaces(double lat, double lng, String name, String id) {
         // format this places location
         LatLng currentLocation = new LatLng(lat,lng);
 
@@ -581,8 +586,9 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(currentLocation);
         markerOptions.title(name);
+        markerOptions.snippet(id);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        mCurrentLocationMarker = mMap.addMarker(markerOptions);
+        mMap.addMarker(markerOptions);
 
         /**
          * handle marker click event
@@ -591,8 +597,9 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public boolean onMarkerClick(Marker marker) {
                 try {
+                    mClickedLocationMarker = marker;
                     marker.showInfoWindow();
-                    Log.i(TAG, "Info Window triggered");
+                    Log.i(TAG, "Info Window triggered on " + mClickedLocationMarker.getTitle() + "\tID: " + mClickedLocationMarker.getSnippet());
                     return true;
                 } catch (Exception e) {
                     Log.e(TAG, "Info Window cannot be display");
@@ -606,17 +613,21 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
             // Use default InfoWindow frame
             @Override
-            public View getInfoWindow(Marker arg0) {
+            public View getInfoWindow(Marker selectMarker) {
                 return null;
             }
 
             // Defines the contents of the InfoWindow
             @Override
             public View getInfoContents(Marker selectMarker) {
+                Log.i(TAG, "Info Window triggered on " + selectMarker.getTitle()+  "\tID: " + selectMarker.getSnippet());
                 View v = getLayoutInflater().inflate(R.layout.landmark_pop_up, null);
 
                 // get the position of the marker selected
                 LatLng latLng = selectMarker.getPosition();
+                Log.i(TAG, selectMarker.getSnippet());
+                Landmark clickedLandmark = mLocsOnMapSet.get(selectMarker.getSnippet());
+                Log.i(TAG, "clicked landmark data " + mClickedLocationMarker.getTitle()+  "\tID: " + mClickedLocationMarker.getSnippet() + "\tID:" + selectMarker.getSnippet());
 
                 // move camera to center on the selected marker
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -629,29 +640,28 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                 v.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-                pName.setText(selectMarker.getTitle());
-                // likely call some sort of set to get type and desc from a name
-                pRating.setText("4.2/5.0");
+                pName.setText(clickedLandmark.getName());
+                pRating.setText(String.valueOf(clickedLandmark.getRating()));
                 pType.setText("Type");
-                pAddress.setText("Latitude:" + latLng.latitude + "\tLongitude: " + latLng.longitude);
-
-                Button add_btn  = (Button)v.findViewById(R.id.popup_add_tour_btn); // Here my button not work
-                add_btn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(HalosMapActivity.this, "Added to Tour", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                Button back_btn  = (Button)v.findViewById(R.id.popup_back_btn); // Here my button not work
-                back_btn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mCurrentLocationMarker.hideInfoWindow();
-                    }
-                });
+                pAddress.setText("Latitude:" + clickedLandmark.getLatitude() + "\tLongitude: " + clickedLandmark.getLongitude());
 
                 return v;
+            }
+        });
+
+        mMap.setOnInfoWindowLongClickListener(new GoogleMap.OnInfoWindowLongClickListener() {
+            @Override
+            public void onInfoWindowLongClick(Marker marker) {
+                //stuff goes here
+                Landmark toAdd = mLocsOnMapSet.get(mClickedLocationMarker.getSnippet());
+                Log.v(TAG, toAdd.toString());
+                Log.v(TAG, toAdd.getName());
+                Log.v(TAG, String.valueOf(toAdd.getLatitude()));
+                Log.v(TAG, String.valueOf(toAdd.getLongitude()));
+                Log.v(TAG, String.valueOf(toAdd == null));
+                Log.v(TAG, String.valueOf(tour == null));
+                Log.v(TAG, "^^^ CHECK ABOVE");
+//                tour.addLandmark(toAdd);
             }
         });
     }
@@ -723,31 +733,39 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                                             JSONObject resObject = resArray.getJSONObject(i);
                                             JSONObject geoObject = resObject.getJSONObject("geometry");
                                             String name = resObject.get("name").toString();
-                                            Log.e("resObject", name);
+                                            String id = resObject.getString("place_id");
                                             String rating = resObject.get("rating").toString();
-                                            Log.e("resObject", rating);
-                                            Log.e("geoObject", geoObject.toString());
                                             JSONObject locObject = geoObject.getJSONObject("location");
-                                            Log.e("locObject", locObject.toString());
                                             String lat = locObject.getString("lat");
                                             String lng = locObject.getString("lng");
-                                            Log.e("locObject lat", lat);
-                                            Log.e("locObject lng", lng);
                                             JSONObject hoursObject = resObject.getJSONObject("opening_hours");
                                             String openNow = hoursObject.getString("open_now");
-                                            Log.e("hoursObject", openNow);
-                                            Log.e("----------------------", "new resObject " + i);
-//                                            Landmark currLoc = new Landmark(
-//                                                    name,
-//                                                    Integer.valueOf(rating),
-//                                                    Boolean.valueOf(openNow),
-//                                                    Double.valueOf(lat),
-//                                                    Double.valueOf(lng));
-                                            addPlaces(Double.valueOf(lat), Double.valueOf(lng), name);
+                                            Log.v("resObject", name);
+                                            Log.v("resObject id", id);
+                                            Log.v("resObject", rating);
+                                            Log.v("locObject lat", lat);
+                                            Log.v("locObject lng", lng);
+                                            Log.v("hoursObject", openNow);
+                                            Landmark currLoc = new Landmark(
+                                                    name,
+                                                    Double.valueOf(rating),
+                                                    Boolean.valueOf(openNow),
+                                                    Double.valueOf(lat),
+                                                    Double.valueOf(lng));
+                                            Log.v(TAG, currLoc.getName() + "\tID: " + id);
+                                            Log.v(TAG, String.valueOf(currLoc.getRating()));
+                                            Log.v(TAG, String.valueOf(currLoc.getLatitude()));
+                                            Log.v(TAG, String.valueOf(currLoc.getLongitude()));
+                                            Log.v(TAG, String.valueOf(currLoc.getOpenNow()));
+                                            Log.v(TAG, id);
+                                            Log.v("----------------------", "new resObject " + i);
+                                            mLocsOnMapSet.put(id, currLoc);
+                                            addPlaces(Double.valueOf(lat), Double.valueOf(lng), name, id);
+                                            // SUBWAY: ChIJs-fOebPz2YkRy_SgsTgwUWU
                                         } catch (Exception e) {
                                             Log.e("Location Parse Handler", e.getMessage());
                                         }
-                                }
+                                    }
                                 }
                             });
 
