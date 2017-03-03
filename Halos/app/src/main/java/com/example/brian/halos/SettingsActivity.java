@@ -57,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                SettingsRequest settingsRequest = new SettingsRequest();
 
                 Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
                 startActivity(i);
@@ -89,13 +90,34 @@ public class SettingsActivity extends AppCompatActivity {
         return true ;
     }
 
-    private class Setting extends AsyncTask<Void, Void, String> {
+    private class SettingsRequest extends AsyncTask<Void, Void, String> {
         String username;
-        String password;
+        int radius;
+        String category;
+        String rankBy;
+        boolean openNow;
+        String keyword;
+        double minPrice;
+        double maxPrice;
 
-        protected Setting(String u, String p) {
+        protected SettingsRequest(String u,
+                                  int r,
+                                  String c,
+                                  String rb,
+                                  boolean o,
+                                  String k,
+                                  double minP,
+                                  double maxP) {
+
             username = u;
-            password = p;
+            radius = r;
+            category = c;
+            rankBy = rb;
+            openNow = o;
+            keyword = k;
+            minPrice = minP;
+            maxPrice = maxP;
+
         }
 
 
@@ -106,7 +128,7 @@ public class SettingsActivity extends AppCompatActivity {
             Request request = new Request.Builder()
                     // if you want to run on local use http://10.0.2.2:12344
                     // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
-                    .url("http://lcs-vc-esahbaz.syr.edu:12344/login/auth?user=" + username + "&pw=" + password)
+                    .url("http://lcs-vc-esahbaz.syr.edu:12344/login/auth?user=" + username)
                     .addHeader("content-type", "application/json; charset=utf-8")
                     .build();
 

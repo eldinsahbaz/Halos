@@ -1,5 +1,7 @@
 package com.example.brian.halos;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by brian on 2/9/17.
  */
@@ -10,15 +12,16 @@ package com.example.brian.halos;
 //from Crypto.Cipher import XOR
 //from PIL import Image
 
-public class Location {
-    String description;
-    String name;
-    int rating;
-    // TODO: Cover photo
+public class Landmark {
+    protected static String description;
+    protected static String name;
+    protected static int rating;
+    protected static Bitmap coverPhoto;
     // TODO: hours
     // TODO: types
-    double latitude;
-    double longitude;
+    protected static boolean openNow;
+    protected static double latitude;
+    protected static double longitude;
 
 //    class Location():
 //    __Description = None
@@ -30,11 +33,28 @@ public class Location {
 //    __OpeningHours = None
 //            __Types = None
 //    __Vicinity = None
-    public Location() {
+    public Landmark() {
         description = "";
         name = "";
         latitude = 0.0;
         longitude = 0.0;
+    }
+
+    public Landmark(String n, int r, boolean open, double lat, double lng) {
+        name = n;
+        rating = r;
+        openNow = open;
+        latitude = lat;
+        longitude = lng;
+    }
+
+    public Landmark(String n, int r, Bitmap bm, boolean open, double lat, double lng) {
+        name = n;
+        rating = r;
+        coverPhoto = bm;
+        openNow = open;
+        latitude = lat;
+        longitude = lng;
     }
 
 //    def __init__(self):
@@ -69,9 +89,14 @@ public class Location {
 //    self.__CoverPhoto = Image.open(photoPath)
 //    except IOError:
 //            return ("incorrect input")
-
+    public void setCoverPhoto(Bitmap bm) {
+        coverPhoto = bm;
+    }
 //    def GetCoverPhoto(self):
 //            return self.__CoverPhoto
+    public Bitmap getCoverPhoto() {
+        return coverPhoto;
+    }
 
 //    def SetRating(self, rating):
 //            (self.__Rating).AddVote(rating)
@@ -159,6 +184,15 @@ public class Location {
 //            self.AddTypes(i)
 //            else:
 //            return Exception("input is not of type set")
+
+    public void setOpenNow(boolean b) {
+        openNow = b;
+    }
+
+    public boolean getOpenNow() {
+        return openNow;
+    }
+
 
 //    def RemoveType(self, typ):
 //            if (self.__Types).has_key(str(typ)):

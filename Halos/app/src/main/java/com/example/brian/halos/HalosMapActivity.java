@@ -3,6 +3,8 @@ package com.example.brian.halos;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.*;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -64,9 +67,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -95,6 +100,9 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     // need a location manager to handle location requests, and provider to get the location
     protected LocationManager locationManager;
     protected String provider;
+
+    // create tour object for when user adds locations to tour
+    protected static Tour tour;
 
     private OkHttpClient client = new OkHttpClient();
 
@@ -146,6 +154,11 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     // return value used for server call
     protected String mRetVal;
 
+    /**
+     * set of locations currently on map
+     */
+    protected HashSet<com.example.brian.halos.Landmark> mLocsOnMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +182,8 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        // instantiate new tour object for user to add locations to
+        tour = new Tour();
         // TODO: Make an array or list of location objects for all places with given parameters
     }
 
@@ -540,9 +555,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     public void updateMap(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // clear the map of the original placeholder markers
-//        mMap.clear();
-
         // get lat and long for current location
         double currentLatitude = mCurrentLocation.getLatitude();
         double currentLongitude = mCurrentLocation.getLongitude();
@@ -611,7 +623,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
 
                 TextView pName = (TextView) v.findViewById(R.id.popup_name);
-                TextView pDesc = (TextView) v.findViewById(R.id.popup_desc);
+                TextView pRating = (TextView) v.findViewById(R.id.popup_rating);
                 TextView pType = (TextView) v.findViewById(R.id.popup_type);
                 TextView pAddress = (TextView) v.findViewById(R.id.popup_address);
 
@@ -619,7 +631,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                 pName.setText(selectMarker.getTitle());
                 // likely call some sort of set to get type and desc from a name
-                pDesc.setText("Short description goes here if we can get one from Google");
+                pRating.setText("4.2/5.0");
                 pType.setText("Type");
                 pAddress.setText("Latitude:" + latLng.latitude + "\tLongitude: " + latLng.longitude);
 
@@ -712,6 +724,8 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                                             JSONObject geoObject = resObject.getJSONObject("geometry");
                                             String name = resObject.get("name").toString();
                                             Log.e("resObject", name);
+                                            String rating = resObject.get("rating").toString();
+                                            Log.e("resObject", rating);
                                             Log.e("geoObject", geoObject.toString());
                                             JSONObject locObject = geoObject.getJSONObject("location");
                                             Log.e("locObject", locObject.toString());
@@ -719,8 +733,16 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                                             String lng = locObject.getString("lng");
                                             Log.e("locObject lat", lat);
                                             Log.e("locObject lng", lng);
+                                            JSONObject hoursObject = resObject.getJSONObject("opening_hours");
+                                            String openNow = hoursObject.getString("open_now");
+                                            Log.e("hoursObject", openNow);
                                             Log.e("----------------------", "new resObject " + i);
-
+//                                            Landmark currLoc = new Landmark(
+//                                                    name,
+//                                                    Integer.valueOf(rating),
+//                                                    Boolean.valueOf(openNow),
+//                                                    Double.valueOf(lat),
+//                                                    Double.valueOf(lng));
                                             addPlaces(Double.valueOf(lat), Double.valueOf(lng), name);
                                         } catch (Exception e) {
                                             Log.e("Location Parse Handler", e.getMessage());
@@ -753,6 +775,31 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         @Override
         protected void onProgressUpdate(Void... values) {}
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 
 

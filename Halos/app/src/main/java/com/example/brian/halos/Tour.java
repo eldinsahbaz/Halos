@@ -36,7 +36,7 @@ public class Tour implements Parcelable {
     int minOccupancy;
     int maxOccupancy;
     int occupancy;
-    LinkedList<Location> landmarks;
+    LinkedList<Landmark> landmarks;
     int radius;
 //    TODO:DURATIONS AND TIMES AND COVER PHOTO
 //    TODO: add ratings functions
@@ -69,7 +69,7 @@ public class Tour implements Parcelable {
         minOccupancy = 0;
         maxOccupancy = 15;                              // just made it a realistic number, no reasoning behind it
         occupancy = 0;
-        landmarks = new LinkedList<Location>();
+        landmarks = new LinkedList<Landmark>();
         radius = 1000;                                  // radius measured in meters
         price = 0.0;                             // free by default
     }
@@ -241,7 +241,7 @@ public class Tour implements Parcelable {
 //            (self.__Landmarks)[landmark] = True
 //    else:
 //            return Exception("input is not of type Location")
-    public void addLandmark(Location l) {
+    public void addLandmark(Landmark l) {
         landmarks.add(l);
     }
 
@@ -251,7 +251,7 @@ public class Tour implements Parcelable {
 //            (self.__Landmarks)[i] = True
 //    except:
 //            return Exception("input is not of type Set")
-    public void addLandmarks(LinkedList<Location> ls) {
+    public void addLandmarks(LinkedList<Landmark> ls) {
         landmarks.addAll(ls);
     }
 
@@ -260,7 +260,7 @@ public class Tour implements Parcelable {
 //    del (self.__Landmarks)[landmark]
 //            else:
 //            return Exception("input is not of type Location")
-    public void removeLandmark(Location l) {
+    public void removeLandmark(Landmark l) {
         landmarks.remove(l);
     }
 
@@ -270,15 +270,15 @@ public class Tour implements Parcelable {
 //    del (self.__Landmarks)[i]
 //    except:
 //            return Exception("input is not of type Location")
-    public void removeLandmarks(LinkedList<Location> ls) {
-        for (Location l : ls) {
+    public void removeLandmarks(LinkedList<Landmark> ls) {
+        for (Landmark l : ls) {
             landmarks.remove(l);
         }
     }
 
 //    def GetLandmarks(self):
 //            return self.__Landmarks
-    public LinkedList<Location> getLandmarks() {
+    public LinkedList<Landmark> getLandmarks() {
         return landmarks;
     }
 
