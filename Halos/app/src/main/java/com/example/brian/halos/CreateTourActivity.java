@@ -37,6 +37,7 @@ public class CreateTourActivity extends AppCompatActivity {
             Log.v("Tour Values", l.getName());
             Log.v("\t\t", String.valueOf(l.getLatitude()));
             Log.v("\t\t", String.valueOf(l.getLongitude()));
+
         }
 
         Log.v(TAG, "Arrived");

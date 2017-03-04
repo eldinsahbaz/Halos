@@ -66,7 +66,10 @@
         -->
         <activity android:name=".ConfirmationActivity" />
         <activity android:name=".LocationTestActivity" />
-        <activity android:name=".CreateTourActivity"></activity>
+        <activity android:name=".CreateTourActivity" />
+        <activity
+            android:name=".TourMapActivity"
+            android:label="@string/title_activity_tour_map"></activity>
     </application>
 
 </manifest>

@@ -214,7 +214,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                     Bundle b = new Bundle();
                     b.putParcelable("Tour", mTour);
                     i.putExtras(b);
-                    i.setClass(HalosMapActivity.this, CreateTourActivity.class);
+                    i.setClass(HalosMapActivity.this, TourMapActivity.class);
                     startActivity(i);
 
                 } else {
