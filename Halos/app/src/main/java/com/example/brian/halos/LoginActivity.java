@@ -104,7 +104,6 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(map);
             }
         });
-        Toast.makeText(LoginActivity.this, retVal, Toast.LENGTH_LONG).show();
     }
 
     // this is so the user cannot just go back to the app once they log out

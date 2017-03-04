@@ -31,6 +31,14 @@ public class CreateTourActivity extends AppCompatActivity {
             }
         }
 
+        for(int i = 0; i < mTour.landmarks.size(); i++) {
+            Landmark l = new Landmark();
+            l = mTour.landmarks.get(i);
+            Log.v("Tour Values", l.getName());
+            Log.v("\t\t", String.valueOf(l.getLatitude()));
+            Log.v("\t\t", String.valueOf(l.getLongitude()));
+        }
+
         Log.v(TAG, "Arrived");
     }
 }

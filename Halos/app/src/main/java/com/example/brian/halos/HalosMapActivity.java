@@ -160,6 +160,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     // return value used for server call
     protected String mRetVal;
+    protected String mGeoAddr;
 
 
     /**
@@ -652,7 +653,19 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 pName.setText(clickedLandmark.getName());
                 pRating.setText(String.valueOf(clickedLandmark.getRating()));
                 pType.setText("Type");
-                pAddress.setText("Latitude:" + clickedLandmark.getLatitude() + "\tLongitude: " + clickedLandmark.getLongitude());
+
+                GeocodeRequest geoRequest = new GeocodeRequest(clickedLandmark.getLatitude(), clickedLandmark.getLongitude());
+                geoRequest.execute();
+
+                // Hold for time to update result
+                try {
+                    Log.i("Geocode API", "Waiting for process to catch up");
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                pAddress.setText(mGeoAddr);
 
                 return v;
             }
@@ -725,7 +738,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                     // get the response data from the server
                     String responseData = response.body().string();
 
-//                    Log.v(TAG, "onResponse:" + responseData);
+                    Log.v(TAG, "onResponse:" + responseData);
 
                     try {
                         JSONObject jsonObject = new JSONObject(responseData);
@@ -750,13 +763,13 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                                             String lng = locObject.getString("lng");
                                             JSONObject hoursObject = resObject.getJSONObject("opening_hours");
                                             String openNow = hoursObject.getString("open_now");
-//                                            Log.v("resObject", name);
-//                                            Log.v("resObject id", id);
-//                                            Log.v("resObject", rating);
-//                                            Log.v("locObject lat", lat);
-//                                            Log.v("locObject lng", lng);
-//                                            Log.v("hoursObject", openNow);
-//                                            Log.v("----------------------", "new resObject " + i);
+                                            Log.v("resObject", name);
+                                            Log.v("resObject id", id);
+                                            Log.v("resObject", rating);
+                                            Log.v("locObject lat", lat);
+                                            Log.v("locObject lng", lng);
+                                            Log.v("hoursObject", openNow);
+                                            Log.v("----------------------", "new resObject " + i);
                                             Landmark currLoc = new Landmark(
                                                     name,
                                                     Double.valueOf(rating),
@@ -789,6 +802,80 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         @Override
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+    private class GeocodeRequest extends AsyncTask<Void, Void, String> {
+        String latitude;
+        String longitude;
+
+        protected GeocodeRequest(double lat, double lng) {
+            latitude = String.valueOf(lat);
+            longitude = String.valueOf(lng);
+        }
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+            // TODO: need to have an id associated and maybe other things (cookies, ip, etc)
+            // TODO: need to encrypt data going over the wire
+            Request request = new Request.Builder()
+                    // if you want to run on local use http://10.0.2.2:12344
+                    // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
+                    .url("http://lcs-vc-esahbaz.syr.edu:12344/geocode?lat=" + latitude + "&lng=" + longitude)
+                    .addHeader("content-type", "application/json; charset=utf-8")
+                    .build();
+
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("Server Failure Response", call.request().body().toString());
+                    mGeoAddr = "cannot connect to server";
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    // get the response data from the server
+                    String responseData = response.body().string();
+
+                    Log.e("Geocode API", "onResponse:" + responseData);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        JSONObject respObject = jsonObject.getJSONObject("response");
+                        String result = respObject.getString("result");
+
+                        mGeoAddr = result;
+                        Log.v("Geocode API", mGeoAddr);
+                        Log.v("Geocode API 2", result);
+
+                    } catch (Exception e){
+                        Log.e(TAG, "Exception Thrown: " + e);
+                        mRetVal = e.toString();
+                    }
+                }
+
+            });
+
+            return mGeoAddr;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // Hold for time to update result
+            try {
+                Log.i("Geocode API", "Waiting for process to catch up");
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
