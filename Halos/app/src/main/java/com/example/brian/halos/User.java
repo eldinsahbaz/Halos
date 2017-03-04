@@ -1,5 +1,8 @@
 package com.example.brian.halos;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -8,7 +11,7 @@ import java.util.Map;
  * Created by brian on 2/9/17.
  */
 
-public class User {
+public class User implements Parcelable {
 //    class User():
 //    __Name = None
 //            __UserName = None
@@ -242,6 +245,27 @@ public class User {
     public int getUserInfo(String username) {
 
         return -1;                          // unsuccesful user info retrieval
+    }
+
+    public static final Parcelable.Creator<User> CREATOR
+            = new Parcelable.Creator<User>() {
+        public User createFromParcel(Parcel in) {
+            return new User();
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
     }
 
 }
