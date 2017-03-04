@@ -105,7 +105,8 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     protected String provider;
 
     // create tour object for when user adds locations to tour
-    protected static Tour tour;
+    protected Tour mTour = new Tour();
+    protected User user = new User();
 
     private OkHttpClient client = new OkHttpClient();
 
@@ -157,6 +158,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     // return value used for server call
     protected String mRetVal;
 
+
     /**
      * set of locations currently on map
      */
@@ -166,6 +168,12 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // instantiate new tour object for user to add locations to
+//        mTour = new Tour();
+//        Log.e("\n\n\nINITIALIZING TOUR", "SHOULD NOT BE NULL\n\n\n");
+        mLocsOnMapSet = new HashMap<>();
+        // TODO: Make an array or list of location objects for all places with given parameters
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
@@ -184,11 +192,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        // instantiate new tour object for user to add locations to
-        tour = new Tour();
-        mLocsOnMapSet = new HashMap<>();
-        // TODO: Make an array or list of location objects for all places with given parameters
     }
 
     /**
@@ -312,6 +315,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(currentLocation);
         markerOptions.title("Current Location");
+        markerOptions.snippet("You are here");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
         mCurrentLocationMarker = mMap.addMarker(markerOptions);
 
@@ -521,9 +525,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         double currentLatitude = 0.0;
         double currentLongitude = 0.0;
-        LatLng currentLocation = new LatLng(
-                currentLatitude,
-                currentLongitude);
+        LatLng currentLocation;
 
         if (mCurrentLocation == null) {
             currentLatitude = 40.4406;
@@ -542,40 +544,14 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         // Add a marker in current location and move the camera
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(currentLocation);
-        markerOptions.title("I Am Here");
+        markerOptions.title("Current Location");
+        markerOptions.snippet("You Are Here");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrentLocationMarker = mMap.addMarker(markerOptions);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
 
-
-        //  TODO: for each location in the prviously created array or list of locations
-        //      new LatLng = location from JSON
-        //      title = name from JSON
-        //      addMarker(name)
-        //      moveCamera(name)
-    }
-
-    public void updateMap(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // get lat and long for current location
-        double currentLatitude = mCurrentLocation.getLatitude();
-        double currentLongitude = mCurrentLocation.getLongitude();
-        LatLng currentLocation = new LatLng(
-                currentLatitude,
-                currentLongitude);
-
-        //Place current location marker
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(currentLocation);
-        markerOptions.title("I Am Here");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrentLocationMarker = mMap.addMarker(markerOptions);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
     }
 
     public void addPlaces(double lat, double lng, String name, String id) {
@@ -597,6 +573,11 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public boolean onMarkerClick(Marker marker) {
                 try {
+                    if (marker.getTitle().equals("Current Location")) {
+                        // DO NOT SHOW INFO WINDOW FOR USER'S LOCATION -- MAYBE ADD LATER BUT NEED DIFFERENT WINDOW
+                        return true;
+                    }
+
                     mClickedLocationMarker = marker;
                     marker.showInfoWindow();
                     Log.i(TAG, "Info Window triggered on " + mClickedLocationMarker.getTitle() + "\tID: " + mClickedLocationMarker.getSnippet());
@@ -625,9 +606,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                 // get the position of the marker selected
                 LatLng latLng = selectMarker.getPosition();
-                Log.i(TAG, selectMarker.getSnippet());
-                Landmark clickedLandmark = mLocsOnMapSet.get(selectMarker.getSnippet());
-                Log.i(TAG, "clicked landmark data " + mClickedLocationMarker.getTitle()+  "\tID: " + mClickedLocationMarker.getSnippet() + "\tID:" + selectMarker.getSnippet());
 
                 // move camera to center on the selected marker
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -637,6 +615,10 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 TextView pRating = (TextView) v.findViewById(R.id.popup_rating);
                 TextView pType = (TextView) v.findViewById(R.id.popup_type);
                 TextView pAddress = (TextView) v.findViewById(R.id.popup_address);
+
+                Log.i(TAG, selectMarker.getSnippet());
+                Landmark clickedLandmark = mLocsOnMapSet.get(selectMarker.getSnippet());
+                Log.i(TAG, "clicked landmark data " + mClickedLocationMarker.getTitle()+  "\tID: " + mClickedLocationMarker.getSnippet() + "\tID:" + selectMarker.getSnippet());
 
                 v.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -659,9 +641,9 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 Log.v(TAG, String.valueOf(toAdd.getLatitude()));
                 Log.v(TAG, String.valueOf(toAdd.getLongitude()));
                 Log.v(TAG, String.valueOf(toAdd == null));
-                Log.v(TAG, String.valueOf(tour == null));
+                Log.v(TAG, String.valueOf(mTour == null));
                 Log.v(TAG, "^^^ CHECK ABOVE");
-//                tour.addLandmark(toAdd);
+//                mTour.addLandmark(toAdd);
             }
         });
     }
@@ -715,12 +697,12 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                     // get the response data from the server
                     String responseData = response.body().string();
 
-                    Log.e(TAG, "onResponse:" + responseData);
+//                    Log.v(TAG, "onResponse:" + responseData);
 
                     try {
                         JSONObject jsonObject = new JSONObject(responseData);
                         final JSONArray resArray = jsonObject.getJSONArray("results");
-                        Log.e("resObject", resArray.toString());
+//                        Log.v("resObject", resArray.toString());
 
                             // handler lets us runn back on the UI thread
                             Handler handler = new Handler(Looper.getMainLooper());
@@ -740,28 +722,21 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                                             String lng = locObject.getString("lng");
                                             JSONObject hoursObject = resObject.getJSONObject("opening_hours");
                                             String openNow = hoursObject.getString("open_now");
-                                            Log.v("resObject", name);
-                                            Log.v("resObject id", id);
-                                            Log.v("resObject", rating);
-                                            Log.v("locObject lat", lat);
-                                            Log.v("locObject lng", lng);
-                                            Log.v("hoursObject", openNow);
+//                                            Log.v("resObject", name);
+//                                            Log.v("resObject id", id);
+//                                            Log.v("resObject", rating);
+//                                            Log.v("locObject lat", lat);
+//                                            Log.v("locObject lng", lng);
+//                                            Log.v("hoursObject", openNow);
+//                                            Log.v("----------------------", "new resObject " + i);
                                             Landmark currLoc = new Landmark(
                                                     name,
                                                     Double.valueOf(rating),
                                                     Boolean.valueOf(openNow),
                                                     Double.valueOf(lat),
                                                     Double.valueOf(lng));
-                                            Log.v(TAG, currLoc.getName() + "\tID: " + id);
-                                            Log.v(TAG, String.valueOf(currLoc.getRating()));
-                                            Log.v(TAG, String.valueOf(currLoc.getLatitude()));
-                                            Log.v(TAG, String.valueOf(currLoc.getLongitude()));
-                                            Log.v(TAG, String.valueOf(currLoc.getOpenNow()));
-                                            Log.v(TAG, id);
-                                            Log.v("----------------------", "new resObject " + i);
                                             mLocsOnMapSet.put(id, currLoc);
                                             addPlaces(Double.valueOf(lat), Double.valueOf(lng), name, id);
-                                            // SUBWAY: ChIJs-fOebPz2YkRy_SgsTgwUWU
                                         } catch (Exception e) {
                                             Log.e("Location Parse Handler", e.getMessage());
                                         }

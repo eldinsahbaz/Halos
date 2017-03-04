@@ -2,6 +2,7 @@ package com.example.brian.halos;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.util.HashMap;
@@ -29,19 +30,19 @@ public class Tour implements Parcelable {
 //    __EndTime = None
 //            __Price = None
 //    __CoverPhoto = None
-    String name;
-    HashMap<String, String> contactInfo;
-    LinkedList<User> guides;
-    LinkedList<User> tourists;
-    int minOccupancy;
-    int maxOccupancy;
-    int occupancy;
-    LinkedList<Landmark> landmarks;
-    int radius;
+    protected static String name;
+    protected static HashMap<String, String> contactInfo;
+    protected static LinkedList<User> guides;
+    protected static LinkedList<User> tourists;
+    protected static int minOccupancy;
+    protected static int maxOccupancy;
+    protected static int occupancy;
+    protected static LinkedList<Landmark> landmarks;
+    protected static int radius;
 //    TODO:DURATIONS AND TIMES AND COVER PHOTO
 //    TODO: add ratings functions
-    int ratings;
-    double price;
+    protected static int ratings;
+    protected static double price;
 
 
 
@@ -70,6 +71,7 @@ public class Tour implements Parcelable {
         maxOccupancy = 15;                              // just made it a realistic number, no reasoning behind it
         occupancy = 0;
         landmarks = new LinkedList<Landmark>();
+        Log.v("Tour class", "Landmarks initialized");
         radius = 1000;                                  // radius measured in meters (input from android is converted from miles)
         price = 0.0;                                    // free by default
     }
@@ -242,6 +244,7 @@ public class Tour implements Parcelable {
 //    else:
 //            return Exception("input is not of type Location")
     public void addLandmark(Landmark l) {
+        Log.v("Tour Class", String.valueOf(l == null));
         landmarks.add(l);
     }
 

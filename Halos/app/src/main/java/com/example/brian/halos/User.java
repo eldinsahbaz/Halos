@@ -26,12 +26,12 @@ public class User {
     // TODO: why are name and username different things?
     // TODO: profile picture
     // TODO: why does user have a rating variable, what are they rating
-    private static Map<Tour, Boolean> travelled;
-    private static Map<Tour, Boolean> created;       // TODO: maybe change these list to hash tables?
-    private static Map<Tour, Boolean> guided;
-    private static ShoppingCart userShoppingCart;
-    private static int rating;
-    private static int radius;
+    protected static Map<Tour, Boolean> travelled;
+    protected static Map<Tour, Boolean> created;       // TODO: maybe change these list to hash tables?
+    protected static Map<Tour, Boolean> guided;
+    protected static ShoppingCart userShoppingCart;
+    protected static int rating;
+    protected static int radius;
 
 //    def __init__(self):
 //    self.__Name = ""

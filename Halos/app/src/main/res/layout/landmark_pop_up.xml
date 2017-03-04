@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/popup_rating"
-        android:hint="Rating"
+        android:hint="0"
         android:textSize="12dp"
         android:layout_gravity="right"
         android:layout_width="wrap_content"

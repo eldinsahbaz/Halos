@@ -53,10 +53,14 @@ public class LoginActivity extends AppCompatActivity {
 
     String retVal = "Welcome to Halos";
 
+    User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        user = new User();
 
         username = (EditText) findViewById(R.id.input_username);
         password = (EditText) findViewById(R.id.input_password);
@@ -121,7 +125,6 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-            // TODO: need to have an id associated and maybe other things (cookies, ip, etc)
             // TODO: need to encrypt data going over the wire
             Request request = new Request.Builder()
                     // if you want to run on local use http://10.0.2.2:12344
@@ -158,6 +161,13 @@ public class LoginActivity extends AppCompatActivity {
                         if (result.equals(correctResponse)) {
                             Log.e("LoginActivity.java", "result: " + result);
 
+                            // TODO: parse JSON object to populate User object
+                            user.setName("TEST USERNAME");
+                            user.setEmail("TEST EMAIL");
+                            user.setPassword("TEST PW");
+                            user.setRadius(3000);
+                            Log.v("Login", "Loggin in " + user.getName());
+
                             Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
                             startActivity(i);
                         } else {
@@ -180,8 +190,6 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            // TODO: Must check that the location was processed to the database before making announcement
-            // TODO: toast is always one action behind? maybe try on real phone
             // Hold for time to update result
             try {
                 Log.i("LoginActivity", "Waiting for process to catch up");
