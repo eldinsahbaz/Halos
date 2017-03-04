@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import android.provider.SyncStateContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -72,6 +73,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 
 
@@ -107,6 +109,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     // create tour object for when user adds locations to tour
     protected Tour mTour = new Tour();
     protected User user = new User();
+    protected LinkedList<Landmark> mTourList = new LinkedList<Landmark>();
 
     private OkHttpClient client = new OkHttpClient();
 
@@ -164,16 +167,15 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
      */
     protected HashMap<String, Landmark> mLocsOnMapSet;
 
+    Button startTourBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // instantiate new tour object for user to add locations to
-//        mTour = new Tour();
-//        Log.e("\n\n\nINITIALIZING TOUR", "SHOULD NOT BE NULL\n\n\n");
+        // Holds all locations on map with the key being their id (stored as snippet on marker)
         mLocsOnMapSet = new HashMap<>();
-        // TODO: Make an array or list of location objects for all places with given parameters
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
@@ -192,6 +194,31 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        startTourBtn = (Button) findViewById(R.id.start_tour_btn);
+        startTourBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mTourList.size() != 0 && mTourList != null) {
+                    Toast.makeText(HalosMapActivity.this, "Enjoy Your Tour!", Toast.LENGTH_SHORT).show();
+
+                    // Create tour and add list of landmarks to the tour
+                    Tour mTour = new Tour();
+                    mTour.addLandmarks(mTourList);
+
+                    // This takes user to create tour activity
+                    Intent i = new Intent();
+                    Bundle b = new Bundle();
+                    b.putParcelable("Tour", mTour);
+                    i.putExtras(b);
+                    i.setClass(HalosMapActivity.this, CreateTourActivity.class);
+                    startActivity(i);
+
+                } else {
+                    Toast.makeText(HalosMapActivity.this, "No Landmarks Added to Tour", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     /**
@@ -459,8 +486,8 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 //        PlacesRequest placesRequest = new PlacesRequest();
 //        placesRequest.execute();
 
-        Toast.makeText(this, "Location Updated",
-                Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Location Updated",
+//                Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -636,14 +663,15 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
             public void onInfoWindowLongClick(Marker marker) {
                 //stuff goes here
                 Landmark toAdd = mLocsOnMapSet.get(mClickedLocationMarker.getSnippet());
-                Log.v(TAG, toAdd.toString());
-                Log.v(TAG, toAdd.getName());
-                Log.v(TAG, String.valueOf(toAdd.getLatitude()));
-                Log.v(TAG, String.valueOf(toAdd.getLongitude()));
-                Log.v(TAG, String.valueOf(toAdd == null));
-                Log.v(TAG, String.valueOf(mTour == null));
-                Log.v(TAG, "^^^ CHECK ABOVE");
-//                mTour.addLandmark(toAdd);
+                if (mTourList.contains(toAdd)) {
+                    mTourList.remove(toAdd);
+                    Log.v(TAG, toAdd.getName() + " has been removed from the tour");
+                    Toast.makeText(HalosMapActivity.this, toAdd.getName() + " Removed to Tour", Toast.LENGTH_SHORT).show();
+                } else {
+                    mTourList.add(toAdd);
+                    Log.v(TAG, toAdd.getName() + " has been added to the tour");
+                    Toast.makeText(HalosMapActivity.this, toAdd.getName() + " Added to Tour", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

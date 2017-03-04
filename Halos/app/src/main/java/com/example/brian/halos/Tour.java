@@ -30,23 +30,23 @@ public class Tour implements Parcelable {
 //    __EndTime = None
 //            __Price = None
 //    __CoverPhoto = None
-    protected static String name;
-    protected static HashMap<String, String> contactInfo;
-    protected static LinkedList<User> guides;
-    protected static LinkedList<User> tourists;
-    protected static int minOccupancy;
-    protected static int maxOccupancy;
-    protected static int occupancy;
-    protected static LinkedList<Landmark> landmarks;
-    protected static int radius;
+    protected static String name  = "";
+    protected static HashMap<String, String> contactInfo = new HashMap<String, String>();
+    protected static LinkedList<User> guides = new LinkedList<User>();
+    protected static LinkedList<User> tourists = new LinkedList<User>();
+    protected static int minOccupancy = 0;
+    protected static int maxOccupancy = 15;
+    protected static int occupancy = 1;
+    protected static LinkedList<Landmark> landmarks = new LinkedList<Landmark>();;
+    protected static int radius = 3000;
 //    TODO:DURATIONS AND TIMES AND COVER PHOTO
 //    TODO: add ratings functions
     protected static int ratings;
-    protected static double price;
+    protected static double price = 0.0;
 
 
 
-//    def __init__(self):
+    //    def __init__(self):
 //    self.__ContactInfo = dict()
 //    self.__Guides = set()
 //    self.__Tourists = set()
@@ -63,17 +63,7 @@ public class Tour implements Parcelable {
 //    self.__Price = 0.0
 //    self.__CoverPhoto = Image.new("RGB", (512,512), "white")
     public void Tour() {
-        name = "";
-        contactInfo = new HashMap<String, String>();
-        guides = new LinkedList<User>();
-        tourists = new LinkedList<User>();
-        minOccupancy = 0;
-        maxOccupancy = 15;                              // just made it a realistic number, no reasoning behind it
-        occupancy = 0;
-        landmarks = new LinkedList<Landmark>();
-        Log.v("Tour class", "Landmarks initialized");
-        radius = 1000;                                  // radius measured in meters (input from android is converted from miles)
-        price = 0.0;                                    // free by default
+
     }
 
     public void setName(String n) {

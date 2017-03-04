@@ -161,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (result.equals(correctResponse)) {
                             Log.e("LoginActivity.java", "result: " + result);
 
-                            // TODO: parse JSON object to populate User object
+                            // TODO: call server and parse JSON object to populate User object
                             user.setName("TEST USERNAME");
                             user.setEmail("TEST EMAIL");
                             user.setPassword("TEST PW");
@@ -198,7 +198,7 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             Log.e("LoginActivity retVal", retVal);
-            Toast.makeText(LoginActivity.this, retVal, Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, retVal, Toast.LENGTH_SHORT).show();
         }
 
         @Override
