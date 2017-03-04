@@ -41,15 +41,6 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
             }
         }
 
-        for(int i = 0; i < mTour.landmarks.size(); i++) {
-            Landmark l = new Landmark();
-            l = mTour.landmarks.get(i);
-            Log.v("Tour Values", l.getName());
-            Log.v("\t\t", String.valueOf(l.getLatitude()));
-            Log.v("\t\t", String.valueOf(l.getLongitude()));
-
-        }
-
         Log.v(TAG, "Arrived");
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.

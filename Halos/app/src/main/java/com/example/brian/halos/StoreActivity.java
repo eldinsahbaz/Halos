@@ -62,7 +62,7 @@ public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTo
                 startActivity(intent6);
                 return true ;
             case R.id.create_tour:
-                Intent intent7 = new Intent(this, CreateTourActivity.class);
+                Intent intent7 = new Intent(this, TourMapActivity.class);
                 startActivity(intent7);
                 return true;
             default :
