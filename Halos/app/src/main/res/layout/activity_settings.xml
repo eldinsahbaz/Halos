@@ -5,10 +5,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    android:background="@color/halos_blue"
     tools:context="com.example.brian.halos.SettingsActivity">
 
     <android.support.v7.widget.Toolbar
@@ -18,12 +17,13 @@
         android:background ="?attr/colorPrimary"
         android:elevation ="0dp"
         android:theme ="@style/ThemeOverlay.AppCompat.ActionBar"
-        android:layout_weight=".5" />
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/settings_title_text"
         android:text="Halos Search Settings"
         android:textSize="22dp"
+        android:textColor="@color/halos_orange"
         android:layout_marginTop="35dp"
         android:layout_marginBottom="35dp"
         android:layout_gravity="center_horizontal"
@@ -43,6 +43,7 @@
             android:id="@+id/setting_radius_text"
             android:hint="50 Miles"
             android:textSize="18dp"
+            android:textColor="@color/halos_orange"
             android:layout_marginLeft="150dp"
             android:layout_gravity="left"
             android:layout_width="0dp"
@@ -57,6 +58,7 @@
         <TextView
             android:id="@+id/settings_radius_label"
             android:text="Radius: "
+            android:textColor="@color/halos_orange"
             android:textSize="18dp"
             android:max="500"
             android:layout_gravity="left"
@@ -66,6 +68,7 @@
 
         <SeekBar
             android:id="@+id/settings_radius_bar"
+            android:backgroundTint="@color/white"
             android:layout_gravity="right"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -79,6 +82,7 @@
         <TextView
             android:id="@+id/settings_type_text"
             android:text="Category: "
+            android:textColor="@color/halos_orange"
             android:textSize="18dp"
             android:layout_gravity="left"
             android:layout_width="0dp"
@@ -87,6 +91,8 @@
 
         <Spinner
             android:id="@+id/setting_type_drop_menu"
+            android:textColor="@color/halos_orange"
+            android:backgroundTint="@color/white"
             android:layout_gravity="right"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -101,6 +107,7 @@
         <TextView
             android:id="@+id/settings_rank_text"
             android:text="Rank By: "
+            android:textColor="@color/halos_orange"
             android:textSize="18dp"
             android:layout_gravity="left"
             android:layout_width="0dp"
@@ -109,6 +116,8 @@
 
         <Spinner
             android:id="@+id/setting_rank_drop_menu"
+            android:textColor="@color/halos_orange"
+            android:backgroundTint="@color/white"
             android:layout_gravity="right"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -123,6 +132,7 @@
         <TextView
             android:id="@+id/settings_opennow_text"
             android:text="Open Now: "
+            android:textColor="@color/halos_orange"
             android:textSize="18dp"
             android:layout_gravity="left"
             android:layout_width="0dp"
@@ -131,6 +141,8 @@
 
         <Spinner
             android:id="@+id/setting_opennow_drop_menu"
+            android:textColor="@color/halos_orange"
+            android:backgroundTint="@color/white"
             android:layout_gravity="right"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -145,6 +157,7 @@
         <TextView
             android:id="@+id/settings_keyword_text"
             android:text="Keyword: "
+            android:textColor="@color/halos_orange"
             android:textSize="18dp"
             android:layout_gravity="left"
             android:layout_width="0dp"
@@ -154,6 +167,9 @@
         <EditText
             android:id="@+id/setting_keyword_enter_text"
             android:hint="Enter Keyword"
+            android:textColor="@color/halos_orange"
+            android:backgroundTint="@color/white"
+            android:textColorHint="@color/white"
             android:textSize="12dp"
             android:textAlignment="textEnd"
             android:layout_gravity="right"
@@ -170,6 +186,7 @@
         <TextView
             android:id="@+id/settings_minprice_text"
             android:text="Min Price: "
+            android:textColor="@color/halos_orange"
             android:textSize="18dp"
             android:layout_gravity="left"
             android:layout_width="0dp"
@@ -179,6 +196,9 @@
         <EditText
             android:id="@+id/setting_minprice_enter_text"
             android:hint="Enter Min Price"
+            android:textColor="@color/halos_orange"
+            android:backgroundTint="@color/white"
+            android:textColorHint="@color/white"
             android:textSize="12dp"
             android:textAlignment="textEnd"
             android:layout_gravity="right"
@@ -195,6 +215,7 @@
         <TextView
             android:id="@+id/settings_maxprice_text"
             android:text="Max Price: "
+            android:textColor="@color/halos_orange"
             android:textSize="18dp"
             android:layout_gravity="left"
             android:layout_width="0dp"
@@ -204,6 +225,9 @@
         <EditText
             android:id="@+id/setting_maxprice_enter_text"
             android:hint="Enter Max Price"
+            android:textColor="@color/halos_orange"
+            android:backgroundTint="@color/white"
+            android:textColorHint="@color/white"
             android:textSize="12dp"
             android:textAlignment="textEnd"
             android:layout_gravity="right"

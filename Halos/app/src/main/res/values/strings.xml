@@ -16,37 +16,10 @@
     <string name="location_updated_message">Location updated</string>
 
     <string-array name="category_drop_down">
-        <item>Accounting</item>
-        <item>Airport</item>
-        <item>Amusement Park</item>
-        <item>Aquarium</item>
-        <item>Art Gallery</item>
-        <item>ATM</item>
-        <item>Bakery</item>
-        <item>Bank</item>
-        <item>Bar</item>
-        <item>Beauty Salon</item>
-        <item>Bicycle Store</item>
-        <item>Book Store</item>
-        <item>Bowling Alley</item>
-        <item>Bus Station</item>
-        <item>Cafe</item>
-        <item>Campground</item>
-        <item>Car Dealer</item>
-        <item>Car Rental</item>
-        <item>Car Repair</item>
-        <item>Car Wash</item>
-        <item>Casino</item>
-        <item>Cemetery</item>
-        <item>Church</item>
-        <item>City Hall</item>
-        <item>Clothing Store</item>
-        <item>Convenience Store</item>
-        <item>Courthouse</item>
-        <item>Dentist</item>
-        <item>Department Store</item>
-        <item>Restaurant</item>
-        <!-- TODO: CONTINUE https://developers.google.com/places/web-service/supported_types -->
+        <item>Arts and Entertainment</item>
+        <item>Nature and Landscape</item>
+        <item>Shopping</item>
+        <item>Food</item>
     </string-array>
 
     <string-array name="rankby_drop_down">

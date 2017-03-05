@@ -47,6 +47,16 @@ def get_places():
     places = requests.get(url)
     return app.response_class(places.content, content_type='application/json')
 
+
+directions_url = http://maps.googleapis.com/maps/api/directions/outputFormat?parameters
+@app.route('/get_directions', methods=['POST'])
+def get_places():
+    # origin = request.json['origin']
+    #
+    # url = directions_url + 'origin=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key
+    # places = requests.get(url)
+    # return app.response_class(places.content, content_type='application/json')
+
 # clears the accounts database (NOT FOR PRODUCTION ONLY FOR TESTING PRUPOSES, WE SHOULD DELETE ONCE WE GET EVERYTHING WORKING!!!!!!!!)
 # TODO: delete a single user (if they deactivate their account)
 @app.route('/delete_accounts', methods=['PUT'])

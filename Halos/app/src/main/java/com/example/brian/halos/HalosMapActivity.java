@@ -209,6 +209,9 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                     Tour mTour = new Tour();
                     mTour.addLandmarks(mTourList);
 
+                    Landmark currLoc = new Landmark("Current Location", 0, true, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                    mTour.landmarks.addFirst(currLoc);
+
                     // This takes user to create tour activity
                     Intent i = new Intent();
                     Bundle b = new Bundle();
@@ -387,7 +390,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         // This is the API call
         PlacesRequest placesRequest = new PlacesRequest();
         placesRequest.execute();
-
 
     }
 
@@ -735,8 +737,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
             Map<String, String> json_params = new HashMap<String, String>();
             json_params.put("lat", String.valueOf(mCurrentLocation.getLatitude()));
             json_params.put("lng", String.valueOf(mCurrentLocation.getLongitude()));
-//            json_params.put("radius", String.valueOf(user.getRadius()));
-//            json_params.put("keywords", "TODO");    // TODO: need to set up keywords
             // TODO: need to have an id associated and maybe other things (travelled, guided, etc + cookies, ip, etc)
             // TODO: need to encrypt data going over the wire
 

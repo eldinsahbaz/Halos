@@ -11,4 +11,6 @@
     <color name="blue">#b3ecff</color>
     <color name="green">#ccffcc</color>
     <color name="gold">#ffcc00</color>
+    <color name="halos_blue">#242f3e</color>
+    <color name="halos_orange">#d59563</color>
 </resources>
