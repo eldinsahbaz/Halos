@@ -35,6 +35,7 @@ public class User implements Parcelable {
     protected static ShoppingCart userShoppingCart;
     protected static int rating;
     protected static int radius;
+    protected static String id;
 
 //    def __init__(self):
 //    self.__Name = ""
@@ -239,6 +240,11 @@ public class User implements Parcelable {
 //            return self.__Radius
     public int getRadius() {
         return radius;
+    }
+
+    // return users id
+    public String getId() {
+        return id;
     }
 
     // TODO: Need to get all user information from server

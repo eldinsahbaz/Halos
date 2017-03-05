@@ -770,7 +770,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                         final JSONArray resArray = jsonObject.getJSONArray("results");
 //                        Log.v("resObject", resArray.toString());
 
-                            // handler lets us runn back on the UI thread
+                            // handler lets us run back on the UI thread
                             Handler handler = new Handler(Looper.getMainLooper());
                             handler.post(new Runnable() {
                                 @Override
@@ -878,8 +878,6 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                         String result = respObject.getString("result");
 
                         mGeoAddr = result;
-                        Log.v("Geocode API", mGeoAddr);
-                        Log.v("Geocode API 2", result);
 
                     } catch (Exception e){
                         Log.e(TAG, "Exception Thrown: " + e);

@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -131,8 +132,6 @@ public class LoginActivity extends AppCompatActivity {
                     .url("http://lcs-vc-esahbaz.syr.edu:12344/login/auth?user=" + username + "&pw=" + password)
                     .addHeader("content-type", "application/json; charset=utf-8")
                     .build();
-            //10.0.2.2:12344
-            //128.230.248.24:12344
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
@@ -152,19 +151,20 @@ public class LoginActivity extends AppCompatActivity {
 
                     try {
                         JSONObject jsonObject = new JSONObject(responseData);
-                        JSONObject respObject = jsonObject.getJSONObject("response");
+                        JSONArray respArray = jsonObject.getJSONArray("response");
+                        JSONObject respObject = respArray.getJSONObject(0);
                         String result = respObject.getString("result");
+
+                        Log.e("SERVER RESULT", result);
 
                         retVal = result;
 
                         if (result.equals(correctResponse)) {
-                            Log.e("LoginActivity.java", "result: " + result);
-
-                            // TODO: call server and parse JSON object to populate User object
-                            user.setName("TEST USERNAME");
-                            user.setEmail("TEST EMAIL");
-                            user.setPassword("TEST PW");
-                            user.setRadius(3000);
+                            user.setName(username);
+                            user.setEmail(respObject.getString("email"));
+                            user.setPassword(password);
+                            user.setRadius(Integer.valueOf(respObject.getString("radius")));
+                            // TODO: get other user info
                             Log.v("Login", "Loggin in " + user.getName());
 
                             Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
@@ -176,9 +176,8 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                     } catch (Exception e){
-                        Log.e("LoginActivity.java", "Exception Thrown: " + e);
                         retVal = e.toString();
-                        Log.e("LoginActivity", retVal);
+                        Log.e("LoginActivity Exception", retVal);
                     }
                 }
 

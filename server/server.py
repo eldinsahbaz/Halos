@@ -7,6 +7,7 @@ from OpenSSL import SSL
 import json
 from bson import json_util
 import requests
+from datadog import statsd
 
 app = Flask(__name__)
 
@@ -17,6 +18,8 @@ app = Flask(__name__)
 client = MongoClient()
 db = client.test
 
+# Increment a counter for datadog metrics.
+statsd.increment('page.views')
 
 # radius = 10
 # key = 'AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ'
@@ -73,15 +76,53 @@ def login():
     user = auth.find_one({
         'username'  : username
     })
+    output = []
     if user:
         # output = 'Attempt login for %s' % username
         # return output
         if password == user['password']:
-            output = {'result' : 'login successful'}
+            # get all user info and format
+            output.append({
+                'result' : 'login successful',
+                '_id'       : str(user['_id']),
+                'username'  : user['username'],
+                'password'  : user['password'],
+                'email'     : user['email'],
+                'radius'    : user['radius'],
+            	'rating'  	: user['rating'],
+            	'travelled' : user['travelled'],
+            	'created'	: user['created'],
+            	'guided'	: user['guided'],
+            	'shopping_cart'	: user['shopping_cart']
+            })
         else:
-            output = {'result' : 'incorrect password'}
+            output.append({
+                'result' : 'incorrect password',
+                '_id'       : '',
+                'username'  : '',
+                'password'  : '',
+                'email'     : '',
+                'radius'    : '',
+            	'rating'  	: '',
+            	'travelled' : '',
+            	'created'	: '',
+            	'guided'	: '',
+            	'shopping_cart'	: ''
+            })
     else:
-        output = {'result' : 'User not found'}
+        output.append({
+            'result' : 'User not found',
+            '_id'       : '',
+            'username'  : '',
+            'password'  : '',
+            'email'     : '',
+            'radius'    : '',
+            'rating'  	: '',
+            'travelled' : '',
+            'created'	: '',
+            'guided'	: '',
+            'shopping_cart'	: ''
+        })
     return jsonify(response = output)
 
 # this method is for creating a new account
@@ -137,6 +178,37 @@ def get_all_users():
         'result'    : output
     })
 
+# use SendGrid to send user an email if they forgot their password
+@app.route('/retrieve_pw', methods=['GET'])
+def get_pw():
+    auth = db.auth
+    output = []
+    for user in auth.find():
+        output.append({
+            '_id'       : str(user['_id']),
+            'username'  : user['username'],
+            'password'  : user['password'],
+            'email'     : user['email'],
+            'radius'    : user['radius'],
+        	'rating'  	: user['rating'],
+        	'travelled' : user['travelled'],
+        	'created'	: user['created'],
+        	'guided'	: user['guided'],
+        	'shopping_cart'	: user['shopping_cart']
+        })
+    return jsonify(response = {
+        'result'    : output
+    })
+
+#################### GEOCODING RELATED API CALLS ####################
+@app.route('/geocode', methods=['GET'])
+def get_geocode():
+    lat = str(request.args.get('lat'))
+    lng = str(request.args.get('lng'))
+    results = requests.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng + '&key=AIzaSyDGN5Mu7yTL6x_lP2hZzhP9T0f4uqIXUYI').json()
+    return jsonify(response = {
+        'result' : results['results'][0]['formatted_address']
+    })
 
 #################### SETTINGS RELATED API CALLS ####################
 @app.route('/set_settings', methods=['PUT'])
