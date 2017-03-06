@@ -124,7 +124,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
 
     private class DirectionsRequest extends AsyncTask<Void, Void, String> {
         String origin;
-        String waypoints;
+        String waypoints = "none";
         String destination;
         String mode = "walking";        // TODO: add in settings to select walking or driving
 
@@ -133,8 +133,8 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
         protected DirectionsRequest(Tour t) {
             try {
                 if (t.landmarks.size() == 2) {
-                    origin = t.landmarks.get(0).getLongitude() + "," + t.landmarks.get(0).getLatitude();
-                    destination = t.landmarks.get(1).getLongitude() + "," + t.landmarks.get(1).getLatitude();
+                    origin = t.landmarks.get(0).getLatitude() + "," + t.landmarks.get(0).getLongitude();
+                    destination = t.landmarks.get(1).getLatitude() + "," + t.landmarks.get(1).getLongitude();
                 }
                 else {
                     for (int i = 0; i < t.landmarks.size(); i++) {
@@ -192,10 +192,8 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
 
                     try {
                         JSONObject jsonObject = new JSONObject(responseData);
-                        JSONObject respObject = jsonObject.getJSONObject("response");
-                        String result = respObject.getString("result");
 
-                        mDirectionsResponse = result;
+//                        mDirectionsResponse = result;
 
                     } catch (Exception e){
                         Log.e(TAG, "Exception Thrown: " + e);

@@ -97,14 +97,14 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         //REMOVE BYPASSER BUTTON
-        Button bypasser =(Button) findViewById(R.id.bypasser);
-        bypasser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent map = new Intent(getApplicationContext(),HalosMapActivity.class);
-                startActivity(map);
-            }
-        });
+//        Button bypasser =(Button) findViewById(R.id.bypasser);
+//        bypasser.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent map = new Intent(getApplicationContext(),HalosMapActivity.class);
+//                startActivity(map);
+//            }
+//        });
     }
 
     // this is so the user cannot just go back to the app once they log out
