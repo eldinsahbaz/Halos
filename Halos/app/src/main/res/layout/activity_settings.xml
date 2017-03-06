@@ -91,6 +91,8 @@
 
         <Spinner
             android:id="@+id/setting_type_drop_menu"
+            android:entries="@array/category_drop_down"
+            android:textColorHint="@color/white"
             android:textColor="@color/halos_orange"
             android:backgroundTint="@color/white"
             android:layout_gravity="right"
@@ -116,6 +118,8 @@
 
         <Spinner
             android:id="@+id/setting_rank_drop_menu"
+            android:entries="@array/rankby_drop_down"
+            android:textColorHint="@color/white"
             android:textColor="@color/halos_orange"
             android:backgroundTint="@color/white"
             android:layout_gravity="right"
@@ -141,6 +145,35 @@
 
         <Spinner
             android:id="@+id/setting_opennow_drop_menu"
+            android:entries="@array/opennow_drop_down"
+            android:textColorHint="@color/white"
+            android:textColor="@color/halos_orange"
+            android:backgroundTint="@color/white"
+            android:layout_gravity="right"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+        </Spinner>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginBottom="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/settings_mode_text"
+            android:text="Travel Mode: "
+            android:textColor="@color/halos_orange"
+            android:textSize="18dp"
+            android:layout_gravity="left"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:id="@+id/setting_mode_drop_menu"
+            android:entries="@array/mode_drop_down"
+            android:textColorHint="@color/white"
             android:textColor="@color/halos_orange"
             android:backgroundTint="@color/white"
             android:layout_gravity="right"

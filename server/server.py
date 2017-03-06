@@ -48,14 +48,23 @@ def get_places():
     return app.response_class(places.content, content_type='application/json')
 
 
-directions_url = http://maps.googleapis.com/maps/api/directions/outputFormat?parameters
-@app.route('/get_directions', methods=['POST'])
-def get_places():
-    # origin = request.json['origin']
-    #
-    # url = directions_url + 'origin=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key
-    # places = requests.get(url)
-    # return app.response_class(places.content, content_type='application/json')
+# gets directions for tour from Google Maps Directions API
+directions_url = 'https://maps.googleapis.com/maps/api/directions/json?'
+@app.route('/get_directions', methods=['GET'])
+def get_directions():
+    origin = request.args.get('origin')
+    dest = request.args.get('destination')
+    waypoints = request.args.get('waypoints')
+    travel_mode = request.args.get('mode')
+    url = directions_url + 'origin=' + origin + '&destination=' + dest + '&mode=' + travel_mode
+    if waypoints != 'none':
+        url = url + '&waypoints=' + waypoints
+    else:
+        print '\n\nNO WAYPOINTS\n\n'
+    url = url + '&key=' + key
+    directions = requests.get(url)
+    print 'url', url
+    return app.response_class(directions.content, content_type='application/json')
 
 # clears the accounts database (NOT FOR PRODUCTION ONLY FOR TESTING PRUPOSES, WE SHOULD DELETE ONCE WE GET EVERYTHING WORKING!!!!!!!!)
 # TODO: delete a single user (if they deactivate their account)
