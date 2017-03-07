@@ -7,13 +7,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class PlayList extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.menu);
+        setContentView(R.layout.activity_play_list);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.playlist_toolbar);
         setSupportActionBar(toolbar);
     }
 
@@ -55,7 +55,4 @@ public class UserProfileActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    // TODO: Add functionality to search for users; Ray said something about using fragments instead of TabView for the tabs?
-    // Tabs wont show because they don't have any activities within them. Need to program in either placeholder "dummy" activities for the tabs?
-
 }

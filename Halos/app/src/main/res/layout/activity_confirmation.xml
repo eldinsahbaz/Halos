@@ -14,7 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:id="@+id/tableLayout">
 
         <TableRow>
 
@@ -60,6 +61,16 @@
 
 
     </TableLayout>
+
+    <Button
+        android:id="@+id/return_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tableLayout"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="91dp"
+        android:layout_marginStart="112dp"
+        android:text="Return Home" />
 
 </RelativeLayout>
 

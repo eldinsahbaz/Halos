@@ -1,6 +1,7 @@
 package com.example.brian.halos;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
 
@@ -31,8 +33,11 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
 
     protected String TAG = "tour-map-activity";
     protected String mDirectionsResponse;
-
+    private LatLng origin;
+    private LatLng destination;
     protected static Tour mTour;
+    private static final String DIRECTION_URL = "https://maps.googleapis.com/maps/api/directions/json?";
+    private static final String GOOGLE__Direction_API_KEY ="AIzaSyD3KjHahrdF7B-e2C0h-IbRae1o7DSbYXI";
 
     private GoogleMap mMap;
 
@@ -81,6 +86,9 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
 
         // Add a marker in Sydney and move the camera
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //Workarounds right now -remove when parser works
+        origin = new LatLng(mTour.landmarks.get(0).getLatitude(),mTour.landmarks.get(0).getLongitude());
+        destination = origin;
 
         for (int i = 0; i < mTour.landmarks.size(); i++) {
             LatLng landmarkLoc = new LatLng(mTour.landmarks.get(i).getLatitude(), mTour.landmarks.get(i).getLongitude());
@@ -91,9 +99,25 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
                 mMap.addMarker(new MarkerOptions().position(landmarkLoc).title(mTour.landmarks.get(i).getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(landmarkLoc));
                 mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
+                //Workarounds right now -remove when parser works
+                mMap.addPolyline(new PolylineOptions().add(
+                        origin,new LatLng(mTour.landmarks.get(1).getLatitude(),mTour.landmarks.get(1).getLongitude())
+                        )
+                                .width(10)
+                                .color(Color.RED)
+                );
+
             }
             else {
                 mMap.addMarker(new MarkerOptions().position(landmarkLoc).title(mTour.landmarks.get(i).getName()));
+                //Workarounds right now -remove when parser works
+                mMap.addPolyline(new PolylineOptions().add(new LatLng(mTour.landmarks.get(i - 1).getLatitude(), mTour.landmarks.get(i - 1).getLongitude())
+                        , new LatLng(mTour.landmarks.get(i).getLatitude(), mTour.landmarks.get(i).getLongitude())
+                        )
+                                .width(10)
+                                .color(Color.RED)
+                );
+
             }
         }
 
