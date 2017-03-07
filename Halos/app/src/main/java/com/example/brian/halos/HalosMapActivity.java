@@ -782,23 +782,23 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                                             JSONObject geoObject = resObject.getJSONObject("geometry");
                                             String name = resObject.get("name").toString();
                                             String id = resObject.getString("place_id");
-                                            String rating = resObject.get("rating").toString();
+//                                            String rating = resObject.get("rating").toString();
                                             JSONObject locObject = geoObject.getJSONObject("location");
                                             String lat = locObject.getString("lat");
                                             String lng = locObject.getString("lng");
-                                            JSONObject hoursObject = resObject.getJSONObject("opening_hours");
-                                            String openNow = hoursObject.getString("open_now");
-                                            Log.v("resObject", name);
-                                            Log.v("resObject id", id);
-                                            Log.v("resObject", rating);
-                                            Log.v("locObject lat", lat);
-                                            Log.v("locObject lng", lng);
-                                            Log.v("hoursObject", openNow);
-                                            Log.v("----------------------", "new resObject " + i);
+//                                            JSONObject hoursObject = resObject.getJSONObject("opening_hours");
+//                                            String openNow = hoursObject.getString("open_now");
+//                                            Log.v("resObject", name);
+//                                            Log.v("resObject id", id);
+//                                            Log.v("resObject", rating);
+//                                            Log.v("locObject lat", lat);
+//                                            Log.v("locObject lng", lng);
+//                                            Log.v("hoursObject", openNow);
+//                                            Log.v("----------------------", "new resObject " + i);
                                             Landmark currLoc = new Landmark(
                                                     name,
-                                                    Double.valueOf(rating),
-                                                    Boolean.valueOf(openNow),
+                                                    Double.valueOf("4.5"),
+                                                    Boolean.valueOf("yes"),
                                                     Double.valueOf(lat),
                                                     Double.valueOf(lng));
                                             mLocsOnMapSet.put(id, currLoc);

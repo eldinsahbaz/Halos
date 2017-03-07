@@ -59,11 +59,8 @@ def get_directions():
     url = directions_url + 'origin=' + origin + '&destination=' + dest + '&mode=' + travel_mode
     if waypoints != 'none':
         url = url + '&waypoints=' + waypoints
-    else:
-        print '\n\nNO WAYPOINTS\n\n'
     url = url + '&key=' + key
     directions = requests.get(url)
-    print 'url', url
     return app.response_class(directions.content, content_type='application/json')
 
 # clears the accounts database (NOT FOR PRODUCTION ONLY FOR TESTING PRUPOSES, WE SHOULD DELETE ONCE WE GET EVERYTHING WORKING!!!!!!!!)

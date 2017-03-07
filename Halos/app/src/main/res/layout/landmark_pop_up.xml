@@ -5,7 +5,7 @@
 
     <ImageView
         android:id="@+id/popup_image"
-        android:src="@drawable/nyc"
+        android:src="@drawable/cuse1"
         android:scaleType="centerCrop"
         android:layout_width="250dp"
         android:layout_height="100dp" />

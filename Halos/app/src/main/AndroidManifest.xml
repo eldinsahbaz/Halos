@@ -65,7 +65,6 @@
             Might not Need- Don't remove.
         -->
         <activity android:name=".ConfirmationActivity" />
-        <activity android:name=".LocationTestActivity" />
         <activity android:name=".CreateTourActivity" />
         <activity
             android:name=".TourMapActivity"
