@@ -14,7 +14,7 @@ import com.paypal.android.sdk.payments.PaymentConfirmation;
 
 import org.json.JSONException;
 //check on sandbox payal -- faciliator account and buyer account
-
+//Source code from https://www.simplifiedcoding.net/android-paypal-integration-tutorial/ by belal khan
 public class Checkout_Store extends AppCompatActivity implements View.OnClickListener {
 
     public static final int PAYPAL_REQUEST_CODE = 123;

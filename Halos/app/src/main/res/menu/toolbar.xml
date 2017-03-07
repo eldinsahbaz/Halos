@@ -19,9 +19,9 @@
         android:orderInCategory="103"
         android:id="@+id/activity_settings"/>
     <item
-        android:title="Create Tour"
+        android:title="Playlist"
         android:orderInCategory="104"
-        android:id="@+id/create_tour"/>
+        android:id="@+id/play_list"/>
 
     <item
         android:title="@string/Logout"

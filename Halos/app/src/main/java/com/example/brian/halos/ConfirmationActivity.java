@@ -3,12 +3,14 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
+// Source code  from https://www.simplifiedcoding.net/android-paypal-integration-tutorial/ by belal khan
 public class ConfirmationActivity extends AppCompatActivity {
 
     @Override
@@ -18,6 +20,14 @@ public class ConfirmationActivity extends AppCompatActivity {
         //Getting Intent
         Intent intent = getIntent();
 
+        Button returnhome = (Button)findViewById(R.id.return_home);
+        returnhome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(getApplicationContext(), HalosMapActivity.class);
+                startActivity(intent1);
+            }
+        });
 
         try {
             JSONObject jsonDetails = new JSONObject(intent.getStringExtra("PaymentDetails"));
