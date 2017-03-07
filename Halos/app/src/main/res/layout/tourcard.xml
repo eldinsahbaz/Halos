@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_marginTop="10dp"
+    android:layout_marginTop="0dp"
     android:layout_height="120dp">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="110dp" >
+        android:layout_height="110dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:background="@color/blue"
+            android:background="@color/halos_blue"
             android:layout_height="match_parent">
 
 
@@ -25,6 +25,7 @@
 
             <TextView
                 android:text="TextView"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -33,6 +34,7 @@
 
             <TextView
                 android:text="TextView"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -42,6 +44,7 @@
 
             <TextView
                 android:text="TextView"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/card_title"
@@ -51,6 +54,7 @@
 
             <TextView
                 android:text="TextView"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
