@@ -21,81 +21,76 @@
         app:popupTheme ="@style/ThemeOverlay.AppCompat.Light"
         android:layout_weight="1" />
 
-    <TabHost
-        android:layout_width="200dip"
-        android:layout_height="300dip"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/tabHost">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:id="@+id/Guide"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/Curate"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/Toured"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-            </FrameLayout>
-        </LinearLayout>
-    </TabHost>
-
-    <RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ratingBar"
-        android:layout_above="@+id/tabHost"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp" />
-
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="@drawable/default_person"
+        app:srcCompat="@drawable/pope"
         android:id="@+id/imageView"
-        android:layout_marginStart="33dp"
-        android:layout_above="@+id/ratingBar"
+        android:layout_below="@+id/userProfileName"
         android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/userProfileName"
-        android:layout_marginBottom="30dp"
         android:text="User Name Here"
         android:textAppearance="@android:style/TextAppearance.Large"
-        android:layout_marginStart="20dp"
-        android:layout_above="@+id/ratingBar"
-        android:layout_toEndOf="@+id/imageView" />
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="19dp"
+        android:layout_below="@+id/menu"
+        android:layout_alignStart="@+id/ratingBar2" />
+
+    <RatingBar
+        android:id="@+id/ratingBar2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_alignParentEnd="true" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@+id/userProfileName"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentEnd="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:id="@+id/user_tourcontainer"
+                android:layout_height="250dp">
+
+                <android.support.v4.view.ViewPager
+                    android:layout_width="match_parent"
+                    android:id="@+id/user_viewpager"
+                    android:layout_height="match_parent">
+
+                    <android.support.design.widget.TabLayout
+                        android:layout_width="match_parent"
+                        android:id="@+id/user_tablayout"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top" />
+
+                </android.support.v4.view.ViewPager>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:id="@+id/user_reviewcontainer"
+                android:layout_height="250dp">
+
+                <TextView
+                    android:id="@+id/textview100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reviews" />
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

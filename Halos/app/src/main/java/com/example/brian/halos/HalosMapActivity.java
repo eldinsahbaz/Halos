@@ -708,9 +708,15 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                     Log.v(TAG, toAdd.getName() + " has been removed from the tour");
                     Toast.makeText(HalosMapActivity.this, toAdd.getName() + " Removed to Tour", Toast.LENGTH_SHORT).show();
                 } else {
-                    mTourList.add(toAdd);
-                    Log.v(TAG, toAdd.getName() + " has been added to the tour");
-                    Toast.makeText(HalosMapActivity.this, toAdd.getName() + " Added to Tour", Toast.LENGTH_SHORT).show();
+                    if(mTourList.size() < 9) {
+                        mTourList.add(toAdd);
+                        Log.v(TAG, toAdd.getName() + " has been added to the tour");
+                        Toast.makeText(HalosMapActivity.this, toAdd.getName() + " Added to Tour", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Log.v(TAG, "max tour size reached,current size = "+ mTourList.size());
+                        Toast.makeText(HalosMapActivity.this, "Max landmarks selected already.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
