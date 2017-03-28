@@ -75,7 +75,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     private class Account extends AsyncTask<Void, Void, String> {
         User user;
-
+        String username;
         protected Account(User u) {
             user = u;
         }
@@ -90,7 +90,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             json_params.put("radius", Integer.toString(user.getRadius()));
             // TODO: need to have an id associated and maybe other things (travelled, guided, etc + cookies, ip, etc)
             // TODO: need to encrypt data going over the wire
-
+            username = user.getName();
             JSONObject json_parameter = new JSONObject(json_params);
             RequestBody json_body = RequestBody.create(JSON, json_parameter.toString());
             Request request = new Request.Builder()
@@ -131,6 +131,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                             Log.e("LoginActivity.java", "result: " + result);
 
                             Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
+                            i.putExtra("username",username);
                             startActivity(i);
                         } else if (result.equals(emailTaken)){
                             Log.e("LoginActivity.java: " + result, emailTaken);

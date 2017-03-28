@@ -68,8 +68,13 @@
         <activity
             android:name=".TourMapActivity"
             android:label="@string/title_activity_tour_map" />
-        <activity android:name=".PlayList"
-            android:label="PlayList"></activity>
+        <activity
+            android:name=".PlayList"
+            android:label="PlayList" />
+        <activity
+            android:name=".CreateTourActivity"
+            android:label="@string/title_activity_create_tour"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

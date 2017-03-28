@@ -1,11 +1,14 @@
 package com.example.brian.halos;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,6 +35,7 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -54,6 +58,31 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tour_map);
+
+        Button endtour;
+        endtour = (Button)findViewById(R.id.tour_map_canceltour);
+        endtour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent homeactivity = new Intent(getApplicationContext(),HalosMapActivity.class);
+                startActivity(homeactivity);
+            }
+        });
+        Button createtour = (Button)findViewById(R.id.tour_map_save);
+        createtour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createtour = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("TourObject", mTour);
+                createtour.putExtras(bundle);
+                createtour.setClass(getApplicationContext(),CreateTourActivity.class);
+                String username3 = getIntent().getStringExtra("username");
+                createtour.putExtra("username",username3);
+                startActivity(createtour);
+            }
+        });
+
         markerpoints = new ArrayList<LatLng>();
         Bundle b = this.getIntent().getExtras();
         if (b != null)
@@ -415,6 +444,11 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
             protected void onProgressUpdate(Void... values) {
             }
         }
+
+
+    @Override
+    public void onBackPressed() {
+    }
     }
 
 

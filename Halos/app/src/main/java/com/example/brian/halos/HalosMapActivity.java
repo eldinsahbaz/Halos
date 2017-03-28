@@ -179,7 +179,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         // Holds all locations on map with the key being their id (stored as snippet on marker)
         mLocsOnMapSet = new HashMap<>();
-
+        mTour.landmarks.clear();
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
 
@@ -217,7 +217,9 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                     Bundle b = new Bundle();
                     b.putParcelable("Tour", mTour);
                     i.putExtras(b);
+                    String username2 = getIntent().getStringExtra("username");
                     i.setClass(HalosMapActivity.this, TourMapActivity.class);
+                    i.putExtra("username", username2);
                     startActivity(i);
 
                 } else {

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.brian.halos.CreateTourActivity"
+    tools:showIn="@layout/activity_create_tour">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/white"
+        android:id="@+id/tour_id"
+        android:inputType="textEmailAddress"
+        android:hint="Enter Tour Name" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:id="@+id/tour_creator"
+        android:layout_below="@+id/tour_id"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:id="@+id/tour_description"
+        android:inputType="textEmailAddress"
+        android:hint="Type Tour Description"
+        android:layout_below="@+id/tour_creator"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:id="@+id/tour_price"
+        android:inputType="number"
+        android:hint="Type Tour Price"
+        android:layout_below="@+id/tour_description"
+        android:layout_alignParentStart="true" />
+
+
+    <Button
+        android:id="@+id/create_tour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="185dp"
+        android:text="Create"
+        android:layout_below="@+id/tour_id"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="52dp" />
+
+    <Button
+        android:id="@+id/create_tour_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/create_tour"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="74dp"
+        android:text="Cancel" />
+
+
+</RelativeLayout>

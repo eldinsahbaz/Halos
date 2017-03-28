@@ -42,6 +42,8 @@ public class Tour implements Parcelable {
 //    TODO:DURATIONS AND TIMES AND COVER PHOTO
 //    TODO: add ratings functions
     protected static int ratings;
+    protected static String creator;
+    protected static String description;
     protected static double price = 0.0;
 
 
@@ -73,6 +75,11 @@ public class Tour implements Parcelable {
     public String getName() {
         return name;
     }
+
+    public void setCreator(String n) { creator=n; }
+    public String getCreator() { return creator;}
+    public void setDescription(String n) { description=n;}
+    public String getDescription() { return description;}
 
 //    def SetContactInfo(self, info):
 //            if isinstance(info, type(dict())):

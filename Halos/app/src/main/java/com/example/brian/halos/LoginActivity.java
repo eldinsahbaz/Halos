@@ -168,6 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.v("Login", "Loggin in " + user.getName());
 
                             Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
+                            i.putExtra("username",username);
                             startActivity(i);
                         } else {
                             Log.e("LoginActivity.java: " + result, correctResponse);
