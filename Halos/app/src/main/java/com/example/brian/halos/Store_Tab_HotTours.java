@@ -74,7 +74,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
         }
 
     }
-
+    Store_RecycleAdapter adapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,10 +89,12 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
 
         startpos = 0;
         endpos = 9;
+        GetTour getTour = new GetTour(startpos,endpos);
+        getTour.execute();
         recyclerView = (RecyclerView)view.findViewById(R.id.RecycleView_HotTours);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        final Store_RecycleAdapter adapter = new Store_RecycleAdapter(getActivity(),hotTourlist);
+        adapter = new Store_RecycleAdapter(getActivity(),hotTourlist);
         recyclerView.setAdapter(adapter);
         adapter.SetTourListener(new Store_RecycleAdapter.TourListener() {
             @Override
@@ -103,8 +105,6 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
                         .addToBackStack(null).commit();
             }
         });
-        GetTour getTour = new GetTour();
-        getTour.execute();
         return view;
     }
 
@@ -157,28 +157,21 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
     private class GetTour extends AsyncTask<Void,Void,String> {
         OkHttpClient client = new OkHttpClient();
         String retVal;
+         String start;
+        String end;
 
-        protected GetTour(){
+        protected GetTour(int s , int e){
+            start = String.valueOf(s);
+            end =  String.valueOf(e);
         }
 
         @Override
         protected String doInBackground(Void... voids) {
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-            Map json_params = new HashMap<String, String>();
-            json_params.put("start", String.valueOf(startpos));
-            json_params.put("end", String.valueOf(endpos));
 
-
-            // TODO: need to have an id associated and maybe other things (travelled, guided, etc + cookies, ip, etc)
-            // TODO: need to encrypt data going over the wire
-
-            JSONObject json_parameter = new JSONObject(json_params);
-            RequestBody json_body = RequestBody.create(JSON, json_parameter.toString());
             Request request = new Request.Builder()
                     // if you want to run on local use http://10.0.2.2:12344
                     // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
-                    .url("http://lcs-vc-esahbaz.syr.edu:12344/get_tour")
-                    .post(json_body)
+                    .url("http://lcs-vc-esahbaz.syr.edu:12344/get_tour?start="+start+"&end="+end)
                     .addHeader("content-type", "application/json; charset=utf-8")
                     .build();
             client.newCall(request).enqueue(new Callback() {
@@ -193,21 +186,33 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
 
                     String responseData = response.body().string();
                     Log.v("Store_tab_hot", "onResponse:" + responseData);
-                    retVal = "check";
-                    /*
+                    retVal = "success";
+
+
                     try {
                         JSONObject jsonObject = new JSONObject(responseData);
                         JSONObject respObject = jsonObject.getJSONObject("response");
-                        JSONArray jsonArray = new JSONArray(respObject);
-
-                        retVal = result;
-
+                        JSONArray rep = respObject.getJSONArray("result");
+                        Log.v("Result","Got result array from Json object");
+                        hotTourlist.clear();/////
+                        for (int i = 0; i < rep.length() ; i++){
+                            Tour tour = new Tour();
+                            tour.setName(rep.getJSONObject(i).getString("tour_id"));
+                            tour.setDescription(rep.getJSONObject(i).getString("description"));
+                            tour.setPrice(Double.valueOf(rep.getJSONObject(i).getString("price")));
+                            tour.setCreator(rep.getJSONObject(i).getString("created-by"));
+                            Log.v("TourCheck",rep.getJSONObject(i).getString("tour_id") );
+                           // Log.v("hotourlist", hotTourlist.get(i).getName());
+                            hotTourlist.add(tour);
+                            Log.v("hotourlist",""+ hotTourlist.size());
+                            Log.v("hotourlist",""+ hotTourlist.get(i).getName());
+                        }
 
 
                     } catch (Exception e){
                         Log.e("Store_tab_hot_tours", "Exception Thrown: " + e);
-                        retVal = e.toString();
-                    } */
+                    }
+
                 }
 
 

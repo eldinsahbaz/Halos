@@ -86,9 +86,9 @@ Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInt
 
         public void SetData(Tour tour) {
             Picture.setImageResource(R.drawable.logo);  //Change when image is added into tour class
-            Title.setText("CardTitleSet");
-            Description.setText("A Description of the tour");
-            user_creator.setText("By Creator");
+            Title.setText(tour.getName());
+            Description.setText(tour.getDescription());
+            user_creator.setText(tour.getCreator());
             Price.setText(toString().valueOf(tour.getPrice()));
         }
     }

@@ -50,7 +50,7 @@ public class Tour_Display_Frag extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(TOUR_OBJECT );
+          //  mParam1 = getArguments().getString(TOUR_OBJECT );
         }
     }
 
@@ -70,9 +70,9 @@ public class Tour_Display_Frag extends Fragment {
         //attributes might be contact info?
         //And Landmarks
         imageView.setImageResource(R.drawable.hollywood);
-        title.setText("Title of Tour in Frag");
-        Description.setText("Description in Frag");
-        creator.setText("Creator in Frag");
+        title.setText(Tourdata.getName());
+        Description.setText(Tourdata.getDescription());
+        creator.setText(Tourdata.getCreator());
         return view;
     }
 

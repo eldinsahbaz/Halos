@@ -47,6 +47,8 @@ public class CreateTourActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent createtour = new Intent(getApplicationContext(),HalosMapActivity.class);
+                String username2 = getIntent().getStringExtra("username");
+                createtour.putExtra("username",username2);
                 startActivity(createtour);
             }
         });
@@ -89,6 +91,8 @@ public class CreateTourActivity extends AppCompatActivity {
                     TourCreation creation = new TourCreation(passtour);
                     creation.execute();
                     Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
+                    String username2 = getIntent().getStringExtra("username");
+                    i.putExtra("username",username2);
                     startActivity(i);
                 }
             }

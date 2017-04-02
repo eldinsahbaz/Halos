@@ -65,6 +65,8 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
             @Override
             public void onClick(View view) {
                 Intent homeactivity = new Intent(getApplicationContext(),HalosMapActivity.class);
+                String username2 = getIntent().getStringExtra("username");
+                homeactivity.putExtra("username",username2);
                 startActivity(homeactivity);
             }
         });
