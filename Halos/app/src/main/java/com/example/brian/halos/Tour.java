@@ -30,10 +30,10 @@ public class Tour implements Parcelable {
 //    __EndTime = None
 //            __Price = None
 //    __CoverPhoto = None
-    protected static String name  = "";
-    protected static HashMap<String, String> contactInfo = new HashMap<String, String>();
+    protected static   String name  = "";
+    protected  static HashMap<String, String> contactInfo = new HashMap<String, String>();
     protected static LinkedList<User> guides = new LinkedList<User>();
-    protected static LinkedList<User> tourists = new LinkedList<User>();
+    protected  static LinkedList<User> tourists = new LinkedList<User>();
     protected static int minOccupancy = 0;
     protected static int maxOccupancy = 15;
     protected static int occupancy = 1;
@@ -44,7 +44,7 @@ public class Tour implements Parcelable {
     protected static int ratings;
     protected static String creator;
     protected static String description;
-    protected static double price = 0.0;
+    protected  static double price = 0.0;
 
 
 

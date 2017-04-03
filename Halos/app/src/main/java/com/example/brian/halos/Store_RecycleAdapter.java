@@ -21,7 +21,7 @@ Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInt
         Store_Tab_HotTours.OnFragmentInteractionListener,Store_Tab_TopFree.OnFragmentInteractionListener
 {
 
-    private List<Tour> tourlist;
+    private List<TourCopy> tourlist;
     private Context tourcontext;
     TourListener tourListener;
 
@@ -36,7 +36,7 @@ Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInt
     public void SetTourListener(final TourListener listener) {
         this.tourListener =listener;
     }
-    public Store_RecycleAdapter(Context content, List<Tour> data) {
+    public Store_RecycleAdapter(Context content, List<TourCopy> data) {
         tourcontext=content;
         tourlist=data;
     }
@@ -51,7 +51,7 @@ Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInt
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Tour tour = tourlist.get(position);
+        TourCopy tour = tourlist.get(position);
         holder.SetData(tour);
     }
 
@@ -84,7 +84,7 @@ Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInt
             });
         }
 
-        public void SetData(Tour tour) {
+        public void SetData(TourCopy tour) {
             Picture.setImageResource(R.drawable.logo);  //Change when image is added into tour class
             Title.setText(tour.getName());
             Description.setText(tour.getDescription());

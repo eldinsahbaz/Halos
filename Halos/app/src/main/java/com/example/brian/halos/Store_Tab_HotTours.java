@@ -39,13 +39,10 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
     public int startpos;
     public int endpos;
     RecyclerView recyclerView;
-    public List<Tour> hotTourlist = new ArrayList<Tour>();
-    Tour test1 = new Tour();
-    Tour test2 = new Tour();
-    Tour test3 = new Tour();
-    Tour test4 = new Tour();
-    Tour test5 = new Tour();
-    Tour test6 = new Tour();
+    //public List<Tour> hotTourlist = new ArrayList<Tour>();
+    public List<TourCopy> hotTourlist = new ArrayList<TourCopy>();
+    TourCopy test1 = new TourCopy();
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -81,11 +78,6 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_store__tab__hot_tours, container, false);
         hotTourlist.add(test1);
-        hotTourlist.add(test2);
-        hotTourlist.add(test3);
-        hotTourlist.add(test4);
-        hotTourlist.add(test5);
-        hotTourlist.add(test6);
 
         startpos = 0;
         endpos = 9;
@@ -99,7 +91,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
         adapter.SetTourListener(new Store_RecycleAdapter.TourListener() {
             @Override
             public void tourClick(View view, int position) {
-                Tour DisplayTour = hotTourlist.get(position);
+                TourCopy DisplayTour = hotTourlist.get(position);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.RecycleView_Container,Tour_Display_Frag.newInstance(DisplayTour))
                         .addToBackStack(null).commit();
@@ -196,16 +188,15 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
                         Log.v("Result","Got result array from Json object");
                         hotTourlist.clear();/////
                         for (int i = 0; i < rep.length() ; i++){
-                            Tour tour = new Tour();
-                            tour.setName(rep.getJSONObject(i).getString("tour_id"));
-                            tour.setDescription(rep.getJSONObject(i).getString("description"));
-                            tour.setPrice(Double.valueOf(rep.getJSONObject(i).getString("price")));
-                            tour.setCreator(rep.getJSONObject(i).getString("created-by"));
-                            Log.v("TourCheck",rep.getJSONObject(i).getString("tour_id") );
-                           // Log.v("hotourlist", hotTourlist.get(i).getName());
-                            hotTourlist.add(tour);
-                            Log.v("hotourlist",""+ hotTourlist.size());
-                            Log.v("hotourlist",""+ hotTourlist.get(i).getName());
+                            TourCopy tourcopy = new TourCopy();
+                            JSONObject list = new JSONObject();
+                            list = rep.getJSONObject(i);
+                            Log.v("CHECk", list.getString("tour_id"));
+                            tourcopy.setName(list.getString("tour_id"));
+                            tourcopy.setDescription(list.getString("description"));
+                            tourcopy.setPrice(Double.valueOf(list.getString("price")));
+                            tourcopy.setCreator(list.getString("created-by"));
+                            hotTourlist.add(tourcopy);
                         }
 
 
@@ -223,6 +214,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
         @Override
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
+            //Log.d("RESULT", result);
             Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
         }
 
