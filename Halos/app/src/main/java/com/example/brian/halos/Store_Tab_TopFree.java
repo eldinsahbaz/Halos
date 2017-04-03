@@ -2,11 +2,29 @@ package com.example.brian.halos;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 /**
@@ -18,10 +36,15 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class Store_Tab_TopFree extends Fragment implements Tour_Display_Frag.OnFragmentInteractionListener{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "Parameter";
+    public int startpos;
+    public int endpos;
+    RecyclerView recyclerView;
+    //public List<Tour> hotTourlist = new ArrayList<Tour>();
+    public List<TourCopy> hotTourlist = new ArrayList<TourCopy>();
+    TourCopy test1 = new TourCopy();
+    Double zero = 0.0;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -29,24 +52,17 @@ public class Store_Tab_TopFree extends Fragment implements Tour_Display_Frag.OnF
 
     private OnFragmentInteractionListener mListener;
 
+
     public Store_Tab_TopFree() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Store_Tab_TopFree.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static Store_Tab_TopFree newInstance(String param1, String param2) {
         Store_Tab_TopFree fragment = new Store_Tab_TopFree();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,15 +72,44 @@ public class Store_Tab_TopFree extends Fragment implements Tour_Display_Frag.OnF
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
+    Store_RecycleAdapter adapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_store__tab__top_free, container, false);
+        final View view = inflater.inflate(R.layout.fragment_store__tab__top_free, container, false);
+        test1.setCreator("Raymond Hu");
+        test1.setDescription("Welcome To a Halos Tour");
+        test1.setName("Journey in SU");
+        try {
+            test1.setPrice(zero);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        hotTourlist.add(test1);
+
+        startpos = 0;
+        endpos = 9;
+       GetTour getTour = new GetTour(startpos,endpos);
+        getTour.execute();
+        recyclerView = (RecyclerView)view.findViewById(R.id.RecycleView_Topfree);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new Store_RecycleAdapter(getActivity(),hotTourlist);
+        recyclerView.setAdapter(adapter);
+        adapter.SetTourListener(new Store_RecycleAdapter.TourListener() {
+            @Override
+            public void tourClick(View view, int position) {
+                TourCopy DisplayTour = hotTourlist.get(position);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.RecycleView_Container,Tour_Display_Frag.newInstance(DisplayTour))
+                        .addToBackStack(null).commit();
+            }
+        });
+        return view;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -110,4 +155,86 @@ public class Store_Tab_TopFree extends Fragment implements Tour_Display_Frag.OnF
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    private class GetTour extends AsyncTask<Void,Void,String> {
+        OkHttpClient client = new OkHttpClient();
+        String retVal;
+        String start;
+        String end;
+
+        protected GetTour(int s , int e){
+            start = String.valueOf(s);
+            end =  String.valueOf(e);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            Request request = new Request.Builder()
+                    // if you want to run on local use http://10.0.2.2:12344
+                    // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
+                    .url("http://lcs-vc-esahbaz.syr.edu:12344/get_tour?start="+start+"&end="+end)
+                    .addHeader("content-type", "application/json; charset=utf-8")
+                    .build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("Server Failure Response", call.request().body().toString());
+                    retVal = "cannot connect to server";
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+
+                    String responseData = response.body().string();
+                    Log.v("Store_tab_topfree", "onResponse:" + responseData);
+                    retVal = "success";
+
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        JSONObject respObject = jsonObject.getJSONObject("response");
+                        JSONArray rep = respObject.getJSONArray("result");
+                        Log.v("Result","Got result array from Json object");
+                        hotTourlist.clear();/////
+                        for (int i = 0; i < rep.length() ; i++){
+                            TourCopy tourcopy = new TourCopy();
+                            JSONObject list = new JSONObject();
+                            list = rep.getJSONObject(i);
+                            Log.v("CHECk", list.getString("tour_id"));
+                            tourcopy.setName(list.getString("tour_id"));
+                            tourcopy.setDescription(list.getString("description"));
+                            tourcopy.setPrice(Double.valueOf(list.getString("price")));
+                            tourcopy.setCreator(list.getString("created-by"));
+                            hotTourlist.add(tourcopy);
+                        }
+
+
+                    } catch (Exception e){
+                        Log.e("Store_tab_hot_tours", "Exception Thrown: " + e);
+                    }
+
+                }
+
+
+            });
+            return retVal;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // TODO: Must check that the location was processed to the database before making announcement
+            //Log.d("RESULT", result);
+            Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+
+
+    }
+
 }

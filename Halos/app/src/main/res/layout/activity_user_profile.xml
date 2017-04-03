@@ -24,9 +24,9 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="@drawable/pope"
+        app:srcCompat="@drawable/default_person"
         android:id="@+id/imageView"
-        android:layout_below="@+id/userProfileName"
+        android:layout_below="@+id/menu"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -35,62 +35,27 @@
         android:id="@+id/userProfileName"
         android:text="User Name Here"
         android:textAppearance="@android:style/TextAppearance.Large"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="19dp"
         android:layout_below="@+id/menu"
-        android:layout_alignStart="@+id/ratingBar2" />
+        android:layout_toEndOf="@+id/imageView"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="33dp" />
 
-    <RatingBar
-        android:id="@+id/ratingBar2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_alignParentEnd="true" />
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toStartOf="@+id/userProfileName"
+        android:orientation="vertical"
         android:layout_below="@+id/imageView"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:id="@+id/linearLayout2">
 
-        <LinearLayout
+
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:id="@+id/RecycleView_Topfree"
+            android:layout_height="match_parent" />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:id="@+id/user_tourcontainer"
-                android:layout_height="250dp">
 
-                <android.support.v4.view.ViewPager
-                    android:layout_width="match_parent"
-                    android:id="@+id/user_viewpager"
-                    android:layout_height="match_parent">
 
-                    <android.support.design.widget.TabLayout
-                        android:layout_width="match_parent"
-                        android:id="@+id/user_tablayout"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="top" />
-
-                </android.support.v4.view.ViewPager>
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:id="@+id/user_reviewcontainer"
-                android:layout_height="250dp">
-
-                <TextView
-                    android:id="@+id/textview100"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Reviews" />
-            </FrameLayout>
-        </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 
 </RelativeLayout>

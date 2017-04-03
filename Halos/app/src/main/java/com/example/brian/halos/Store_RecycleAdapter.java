@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 public class Store_RecycleAdapter extends RecyclerView.Adapter<Store_RecycleAdapter.ViewHolder> implements
-Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInteractionListener,Store_Tab_Explore.OnFragmentInteractionListener,
+Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInteractionListener,
         Store_Tab_HotTours.OnFragmentInteractionListener,Store_Tab_TopFree.OnFragmentInteractionListener
 {
 

@@ -18,14 +18,10 @@
         android:title="Settings"
         android:orderInCategory="103"
         android:id="@+id/activity_settings"/>
-    <item
-        android:title="Playlist"
-        android:orderInCategory="104"
-        android:id="@+id/play_list"/>
 
     <item
         android:title="@string/Logout"
-        android:orderInCategory="105"
+        android:orderInCategory="104"
         android:id="@+id/Logout" />
 
 </menu>

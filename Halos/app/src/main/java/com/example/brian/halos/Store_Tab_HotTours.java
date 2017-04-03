@@ -42,6 +42,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
     //public List<Tour> hotTourlist = new ArrayList<Tour>();
     public List<TourCopy> hotTourlist = new ArrayList<TourCopy>();
     TourCopy test1 = new TourCopy();
+    Double zero = 0.0;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -51,6 +52,10 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
 
     public Store_Tab_HotTours() {
         // Required empty public constructor
+        startpos = 0;
+        endpos = 9;
+        GetTour getTour = new GetTour(startpos,endpos);
+        getTour.execute();
     }
 
 
@@ -69,6 +74,11 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
+        startpos = 0;
+        endpos = 9;
+        GetTour getTour = new GetTour(startpos,endpos);
+        getTour.execute();
+
 
     }
     Store_RecycleAdapter adapter;
@@ -77,6 +87,14 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_store__tab__hot_tours, container, false);
+        test1.setCreator("Raymond Hu");
+        test1.setDescription("Welcome To a Halos Tour");
+        test1.setName("Journey in SU");
+        try {
+            test1.setPrice(zero);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         hotTourlist.add(test1);
 
         startpos = 0;
