@@ -5,34 +5,49 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class SettingsActivity extends AppCompatActivity {
     Button submitButton;
 
     TextView radiusText;
-
     SeekBar radiusBar;
-
     int radius;
+
+    Spinner category;
+    Spinner rankBy;
+    Spinner openNow;
+    Spinner travelMode;
+
+    EditText keyword;
+    EditText minPrice;
+    EditText maxPrice;
 
     String retVal;
 
@@ -48,16 +63,36 @@ public class SettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         radiusBar = (SeekBar) findViewById(R.id.settings_radius_bar);
-        radiusBar.setProgress(50);
+        radiusBar.setProgress(User.getRadius()*10);
         radiusText = (TextView) findViewById(R.id.setting_radius_text);
-        radiusText.setText(radiusBar.getProgress()/10 + " Miles");
+        radiusText.setText(User.getRadius() + " Miles");
         radius = radiusBar.getProgress();
+
+        category = (Spinner) findViewById(R.id.setting_type_drop_menu);
+        rankBy = (Spinner) findViewById(R.id.setting_rank_drop_menu);
+        openNow = (Spinner) findViewById(R.id.setting_opennow_drop_menu);
+        travelMode = (Spinner) findViewById(R.id.setting_mode_drop_menu);
+
+        keyword = (EditText) findViewById(R.id.setting_keyword_enter_text);
+        keyword.setText(User.getKeyword());
+        minPrice = (EditText) findViewById(R.id.setting_minprice_enter_text);
+        minPrice.setText(String.valueOf(User.getMinPrice()));
+        maxPrice = (EditText) findViewById(R.id.setting_maxprice_enter_text);
+        maxPrice.setText(String.valueOf(User.getMaxPrice()));
 
         submitButton = (Button) findViewById(R.id.settings_submit_btn);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                SettingsRequest settingsRequest = new SettingsRequest();
+                SettingsRequest settingsRequest = new SettingsRequest(  User.getName(),
+                                                                        User.getRadius(),
+                                                                        User.getCategory(),
+                                                                        User.getRankBy(),
+                                                                        Boolean.valueOf(User.getOpenNow()),
+                                                                        User.getKeyword(),
+                                                                        User.getMinPrice(),
+                                                                        User.getMaxPrice());
+                settingsRequest.execute();
 
                 Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
                 startActivity(i);
@@ -65,7 +100,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progress = 50;
+            int progress = User.getRadius()*10;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
@@ -75,12 +110,129 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(getApplicationContext(), "Started tracking seekbar", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.v("SeekBar", "Selected: " + progress);
+                try {
+                    User.setRadius(progress/10);
+                }catch (Exception e) {
+                    Log.e("SeekBar radius changed", e.getMessage());
+                }
+            }
+        });
+
+        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = parent.getItemAtPosition(position).toString();
+                User.setCategory(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        rankBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = parent.getItemAtPosition(position).toString();
+                User.setRankBy(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        openNow.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = parent.getItemAtPosition(position).toString();
+                User.setOpenNow(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        travelMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = parent.getItemAtPosition(position).toString();
+                User.setMode(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        keyword.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+//                // you can call or do what you want with your EditText here
+//                User.setKeyword(s.toString());
+//                Toast.makeText(SettingsActivity.this, s.toString() + " is your new keyword", Toast.LENGTH_SHORT).show();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // you can call or do what you want with your EditText here
+                User.setKeyword(s.toString());
+            }
+        });
+
+        minPrice.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+//                // you can call or do what you want with your EditText here
+//                try {
+//                    User.setMinPrice(Double.valueOf(s.toString()));
+//                    Toast.makeText(SettingsActivity.this, s.toString() + " is your new keyword", Toast.LENGTH_SHORT).show();
+//                } catch (Exception e) {
+//
+//                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // you can call or do what you want with your EditText here
+                try {
+                    User.setMinPrice(Double.valueOf(s.toString()));
+                } catch (Exception e) {
+
+                }
+            }
+        });
+
+        maxPrice.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                // you can call or do what you want with your EditText here
+//                try {
+//                    User.setMaxPrice(Double.valueOf(s.toString()));
+//                    Toast.makeText(SettingsActivity.this, s.toString() + " is your new keyword", Toast.LENGTH_SHORT).show();
+//                } catch (Exception e) {
+//
+//                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // you can call or do what you want with your EditText here
+                try {
+                    User.setMaxPrice(Double.valueOf(s.toString()));
+                } catch (Exception e) {
+
+                }
             }
         });
     }
@@ -123,12 +275,37 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... params) {
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            Map<String, String> json_params = new HashMap<String, String>();
+            json_params.put("username", username);
+            json_params.put("radius", String.valueOf(radius));
+            json_params.put("category", String.valueOf(category));
+            json_params.put("rankBy", String.valueOf(rankBy));
+            json_params.put("openNow", String.valueOf(openNow));
+            json_params.put("keyword", String.valueOf(keyword));
+            json_params.put("minprice", String.valueOf(minPrice));
+            json_params.put("maxprice", String.valueOf(maxPrice));
+            Log.e("RADIUS", User.getRadius() + "\t" + radius);
+            // TODO: need to have an id associated and maybe other things (travelled, guided, etc + cookies, ip, etc)
+            // TODO: need to encrypt data going over the wire
+
+            JSONObject json_parameter = new JSONObject(json_params);
+            RequestBody json_body = RequestBody.create(JSON, json_parameter.toString());
+//            Request request = new Request.Builder()
+//                    // if you want to run on local use http://10.0.2.2:12344
+//                    // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
+//                    .url("http://lcs-vc-esahbaz.syr.edu:12344/get_places")
+//                    .post(json_body)
+//                    .addHeader("content-type", "application/json; charset=utf-8")
+//                    .build();
+
             // TODO: need to have an id associated and maybe other things (cookies, ip, etc)
             // TODO: need to encrypt data going over the wire
             Request request = new Request.Builder()
                     // if you want to run on local use http://10.0.2.2:12344
                     // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
-                    .url("http://lcs-vc-esahbaz.syr.edu:12344/login/auth?user=" + username)
+                    .url("http://lcs-vc-esahbaz.syr.edu:12344/set_settings")
+                    .post(json_body)
                     .addHeader("content-type", "application/json; charset=utf-8")
                     .build();
 
@@ -144,9 +321,8 @@ public class SettingsActivity extends AppCompatActivity {
                 public void onResponse(Call call, Response response) throws IOException {
                     // get the response data from the server
                     String responseData = response.body().string();
-                    String correctResponse =  "login successful";
 
-                    Log.e("LoginActivity.java", "onResponse:" + responseData);
+                    Log.e("SettingsActivity.java", "onResponse:" + responseData);
 
                     try {
                         JSONObject jsonObject = new JSONObject(responseData);
@@ -155,18 +331,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                         retVal = result;
 
-                        if (result.equals(correctResponse)) {
-                            Log.e("LoginActivity.java", "result: " + result);
-
-                            Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
-                            startActivity(i);
-                        } else {
-                            Log.e("LoginActivity.java: " + result, correctResponse);
-                            retVal = result;
-                        }
-
                     } catch (Exception e){
-                        Log.e("LoginActivity.java", "Exception Thrown: " + e);
+                        Log.e("SettingsActivity.java", "Exception Thrown: " + e);
                         retVal = e.toString();
                     }
                 }
@@ -180,7 +346,7 @@ public class SettingsActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
             // TODO: toast is always one action behind? maybe try on real phone
-            Toast.makeText(SettingsActivity.this, result.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(SettingsActivity.this, retVal, Toast.LENGTH_LONG).show();
         }
 
         @Override

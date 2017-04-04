@@ -4,6 +4,8 @@ from flask_restful import reqparse
 from pymongo import MongoClient
 from datetime import datetime
 from OpenSSL import SSL
+from threading import Thread
+import concurrent.futures
 import json
 from bson import json_util
 import requests
@@ -30,29 +32,53 @@ statsd.increment('page.views')
 base_url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
 key = 'AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ'
 
-places = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=43.0481,-76.1474&radius=500&type=restaurant&key=AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ')
-
-@app.route('/places', methods=['GET'])
-def places():
-    return app.response_class(places.content, content_type='application/json')
-
 @app.route('/get_places', methods=['POST'])
 def get_places():
-    print 'Im HERE'
     latitude = request.json['lat']
     longitude = request.json['lng']
-    radius = str(3000)
-    # radius = request.json['radius'] #str(3000)   # later change this, just have to decide which way to get radius
-    # place_type = request.json['type']
-    # keyword = request.json['keyword']
-    url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key
+    radius = request.json['radius']
+    place_type = request.json['type']
+    if place_type is 'none':
+        add_type = ''
+        # if place_type = 'Nature and Landscape'/etc
+        # concurrently fetch all types in that category
+    else:
+        add_type = '&type=' + place_type
+    keyword = request.json['keyword']
+    if keyword is 'none':
+        add_keyword = ''
+    else:
+        add_keyword = '&keyword=' + keyword
+    url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + str(int(radius)*1610) + add_type + add_keyword + '&key=' + key
     places = requests.get(url)
-    # print '\n'
-    # print radius
-    # print place_type
-    # print keyword
-    # print '\n'
     return app.response_class(places.content, content_type='application/json')
+
+arts_and_entertainment = ['amusement_park', 'aquarium', 'art_gallery', 'book_store', 'bowling_alley', 'cafe', 'campground', 'casino', 'city_hall', 'embassy', 'library', 'lodging', 'movie_rental', 'movie_theater', 'night_club', 'rv_park', 'school', 'stadium', 'store', 'university', 'zoo']
+nature_and_landscape = ['campground', 'cemetery', 'park', 'zoo']
+food = ['bakery', 'bar', 'cafe', 'meal_delivery', 'meal_takeaway', 'restaurant']
+shopping = ['bicycle_store', 'book_store', 'clothing_store', 'convenience_store', 'department_store', 'electronics_store', 'furniture_store', 'hardware_store', 'home_goods_store', 'jewelry_store', 'liquor_store', 'pet_store', 'shoe_store', 'shopping_mall']
+all_types = arts_and_entertainment + nature_and_landscape + food + shopping
+
+URLS = ['www.google.com', 'www.time.com']
+
+# Retrieve a single page and report the URL and contents
+def load_url(url, timeout):
+    with urllib.request.urlopen(url, timeout=timeout) as conn:
+        return conn.read()
+
+def concurrent_fetch(type_list):
+    # We can use a with statement to ensure threads are cleaned up promptly
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(all_types)) as executor:
+        # Start the load operations and mark each future with its URL
+        future_to_url = {executor.submit(load_url, url, 60): url for url in URLS}
+        for future in concurrent.futures.as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                data = future.result()
+            except Exception as exc:
+                print('%r generated an exception: %s' % (url, exc))
+            else:
+                print('%r page is %d bytes' % (url, len(data)))
 
 
 # gets directions for tour from Google Maps Directions API
@@ -116,7 +142,13 @@ def login():
             	'travelled' : user['travelled'],
             	'created'	: user['created'],
             	'guided'	: user['guided'],
-            	'shopping_cart'	: user['shopping_cart']
+            	'shopping_cart'	: user['shopping_cart'],
+                'category' : user['category'],
+                'rankby'   : user['rankby'],
+                'opennow'  : user['opennow'],
+                'keyword'  : user['keyword'],
+                'minprice' : user['minprice'],
+                'maxprice' : user['maxprice']
             })
         else:
             output.append({
@@ -130,7 +162,13 @@ def login():
             	'travelled' : '',
             	'created'	: '',
             	'guided'	: '',
-            	'shopping_cart'	: ''
+            	'shopping_cart'	: '',
+                'category' : '',
+                'rankby'   : '',
+                'opennow'  : '',
+                'keyword'  : '',
+                'minprice' : '',
+                'maxprice' : ''
             })
     else:
         output.append({
@@ -144,7 +182,13 @@ def login():
             'travelled' : '',
             'created'	: '',
             'guided'	: '',
-            'shopping_cart'	: ''
+            'shopping_cart'	: '',
+            'category' : '',
+            'rankby'   : '',
+            'opennow'  : '',
+            'keyword'  : '',
+            'minprice' : '',
+            'maxprice' : ''
         })
     return jsonify(response = output)
 
@@ -155,7 +199,7 @@ def new_login():
     username = request.json['username']
     password = request.json['password']
     email = request.json['email']
-    radius = 1000   # radius in meters ~.6 miles
+    radius = 3000   # radius in meters ~.6 miles
     # TODO: check that username or email is not in login collection
     username_exists = auth.find_one({'username' : username})
     if username_exists:
@@ -173,7 +217,13 @@ def new_login():
     	'travelled' : [],
     	'created'	: [],
     	'guided'	: [],
-    	'shopping_cart'	: []
+    	'shopping_cart'	: [],
+        'category' : 'none',
+        'rankby'   : 'prominence',
+        'opennow'  : 'yes',
+        'keyword'  : 'none',
+        'minprice' : '0.0',
+        'maxprice' : '999999.99'
     })
     new_user = auth.find_one({'_id' : user_id})
     return jsonify(response = {
@@ -195,33 +245,51 @@ def get_all_users():
         	'travelled' : user['travelled'],
         	'created'	: user['created'],
         	'guided'	: user['guided'],
-        	'shopping_cart'	: user['shopping_cart']
+        	'shopping_cart'	: user['shopping_cart'],
+            'category' : user['category'],
+            'rankby'   : user['rankby'],
+            'opennow'  : user['opennow'],
+            'keyword'  : user['keyword'],
+            'minprice' : user['minprice'],
+            'maxprice' : user['maxprice']
         })
     return jsonify(response = {
         'result'    : output
     })
 
-# use SendGrid to send user an email if they forgot their password
-@app.route('/retrieve_pw', methods=['GET'])
-def get_pw():
+@app.route('/get_user', methods=['GET'])
+def get_user():
     auth = db.auth
+    username = request.args.get('user')
     output = []
-    for user in auth.find():
+    user = auth.find_one({
+        'username'  : username
+    })
+    if user:
         output.append({
+            'result' : 'settings updated successfully',
             '_id'       : str(user['_id']),
             'username'  : user['username'],
             'password'  : user['password'],
             'email'     : user['email'],
             'radius'    : user['radius'],
-        	'rating'  	: user['rating'],
-        	'travelled' : user['travelled'],
-        	'created'	: user['created'],
-        	'guided'	: user['guided'],
-        	'shopping_cart'	: user['shopping_cart']
+            'rating'  	: user['rating'],
+            'travelled' : user['travelled'],
+            'created'	: user['created'],
+            'guided'	: user['guided'],
+            'shopping_cart'	: user['shopping_cart'],
+            'category' : user['category'],
+            'rankby'   : user['rankby'],
+            'opennow'  : user['opennow'],
+            'keyword'  : user['keyword'],
+            'minprice' : user['minprice'],
+            'maxprice' : user['maxprice']
         })
-    return jsonify(response = {
-        'result'    : output
-    })
+    else:
+        output.append({
+            'result' : 'user not found'
+        })
+    return jsonify(response = output)
 
 #################### GEOCODING RELATED API CALLS ####################
 @app.route('/geocode', methods=['GET'])
@@ -234,10 +302,17 @@ def get_geocode():
     })
 
 #################### SETTINGS RELATED API CALLS ####################
-@app.route('/set_settings', methods=['PUT'])
+@app.route('/set_settings', methods=['POST'])
 def put_settings():
-    username = request.args.get('username')
-    radius = request.args.get('radius')
+    username = request.json['username']
+    radius = request.json['radius']
+    category = request.json['category']
+    rankby = request.json['rankBy']
+    opennow = request.json['openNow']
+    keyword = request.json['keyword']
+    minprice = request.json['minprice']
+    maxprice = request.json['maxprice']
+
     auth = db.auth
     user = auth.find_one({
         'username'  : username
@@ -247,26 +322,81 @@ def put_settings():
         auth.update_one(
             {'username': username},
             {
-                '$set': {'radius': radius}  # add more settings to update here
+                '$set': {
+                    'radius': radius,
+                    'category' : category,
+                    'rankby'   : rankby,
+                    'opennow'  : opennow,
+                    'keyword'  : keyword,
+                    'minprice' : minprice,
+                    'maxprice' : maxprice
+                    }
             }
         )
         # if (user['radius'] == radius):
-        output = {'result' : 'Settings updated'}    # when the surrounding code is uncommented, this is the if statement, so indent
+        output = []   # when the surrounding code is uncommented, this is the if statement, so indent
+        output.append({
+            'result' : 'settings updated successfully'
+            # '_id'       : str(user['_id']),
+            # 'username'  : user['username'],
+            # 'password'  : user['password'],
+            # 'email'     : user['email'],
+            # 'radius'    : user['radius'],
+            # 'rating'  	: user['rating'],
+            # 'travelled' : user['travelled'],
+            # 'created'	: user['created'],
+            # 'guided'	: user['guided'],
+            # 'shopping_cart'	: user['shopping_cart'],
+            # 'category' : user['category'],
+            # 'rankby'   : user['rankby'],
+            # 'opennow'  : user['opennow'],
+            # 'keyword'  : user['keyword'],
+            # 'minprice' : user['minprice'],
+            # 'maxprice' : user['maxprice']
+        })
         # else:
         #     # print user['radius']
         #     output = {'result' : 'Settings could not be updated'}
     else:
-        output = {'result' : 'User not found'}
+        output = {'result' : 'Error updating settings, user not found'}
     return jsonify(response = output)
 
+@app.route('/get_settings', methods=['GET'])
+def get_settings():
+    username = request.args.get('user')
+    auth = db.auth
+    user = auth.find_one({
+        'username'  : username
+    })
+    if user:
+        output = []   # when the surrounding code is uncommented, this is the if statement, so indent
+        output.append({
+            'result' : 'settings updated successfully',
+            '_id'       : str(user['_id']),
+            'username'  : user['username'],
+            'password'  : user['password'],
+            'email'     : user['email'],
+            'radius'    : user['radius'],
+            'rating'  	: user['rating'],
+            'travelled' : user['travelled'],
+            'created'	: user['created'],
+            'guided'	: user['guided'],
+            'shopping_cart'	: user['shopping_cart'],
+            'category' : user['category'],
+            'rankby'   : user['rankby'],
+            'opennow'  : user['opennow'],
+            'keyword'  : user['keyword'],
+            'minprice' : user['minprice'],
+            'maxprice' : user['maxprice']
+        })
+        return jsonify(response = output)
 
 #################### TOUR RELATED API CALLS ####################
-@app.route('/addtour', methods=['POST'])
+@app.route('/add_tour', methods=['POST'])
 def add_tour():
     tours = db.tours
-
     # get all tour arguments from url parameters
-    # TODO: NAME?
+    name = requests.json['name']
     contact_info = request.json['contact']
     guides = request.json['guides']
     tourists = request.json['tourists']
@@ -282,8 +412,17 @@ def add_tour():
     end_time = request.json['end-time']
     price = request.json['price']
     cover_photo = request.json['photo'] # TODO: not sure how to get image file over the network
+    rating = request.json['rating']
+    city = request.json['city']
+    state = request.json['state']
     #  put these params into the collection
-    user_id = auth.insert({
+    name = tours.find_one({
+        'name'  : name
+    })
+    if name:
+        output = {'result' : 'tour name taken'}
+        return jsonify(response = output)
+    tour_id = auth.insert({
         'contact_info' : contact_info,
         'guides'    : [],
         'tourists'  : [],
@@ -298,8 +437,25 @@ def add_tour():
         'start_time': start_time,
         'end_time'  : end_time,
         'price'     : price,
-        'cover_photo' : cover_photo
+        'cover_photo' : cover_photo,
+        'rating'    : rating,
+        'city'      : city,
+        'state'     : state
     })
+    output = {'result' : 'tour added successfully'}
+    return jsonify(response = output)
+
+@app.route('/get_tour', methods=['GET'])
+def get_tour():
+    tours = db.tours
+    # find all tours with ___ in name, or in ___ city, state
+
+@app.route('/recommend_tour', methods=['POST'])
+def recommend_tour():
+    tours = db.tours
+    # need all landmarks near locations
+    # build based on rating, types, keywords
+    # add highest 5/6 scores to tour, or down to certain threshold
 
 
 if __name__ == '__main__':

@@ -43,20 +43,27 @@
 
         <activity
             android:name=".HalosMapActivity"
-            android:label="Home" />
-        <activity android:name=".RetrievePasswordActivity" />
+            android:label="Home"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".RetrievePasswordActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".StoreActivity"
-            android:label="Store" />
+            android:label="Store"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".UserProfileActivity"
-            android:label="Your Profile" />
+            android:label="Your Profile"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SettingsActivity"
-            android:label="Settings" />
+            android:label="Settings"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Checkout_Store"
-            android:label="Store" />
+            android:label="Store"
+            android:screenOrientation="portrait"/>
         <!--
             <activity
             android:name="com.paypal.android.MEP.PayPalActivity"
@@ -67,13 +74,16 @@
         <activity android:name=".ConfirmationActivity" />
         <activity
             android:name=".TourMapActivity"
-            android:label="@string/title_activity_tour_map" />
+            android:label="@string/title_activity_tour_map"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".PlayList"
-            android:label="PlayList" />
+            android:label="PlayList"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".CreateTourActivity"
             android:label="@string/title_activity_create_tour"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 

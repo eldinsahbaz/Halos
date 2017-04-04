@@ -110,7 +110,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     // create tour object for when user adds locations to tour
     protected Tour mTour = new Tour();
-    protected User user = new User();
+    protected User user;
     protected LinkedList<Landmark> mTourList = new LinkedList<Landmark>();
 
     private OkHttpClient client = new OkHttpClient();
@@ -190,7 +190,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         setContentView(R.layout.activity_halos_map);
 
         //Setup Toolbar
-        Toolbar toolbar = (Toolbar)findViewById(R.id.menu);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.menu);
         setSupportActionBar(toolbar);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -681,7 +681,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                 pName.setText(clickedLandmark.getName());
                 pRating.setText(String.valueOf(clickedLandmark.getRating()));
-                pType.setText("Type");
+                pType.setText(clickedLandmark.getTypes());
 
                 GeocodeRequest geoRequest = new GeocodeRequest(clickedLandmark.getLatitude(), clickedLandmark.getLongitude());
                 geoRequest.execute();
@@ -745,6 +745,9 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
             Map<String, String> json_params = new HashMap<String, String>();
             json_params.put("lat", String.valueOf(mCurrentLocation.getLatitude()));
             json_params.put("lng", String.valueOf(mCurrentLocation.getLongitude()));
+            json_params.put("radius", String.valueOf(User.getRadius()*1610));
+            json_params.put("keyword", String.valueOf(User.getKeyword()));
+            Log.e("HalosMap Radius", User.getRadius() + "\t");
             // TODO: need to have an id associated and maybe other things (travelled, guided, etc + cookies, ip, etc)
             // TODO: need to encrypt data going over the wire
 
@@ -786,16 +789,31 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                                     // parse the places and add them to the map
                                     for (int i = 0; i < resArray.length(); i++) {
                                         try {
+                                            String rating, openNow;
                                             JSONObject resObject = resArray.getJSONObject(i);
                                             JSONObject geoObject = resObject.getJSONObject("geometry");
                                             String name = resObject.get("name").toString();
                                             String id = resObject.getString("place_id");
-//                                            String rating = resObject.get("rating").toString();
+                                            JSONArray typeArr = resObject.getJSONArray("types");
+                                            String types = "";
+                                            for (int k = 0; k < typeArr.length(); k++) {
+                                                types += ", " + typeArr.get(k);
+                                            }
+                                            types = types.substring(1);
+                                            try {
+                                                rating = resObject.get("rating").toString();
+                                            } catch (Exception e) {
+                                                rating = "0.0";
+                                            }
                                             JSONObject locObject = geoObject.getJSONObject("location");
                                             String lat = locObject.getString("lat");
                                             String lng = locObject.getString("lng");
-//                                            JSONObject hoursObject = resObject.getJSONObject("opening_hours");
-//                                            String openNow = hoursObject.getString("open_now");
+                                            try {
+                                                JSONObject hoursObject = resObject.getJSONObject("opening_hours");
+                                                openNow = hoursObject.getString("open_now");
+                                            } catch (Exception e) {
+                                                openNow = "true";
+                                            }
 //                                            Log.v("resObject", name);
 //                                            Log.v("resObject id", id);
 //                                            Log.v("resObject", rating);
@@ -805,14 +823,16 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
 //                                            Log.v("----------------------", "new resObject " + i);
                                             Landmark currLoc = new Landmark(
                                                     name,
-                                                    Double.valueOf("4.5"),
-                                                    Boolean.valueOf("yes"),
+                                                    Double.valueOf(rating),
+                                                    Boolean.valueOf(openNow),
                                                     Double.valueOf(lat),
-                                                    Double.valueOf(lng));
+                                                    Double.valueOf(lng),
+                                                    types);
                                             mLocsOnMapSet.put(id, currLoc);
                                             addPlaces(Double.valueOf(lat), Double.valueOf(lng), name, id);
                                         } catch (Exception e) {
                                             Log.e("Location Parse Handler", e.getMessage());
+//                                            Log.e("JSON DATA", resArray.toString());
                                         }
                                     }
                                 }

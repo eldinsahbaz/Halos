@@ -22,6 +22,7 @@ public class Landmark {
     protected boolean openNow;
     protected double latitude;
     protected double longitude;
+    protected String types;
 
 //    class Location():
 //    __Description = None
@@ -38,6 +39,7 @@ public class Landmark {
         name = "";
         latitude = 0.0;
         longitude = 0.0;
+        types = "";
     }
 
     public Landmark(String n, double r, boolean open, double lat, double lng) {
@@ -46,6 +48,15 @@ public class Landmark {
         openNow = open;
         latitude = lat;
         longitude = lng;
+    }
+
+    public Landmark(String n, double r, boolean open, double lat, double lng, String t) {
+        name = n;
+        rating = r;
+        openNow = open;
+        latitude = lat;
+        longitude = lng;
+        types = t;
     }
 
     public Landmark(String n, int r, Bitmap bm, boolean open, double lat, double lng) {
@@ -108,6 +119,10 @@ public class Landmark {
 //            return (self.__Rating).GetRating()
     public double getRating() {
         return rating;
+    }
+
+    public String getTypes() {
+        return types;
     }
 
 //    def SetLatitude(self, lat):

@@ -35,6 +35,13 @@ public class User implements Parcelable {
     protected static ShoppingCart userShoppingCart;
     protected static int rating;
     protected static int radius;
+    protected static String category;
+    protected static String keyword;
+    protected static String openNow;
+    protected static String rankBy;
+    protected static double minPrice;
+    protected static double maxPrice;
+    protected static String mode;
     protected static String id;
 
 //    def __init__(self):
@@ -57,8 +64,13 @@ public class User implements Parcelable {
         created = new HashMap<Tour, Boolean>();
         guided = new HashMap<Tour, Boolean>();
         userShoppingCart = new ShoppingCart();
+        category = "";
+        keyword = "";
+        openNow = "true";
+        minPrice = 0.00;
+        maxPrice = 99.99;
         rating = 0;
-        radius = 1000;    // measured in meters   ~1610 meters in a mile
+        radius = 3;    // measured in meters   ~1610 meters in a mile
     }
 
     public User(String n, String p, String e) {
@@ -70,8 +82,13 @@ public class User implements Parcelable {
         created = new HashMap<Tour, Boolean>();
         guided = new HashMap<Tour, Boolean>();
         userShoppingCart = new ShoppingCart();
+        category = "";
+        keyword = "";
+        openNow = "true";
+        minPrice = 0.00;
+        maxPrice = 99.99;
         rating = 0;
-        radius = 1000;    // measured in meters   ~1610 meters in a mile
+        radius = 3;    // measured in meters   ~1610 meters in a mile
     }
 
 //    def SetName(self, name):
@@ -82,7 +99,7 @@ public class User implements Parcelable {
 
 //    def GetName(self):
 //            return self.__Name
-    public String getName() {
+    public static String getName() {
         return name;
     }
 
@@ -229,7 +246,7 @@ public class User implements Parcelable {
 //    self.__Radius = radius
 //    else:
 //            return Exception("input is not an int")
-    public void setRadius(int r) throws Exception {
+    public static void setRadius(int r) throws Exception {
         if (r <= 0 || r >= Integer.MAX_VALUE) {
             throw new Exception("Invalid radius");
         }
@@ -238,9 +255,67 @@ public class User implements Parcelable {
 
 //    def GetRadius(self):
 //            return self.__Radius
-    public int getRadius() {
+    public static int getRadius() {
         return radius;
     }
+
+    public static void setCategory(String c) {
+        category = c;
+    }
+
+    public static String getCategory() {
+        return category;
+    }
+
+    public static void setKeyword(String k) {
+        keyword = k;
+    }
+
+    public static String getKeyword() {
+        return keyword;
+    }
+
+    public static void setOpenNow(String o) {
+        openNow = o;
+    }
+
+    public static String getOpenNow() {
+        return openNow;
+    }
+
+    public static void setRankBy(String r) {
+        rankBy = r;
+    }
+
+    public static String getRankBy() {
+        return rankBy;
+    }
+
+    public static void setMinPrice(double p) {
+        minPrice = p;
+    }
+
+    public static double getMinPrice() {
+        return minPrice;
+    }
+
+    public static void setMaxPrice(double p) {
+        maxPrice = p;
+    }
+
+    public static double getMaxPrice() {
+        return maxPrice;
+    }
+
+    public static void setMode(String m) {
+        mode = m;
+    }
+
+    public static String getMode() {
+        return mode;
+    }
+
+
 
     // return users id
     public String getId() {
