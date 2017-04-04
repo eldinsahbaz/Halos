@@ -77,13 +77,10 @@
             android:label="@string/title_activity_tour_map"
             android:screenOrientation="portrait"/>
         <activity
-<<<<<<< HEAD
             android:name=".PlayList"
             android:label="PlayList"
             android:screenOrientation="portrait"/>
         <activity
-=======
->>>>>>> 3984a064591c5e5b794a5ed976ec99d1bb45949f
             android:name=".CreateTourActivity"
             android:label="@string/title_activity_create_tour"
             android:screenOrientation="portrait"
