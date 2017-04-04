@@ -9,7 +9,7 @@ public class ShoppingCart {
     //
 //    class ShoppingCart():
 //    __ShoppingCart = None
-    LinkedList<Tour> shoppingCart;
+   static LinkedList<Tour> shoppingCart;
 
     public void ShoppingCart() {
         shoppingCart = new LinkedList<Tour>();

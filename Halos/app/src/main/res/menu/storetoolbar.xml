@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/Home2"
+        android:orderInCategory ="100"
+        android:title ="@string/Home"
+        app:showAsAction ="never"/>
+    <item
+        android:title="@string/User_Profile"
+        android:orderInCategory="101"
+        android:id="@+id/profile2" />
+    <item
+        android:title="@string/Store"
+        android:orderInCategory="102"
+        android:id="@+id/store2" />
+    <item
+        android:title="Settings"
+        android:orderInCategory="103"
+        android:id="@+id/activity_settings2"/>
+
+    <item
+        android:title="@string/Logout"
+        android:orderInCategory="104"
+        android:id="@+id/Logout2" />
+
+    <item
+        android:title="cart"
+        android:icon="@drawable/shopping_cart"
+        app:showAsAction ="always|collapseActionView"
+        android:id="@+id/Cart" />
+
+</menu>

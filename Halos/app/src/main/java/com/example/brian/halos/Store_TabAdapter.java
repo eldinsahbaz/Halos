@@ -1,18 +1,23 @@
 package com.example.brian.halos;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by raych on 2/24/2017.
  */
 
 public class Store_TabAdapter extends FragmentPagerAdapter implements Store_Tab_TopFree.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInteractionListener,
-        Store_Tab_HotTours.OnFragmentInteractionListener,Store_Tab_Checkout.OnFragmentInteractionListener{
-    final int tab_count =4;  //number of tabs in Store Activity
-    private String tab_titles[] = new String[] {"Hot Tours","Top Paid","Top Free","Checkout"};
+        Store_Tab_HotTours.OnFragmentInteractionListener{
+    final int tab_count =3;  //number of tabs in Store Activity
+    private String tab_titles[] = new String[] {"Hot Tours","Top Paid","Top Free"};
     public Store_TabAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -29,9 +34,6 @@ public class Store_TabAdapter extends FragmentPagerAdapter implements Store_Tab_
             case 2:
                 Store_Tab_TopFree frag2 = new Store_Tab_TopFree();
                 return frag2;
-            case 3:
-                Store_Tab_Checkout frag4 = new Store_Tab_Checkout();
-                return frag4;
         }
         return null;
     }

@@ -16,8 +16,7 @@ import java.util.List;
  * Created by raych on 2/24/2017.
  */
 
-public class Store_RecycleAdapter extends RecyclerView.Adapter<Store_RecycleAdapter.ViewHolder> implements
-Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInteractionListener,
+public class Store_RecycleAdapter extends RecyclerView.Adapter<Store_RecycleAdapter.ViewHolder> implements Store_Tab_TopPaid.OnFragmentInteractionListener,
         Store_Tab_HotTours.OnFragmentInteractionListener,Store_Tab_TopFree.OnFragmentInteractionListener
 {
 
@@ -30,9 +29,7 @@ Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInt
 
     }
 
-    public interface TourListener {
-        public void tourClick(View view,int position);
-    }
+
     public void SetTourListener(final TourListener listener) {
         this.tourListener =listener;
     }
@@ -55,15 +52,23 @@ Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInt
         holder.SetData(tour);
     }
 
-
+    public interface TourListener {
+        public void tourClick(View view,int position);
+        public void addClick(View view,int position);
+    }
 
     @Override
     public int getItemCount() {
-        return tourlist.size();
+        if (tourlist == null){
+            return 0;
+        }else {
+            return tourlist.size();
+        }
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView Picture;
+        public ImageView Picture,Add;
         public TextView Title,Description,user_creator,Price;
 
 
@@ -73,12 +78,21 @@ Store_Tab_Checkout.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInt
             Title = (TextView)itemView.findViewById(R.id.card_title);
             Description = (TextView)itemView.findViewById(R.id.card_description);
             user_creator = (TextView)itemView.findViewById(R.id.card_creator);
+            Add = (ImageView)itemView.findViewById(R.id.addimage);
             Price = (TextView)itemView.findViewById(R.id.card_price);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (tourListener != null){
                         tourListener.tourClick(view,getAdapterPosition());
+                    }
+                }
+            });
+            Add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (tourListener != null){
+                        tourListener.addClick(v,getAdapterPosition());
                     }
                 }
             });

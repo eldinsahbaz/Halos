@@ -113,6 +113,11 @@ public class Store_Tab_TopPaid extends Fragment implements Tour_Display_Frag.OnF
                         .replace(R.id.RecycleView_Container,Tour_Display_Frag.newInstance(DisplayTour))
                         .addToBackStack(null).commit();
             }
+
+            @Override
+            public void addClick(View view, int position) {
+
+            }
         });
         return view;
 
