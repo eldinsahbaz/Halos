@@ -38,20 +38,17 @@ def places():
 
 @app.route('/get_places', methods=['POST'])
 def get_places():
-    print 'Im HERE'
     latitude = request.json['lat']
     longitude = request.json['lng']
-    radius = str(3000)
-    # radius = request.json['radius'] #str(3000)   # later change this, just have to decide which way to get radius
-    # place_type = request.json['type']
-    # keyword = request.json['keyword']
-    url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key
+    radius = request.json['radius'] #str(3000)   # later change this, just have to decide which way to get radius
+    keyword = request.json['keyword']
+    url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key + '&keyword='  + keyword
     places = requests.get(url)
-    # print '\n'
-    # print radius
-    # print place_type
-    # print keyword
-    # print '\n'
+    print '\n'
+    print radius
+    print place_type
+    print keyword
+    print '\n'
     return app.response_class(places.content, content_type='application/json')
 
 
