@@ -133,7 +133,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
-
+    String usernameSave;
     /**
      * Provides the entry point to Google Play services.
      */
@@ -188,7 +188,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         buildGoogleApiClient();
 
         setContentView(R.layout.activity_halos_map);
-
+        usernameSave= getIntent().getStringExtra("username");
         //Setup Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.menu);
         setSupportActionBar(toolbar);
@@ -967,28 +967,29 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         switch( item.getItemId() ) {
             case R.id.Home:
                 Intent intent1 = new Intent(this, HalosMapActivity.class);
+                intent1.putExtra("username", usernameSave);
                 startActivity(intent1);
                 return true ;
             case R.id.store:
                 Intent intent2 = new Intent(this, StoreActivity.class);
+                intent2.putExtra("username", usernameSave);
                 startActivity(intent2);
                 return true ;
             case R.id.profile:
                 Intent intent3 = new Intent(this, UserProfileActivity.class);
+                intent3.putExtra("username", usernameSave);
                 startActivity(intent3);
                 return true ;
             case R.id.activity_settings:
                 Intent intent4 = new Intent(this, SettingsActivity.class);
+                intent4.putExtra("username", usernameSave);
                 startActivity(intent4);
                 return true ;
             case R.id.Logout:
                 Intent intent6 = new Intent(this, LoginActivity.class);
                 startActivity(intent6);
                 return true ;
-            case R.id.play_list:
-                Intent intent7 = new Intent(this, PlayList.class);
-                startActivity(intent7);
-                return true;
+
             default :
                 // If we got here , the user ’s action was not recognized .
                 // Invoke the superclass to handle it .

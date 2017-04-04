@@ -35,7 +35,7 @@ import okhttp3.Response;
 
 public class SettingsActivity extends AppCompatActivity {
     Button submitButton;
-
+    String usernameSave;
     TextView radiusText;
     SeekBar radiusBar;
     int radius;
@@ -57,7 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
+        usernameSave= getIntent().getStringExtra("username");
         //Setup Toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.menu);
         setSupportActionBar(toolbar);
@@ -361,28 +361,28 @@ public class SettingsActivity extends AppCompatActivity {
         switch( item.getItemId() ) {
             case R.id.Home:
                 Intent intent1 = new Intent(this, HalosMapActivity.class);
+                intent1.putExtra("username", usernameSave);
                 startActivity(intent1);
                 return true ;
             case R.id.store:
                 Intent intent2 = new Intent(this, StoreActivity.class);
+                intent2.putExtra("username", usernameSave);
                 startActivity(intent2);
                 return true ;
             case R.id.profile:
                 Intent intent3 = new Intent(this, UserProfileActivity.class);
+                intent3.putExtra("username", usernameSave);
                 startActivity(intent3);
                 return true ;
             case R.id.activity_settings:
                 Intent intent4 = new Intent(this, SettingsActivity.class);
+                intent4.putExtra("username", usernameSave);
                 startActivity(intent4);
                 return true ;
             case R.id.Logout:
                 Intent intent6 = new Intent(this, LoginActivity.class);
                 startActivity(intent6);
                 return true ;
-            case R.id.play_list:
-                Intent intent7 = new Intent(this, PlayList.class);
-                startActivity(intent7);
-                return true;
             default :
                 // If we got here , the user ’s action was not recognized .
                 // Invoke the superclass to handle it .

@@ -1,5 +1,6 @@
 package com.example.brian.halos;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -31,6 +32,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.brian.halos.R.id.store;
+
 
 public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.OnFragmentInteractionListener{
     // TODO: Rename parameter arguments, choose names that match
@@ -42,6 +45,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
     //public List<Tour> hotTourlist = new ArrayList<Tour>();
     public List<TourCopy> hotTourlist = new ArrayList<TourCopy>();
     TourCopy test1 = new TourCopy();
+    Double zero = 0.0;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -51,6 +55,10 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
 
     public Store_Tab_HotTours() {
         // Required empty public constructor
+        startpos = 0;
+        endpos = 12; //9
+        GetTour getTour = new GetTour(startpos,endpos);
+        getTour.execute();
     }
 
 
@@ -69,14 +77,33 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
+        startpos = 0;
+        endpos = 9;
+        GetTour getTour = new GetTour(startpos,endpos);
+        getTour.execute();
+
 
     }
+
+
+    public interface AddTourCopyListerner{
+        public void AddTourCopy(TourCopy copy);
+    }
+
     Store_RecycleAdapter adapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_store__tab__hot_tours, container, false);
+        test1.setCreator("Raymond Hu");
+        test1.setDescription("Welcome To a Halos Tour");
+        test1.setName("Journey in SU");
+        try {
+            test1.setPrice(zero);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         hotTourlist.add(test1);
 
         startpos = 0;
@@ -88,6 +115,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
         recyclerView.setLayoutManager(layoutManager);
         adapter = new Store_RecycleAdapter(getActivity(),hotTourlist);
         recyclerView.setAdapter(adapter);
+
         adapter.SetTourListener(new Store_RecycleAdapter.TourListener() {
             @Override
             public void tourClick(View view, int position) {
@@ -96,9 +124,24 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
                         .replace(R.id.RecycleView_Container,Tour_Display_Frag.newInstance(DisplayTour))
                         .addToBackStack(null).commit();
             }
+
+            @Override
+            public void addClick(View view, int position) {
+                TourCopy tourCopy = hotTourlist.get(position);
+                final AddTourCopyListerner addTourCopyListerner;
+                try{
+                    addTourCopyListerner = (AddTourCopyListerner)getContext();
+                    addTourCopyListerner.AddTourCopy(tourCopy);
+                }catch (ClassCastException e){
+                    throw new ClassCastException("Check");
+                }
+
+            }
         });
         return view;
     }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

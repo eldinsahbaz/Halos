@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/blue"
     android:weightSum="1"
-    tools:context="com.example.brian.halos.Checkout_Store">
+   >
 
     <TextView
         android:id="@+id/checkout_title"
@@ -29,26 +29,31 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:id="@+id/RecycleView_Checkout"
-            android:layout_height="352dp"
-            android:layout_weight="0.96" />
+            android:layout_height="match_parent"
+            android:layout_weight="0.85" />
 
-        <TextView
-            android:id="@+id/cart_total"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:text="TextView" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="0.23">
 
-        <Button
-            android:id="@+id/checkout_button"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:text="Buy" />
+            <Button
+                android:id="@+id/checkout_button"
+                android:layout_width="172dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Buy" />
 
+            <Button
+                android:id="@+id/refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Refresh" />
+        </LinearLayout>
     </LinearLayout>
 
 
 </LinearLayout>
-
-
