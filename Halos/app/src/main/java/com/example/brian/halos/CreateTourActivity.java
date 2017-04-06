@@ -190,7 +190,7 @@ public class CreateTourActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
-            Toast.makeText(CreateTourActivity.this, result, Toast.LENGTH_LONG).show();
+            Toast.makeText(CreateTourActivity.this, "Created", Toast.LENGTH_LONG).show();
         }
 
         @Override

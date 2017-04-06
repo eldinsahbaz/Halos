@@ -76,10 +76,7 @@
             android:name=".TourMapActivity"
             android:label="@string/title_activity_tour_map"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".PlayList"
-            android:label="PlayList"
-            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".CreateTourActivity"
             android:label="@string/title_activity_create_tour"

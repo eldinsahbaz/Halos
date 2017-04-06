@@ -40,6 +40,7 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
     //Payment Amount
     private String paymentAmount;
     Checkout_RecycleAdapter checkout_recycleAdapter;
+    String username3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
         buttonPay = (Button) findViewById(R.id.checkout_button);
         showamount = (TextView)findViewById(R.id.cart_total);
         Intent intent2 = this.getIntent();
+        username3 = getIntent().getStringExtra("username");
         Bundle bundle = intent2.getExtras();
         amount = 0;
         cart2 = (List<TourCopy>) bundle.getSerializable("list");
@@ -92,7 +94,6 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
 
         //Creating Paypal Payment activity intent
         Intent intent = new Intent(this, PaymentActivity.class);
-
         //putting the paypal configuration to the intent
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
 
@@ -123,6 +124,7 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
                         //Starting a new activity for the payment details and also putting the payment details with intent
                         startActivity(new Intent(this, ConfirmationActivity.class)
                                 .putExtra("PaymentDetails", paymentDetails)
+                                .putExtra("username",username3)
                                 .putExtra("PaymentAmount", paymentAmount));
 
                     } catch (JSONException e) {

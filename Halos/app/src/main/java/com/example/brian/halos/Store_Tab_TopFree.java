@@ -230,7 +230,7 @@ public class Store_Tab_TopFree extends Fragment implements Tour_Display_Frag.OnF
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
             //Log.d("RESULT", result);
-            Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
+           // Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
         }
 
         @Override

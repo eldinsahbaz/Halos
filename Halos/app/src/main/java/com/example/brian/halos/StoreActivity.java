@@ -103,12 +103,12 @@ public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTo
 
                if (cart.contains(copy)){
                     cart.remove(copy);
-                    Toast.makeText(getApplicationContext(),"Removed ",Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(),"Removed ",Toast.LENGTH_SHORT).show();
                     Log.v("Cart","Removed"+copy.getName());
                 }else {
                     cart.add(copy);
                     Log.v("Cart","Add"+copy.getName());
-                   Toast.makeText(getApplicationContext(),"Added ",Toast.LENGTH_SHORT);
+                   Toast.makeText(getApplicationContext(),"Added ",Toast.LENGTH_SHORT).show();
                 }
 
     }

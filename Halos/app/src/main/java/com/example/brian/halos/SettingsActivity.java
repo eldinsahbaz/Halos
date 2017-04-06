@@ -95,6 +95,7 @@ public class SettingsActivity extends AppCompatActivity {
                 settingsRequest.execute();
 
                 Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
+                i.putExtra("username", usernameSave);
                 startActivity(i);
             }
         });

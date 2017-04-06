@@ -12,19 +12,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 // Source code  from https://www.simplifiedcoding.net/android-paypal-integration-tutorial/ by belal khan
 public class ConfirmationActivity extends AppCompatActivity {
-
+    String username3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
         //Getting Intent
         Intent intent = getIntent();
-
+        username3 = getIntent().getStringExtra("username");
         Button returnhome = (Button)findViewById(R.id.return_home);
         returnhome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent1 = new Intent(getApplicationContext(), HalosMapActivity.class);
+                intent1.putExtra("username",username3);
                 startActivity(intent1);
             }
         });
