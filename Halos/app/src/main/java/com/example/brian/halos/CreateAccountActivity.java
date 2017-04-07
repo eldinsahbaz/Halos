@@ -1,7 +1,9 @@
 package com.example.brian.halos;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,17 +54,29 @@ public class CreateAccountActivity extends AppCompatActivity {
         createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(i);
-
                 String username = mUsername.getText().toString();
                 String password = mPassword1.getText().toString();
                 String email = mEmail.getText().toString();
 
                 User user = new User(username, password, email);
 
-                if (mPassword1.getText().toString().equals(mPassword2.getText().toString())) {
+                if (username.equals("") || password.equals("") || email.equals("")) {
+//                    AlertDialog alertDialog = new AlertDialog.Builder(CreateAccountActivity.this).create();
+//                    alertDialog.setTitle("Missing Field");
+//                    alertDialog.setMessage("Please fill out all fields before creating account");
+//                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+//                            new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//                    alertDialog.show();
+                    Toast.makeText(CreateAccountActivity.this, "Please fill out all fields", Toast.LENGTH_LONG).show();
+                }
+
+                else if (mPassword1.getText().toString().equals(mPassword2.getText().toString()) && !password.equals("")) {
                     // CreateAccount cannot be run on main thread -> see code below, it extends AsyncTask
+                    Log.e("account created", username);
                     Account account = new Account(user);
                     account.execute();
                 }
@@ -118,7 +132,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     // get the response data from the server
                     String responseData = response.body().string();
 
-                    Log.e("LoginActivity.java", "onResponse:" + responseData);
+                    Log.e("CreateAccountActivity", "onResponse:" + responseData);
 
                     try {
                         JSONObject jsonObject = new JSONObject(responseData);
@@ -128,21 +142,21 @@ public class CreateAccountActivity extends AppCompatActivity {
                         retVal = result;
 
                         if (result.equals(accountCreated)) {
-                            Log.e("LoginActivity.java", "result: " + result);
+                            Log.e("CreateAccountActivity", "result: " + result);
 
                             Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
                             i.putExtra("username",username);
                             startActivity(i);
                         } else if (result.equals(emailTaken)){
-                            Log.e("LoginActivity.java: " + result, emailTaken);
+                            Log.e("CreateAccountActivity" + result, emailTaken);
                             retVal = result;
                         } else if (result.equals(usernameTaken)) {
-                            Log.e("LoginActivity.java: " + result, usernameTaken);
+                            Log.e("CreateAccountActivity" + result, usernameTaken);
                             retVal = result;
                         }
 
                     } catch (Exception e){
-                        Log.e("LoginActivity.java", "Exception Thrown: " + e);
+                        Log.e("CreateAccountActivity", "Exception Thrown: " + e);
                         retVal = e.toString();
                     }
 
