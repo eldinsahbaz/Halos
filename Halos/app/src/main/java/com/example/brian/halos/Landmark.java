@@ -160,6 +160,8 @@ public class Landmark {
         }
         else if (lon < -90.0) {
             throw new Exception("Longitude is below acceptable range");
+        } else {
+            longitude= lon;
         }
     }
 

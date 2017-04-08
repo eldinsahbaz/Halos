@@ -167,86 +167,90 @@ public class Store_Tab_TopPaid extends Fragment implements Tour_Display_Frag.OnF
         void onFragmentInteraction(Uri uri);
     }
 
-    private class GetTour extends AsyncTask<Void,Void,String> {
-        OkHttpClient client = new OkHttpClient();
-        String retVal;
-        String start;
-        String end;
+        private class GetTour extends AsyncTask<Void,Void,String> {
+            OkHttpClient client = new OkHttpClient();
+            String retVal;
+            String start;
+            String end;
 
-        protected GetTour(int s , int e){
-            start = String.valueOf(s);
-            end =  String.valueOf(e);
-        }
+            protected GetTour(int s , int e){
+                start = String.valueOf(s);
+                end =  String.valueOf(e);
+            }
 
-        @Override
-        protected String doInBackground(Void... voids) {
+            @Override
+            protected String doInBackground(Void... voids) {
 
-            Request request = new Request.Builder()
-                    // if you want to run on local use http://10.0.2.2:12344
-                    // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
-                    .url("http://lcs-vc-esahbaz.syr.edu:12344/get_tour?start="+start+"&end="+end)
-                    .addHeader("content-type", "application/json; charset=utf-8")
-                    .build();
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.e("Server Failure Response", call.request().body().toString());
-                    retVal = "cannot connect to server";
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-
-                    String responseData = response.body().string();
-                    Log.v("Store_tab_toppaid", "onResponse:" + responseData);
-                    retVal = "success";
-
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseData);
-                        JSONObject respObject = jsonObject.getJSONObject("response");
-                        JSONArray rep = respObject.getJSONArray("result");
-                        Log.v("Result","Got result array from Json object");
-                        hotTourlist.clear();/////
-                        for (int i = 0; i < rep.length() ; i++){
-                            TourCopy tourcopy = new TourCopy();
-                            JSONObject list = new JSONObject();
-                            list = rep.getJSONObject(i);
-                            Log.v("CHECk", list.getString("tour_id"));
-                            tourcopy.setName(list.getString("tour_id"));
-                            tourcopy.setDescription(list.getString("description"));
-                            tourcopy.setPrice(Double.valueOf(list.getString("price")));
-                            tourcopy.setCreator(list.getString("created-by"));
-                            hotTourlist.add(tourcopy);
-                        }
-
-
-                    } catch (Exception e){
-                        Log.e("Store_tab_hot_tours", "Exception Thrown: " + e);
+                Request request = new Request.Builder()
+                        // if you want to run on local use http://10.0.2.2:12344
+                        // if you want to run on lcs server use http://lcs-vc-esahbaz.syr.edu:12344
+                        .url("http://lcs-vc-esahbaz.syr.edu:12344/get_tour?start="+start+"&end="+end)
+                        .addHeader("content-type", "application/json; charset=utf-8")
+                        .build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.e("Server Failure Response", call.request().body().toString());
+                        retVal = "cannot connect to server";
                     }
 
-                }
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+
+                        String responseData = response.body().string();
+                        Log.v("Store_tab_toppaid", "onResponse:" + responseData);
+                        retVal = "success";
 
 
-            });
-            return retVal;
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseData);
+                            JSONObject respObject = jsonObject.getJSONObject("response");
+                            JSONArray rep = respObject.getJSONArray("result");
+                            Log.v("Result","Got result array from Json object");
+                            hotTourlist.clear();/////
+                            for (int i = 0; i < rep.length() ; i++){
+                                TourCopy tourcopy = new TourCopy();
+                                JSONObject list = new JSONObject();
+                                list = rep.getJSONObject(i);
+                                Log.v("CHECk", list.getString("tour_id"));
+                                tourcopy.setName(list.getString("tour_id"));
+                                tourcopy.setDescription(list.getString("description"));
+                                tourcopy.setPrice(Double.valueOf(list.getString("price")));
+                                tourcopy.setCreator(list.getString("created-by"));
+                                if (Double.valueOf(list.getString("price")) > 0) {
+                                    hotTourlist.add(tourcopy);
+                                }
+                            }
+
+
+                        } catch (Exception e){
+                            Log.e("Store_tab_hot_tours", "Exception Thrown: " + e);
+                        }
+
+                    }
+
+
+                });
+                return retVal;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                // TODO: Must check that the location was processed to the database before making announcement
+                //Log.d("RESULT", result);
+              //  Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            protected void onPreExecute() {}
+
+            @Override
+            protected void onProgressUpdate(Void... values) {}
+
+
         }
 
-        @Override
-        protected void onPostExecute(String result) {
-            // TODO: Must check that the location was processed to the database before making announcement
-            //Log.d("RESULT", result);
-          //  Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
-        }
 
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
-
-
+    public void onBackPressed() {
     }
-
-
 }

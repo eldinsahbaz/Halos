@@ -104,7 +104,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
         } catch (Exception e) {
             e.printStackTrace();
         }
-        hotTourlist.add(test1);
+       hotTourlist.add(test1);
 
         startpos = 0;
         endpos = 9;
@@ -270,9 +270,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
 
     }
 
-
-
-
-
+    public void onBackPressed() {
+    }
 
 }

@@ -53,4 +53,9 @@ public class ConfirmationActivity extends AppCompatActivity {
         textViewAmount.setText(paymentAmount+" USD");
     }
 
+
+    @Override
+    public void onBackPressed() {
+    }
+
 }

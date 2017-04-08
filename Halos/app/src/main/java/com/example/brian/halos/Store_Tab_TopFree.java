@@ -211,7 +211,9 @@ public class Store_Tab_TopFree extends Fragment implements Tour_Display_Frag.OnF
                             tourcopy.setDescription(list.getString("description"));
                             tourcopy.setPrice(Double.valueOf(list.getString("price")));
                             tourcopy.setCreator(list.getString("created-by"));
-                            hotTourlist.add(tourcopy);
+                            if (Double.valueOf(list.getString("price")) == 0) {
+                                hotTourlist.add(tourcopy);
+                            }
                         }
 
 
@@ -242,4 +244,6 @@ public class Store_Tab_TopFree extends Fragment implements Tour_Display_Frag.OnF
 
     }
 
+    public void onBackPressed() {
+    }
 }

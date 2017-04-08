@@ -105,15 +105,17 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
         LatLng final_stop = new LatLng(mTour.landmarks.getLast().getLatitude(),mTour.landmarks.getLast().getLongitude());
         LatLng beginning = new LatLng(mTour.landmarks.getFirst().getLatitude(),mTour.landmarks.getFirst().getLongitude());
         String url = getDirectionsUrl();
-        Log.v(TAG,""+url.length());
+        Log.v("URL LENGTH",""+url.length());
+        Log.v("URL",url);
         DownloadTask downloadTask = new DownloadTask();
         downloadTask.execute(url);
+
         //DownloadTask downloadTask = new DownloadTask();
         //downloadTask.execute(url);
         //EXTEMRE PROBLEM- USING back button and trying to restart tour again. will not work. need garbage colleciton?
         // -  maximum number of waypoints is 23 for direction api
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+                // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);

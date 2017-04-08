@@ -996,6 +996,8 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    @Override
+    public void onBackPressed() {
+    }
 }
 

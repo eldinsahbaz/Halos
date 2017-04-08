@@ -38,7 +38,6 @@ public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTo
         Store_TabAdapter store_adapter= new Store_TabAdapter(getSupportFragmentManager());
         viewpager.setAdapter(store_adapter);
         viewpager.setOffscreenPageLimit(limit);
-
     }
 
 
@@ -72,15 +71,13 @@ public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTo
                 return true ;
             case R.id.Logout2:
                 Intent intent6 = new Intent(this, LoginActivity.class);
+                cart.clear();
                 startActivity(intent6);
                 return true ;
             case R.id.Cart:
                 Intent intent7 = new Intent(this, Checkout_Store.class);
                 intent7.putExtra("username",usernameSave);
                 Bundle bundle = new Bundle();
-                if (cart.isEmpty()) {
-                    cart.add(remove1);
-                }
                 bundle.putSerializable("list",(Serializable)cart);
                 intent7.putExtras(bundle);
                 startActivity(intent7);
@@ -111,5 +108,9 @@ public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTo
                    Toast.makeText(getApplicationContext(),"Added ",Toast.LENGTH_SHORT).show();
                 }
 
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }
