@@ -56,7 +56,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
     public Store_Tab_HotTours() {
         // Required empty public constructor
         startpos = 0;
-        endpos = 12; //9
+        endpos = 15; //9
         GetTour getTour = new GetTour(startpos,endpos);
         getTour.execute();
     }
@@ -128,7 +128,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
             @Override
             public void addClick(View view, int position) {
                 TourCopy tourCopy = hotTourlist.get(position);
-                final AddTourCopyListerner addTourCopyListerner;
+                 AddTourCopyListerner addTourCopyListerner;
                 try{
                     addTourCopyListerner = (AddTourCopyListerner)getContext();
                     addTourCopyListerner.AddTourCopy(tourCopy);
@@ -137,6 +137,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
                 }
 
             }
+
         });
         return view;
     }

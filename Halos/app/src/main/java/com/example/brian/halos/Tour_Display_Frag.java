@@ -70,10 +70,10 @@ public class Tour_Display_Frag extends Fragment {
         //NEED ATTRIBUTES of creator, title, Description in Tour class.
         //attributes might be contact info?
         //And Landmarks
-        imageView.setImageResource(R.drawable.hollywood);
-        title.setText(Tourdata.getName());
-        Description.setText(Tourdata.getDescription());
-        creator.setText(Tourdata.getCreator());
+        imageView.setImageResource(R.drawable.nyc);
+        title.setText("Tour Name: " +Tourdata.getName());
+        Description.setText("Description: "+Tourdata.getDescription());
+        creator.setText("Creator: "+Tourdata.getCreator());
         return view;
     }
 

@@ -91,7 +91,7 @@ public class Store_Tab_TopFree extends Fragment implements Tour_Display_Frag.OnF
         hotTourlist.add(test1);
 
         startpos = 0;
-        endpos = 9;
+        endpos = 12;
        GetTour getTour = new GetTour(startpos,endpos);
         getTour.execute();
         recyclerView = (RecyclerView)view.findViewById(R.id.RecycleView_Topfree);
@@ -110,11 +110,22 @@ public class Store_Tab_TopFree extends Fragment implements Tour_Display_Frag.OnF
 
             @Override
             public void addClick(View view, int position) {
-
+                TourCopy tourCopy3 = hotTourlist.get(position);
+                AddTourCopyListerner3 addTourCopyListerner3;
+                try{
+                    addTourCopyListerner3 = (AddTourCopyListerner3)getContext();
+                    addTourCopyListerner3.AddTourCopy3(tourCopy3);
+                }catch (ClassCastException e){
+                    throw new ClassCastException("Check");
+                }
             }
         });
         return view;
 
+    }
+
+    public interface AddTourCopyListerner3{
+        public void AddTourCopy3(TourCopy copy);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

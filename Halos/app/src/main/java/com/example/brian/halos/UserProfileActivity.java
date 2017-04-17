@@ -61,8 +61,11 @@ import okhttp3.Response;
 public class UserProfileActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     String usernameSave;
     RecyclerView recyclerView;
+    RecyclerView recyclerView2;
     Profile_Adapter adapter;
+    Profile_Adapter2 adapter2;
     List<String> createdTours = new ArrayList<String>();
+    List<String> BoughtTours = new ArrayList<String>();
     String passtoServerTour="";
     protected LinkedList<Landmark> TourList = new LinkedList<Landmark>();
     private OkHttpClient client = new OkHttpClient();
@@ -100,6 +103,7 @@ public class UserProfileActivity extends AppCompatActivity implements GoogleApiC
         recyclerView.setLayoutManager(layoutManager);
         adapter = new Profile_Adapter(getApplicationContext(),createdTours);
         recyclerView.setAdapter(adapter);
+
 
         adapter.SetTourListener(new Profile_Adapter.TourclickListerner() {
             @Override
@@ -198,13 +202,27 @@ public class UserProfileActivity extends AppCompatActivity implements GoogleApiC
                         createdTours.clear();
                         JSONObject jsonObject = new JSONObject(responseData);
                         JSONObject respObject = jsonObject.getJSONObject("response");
-                        JSONArray rep = respObject.getJSONArray("created");
-                        Log.v("Result","Got result array from Json object");
-                        for (int i = 0; i < rep.length() ; i++){
-                            String tourname = rep.getString(i);
-                            createdTours.add(tourname);
+
+                        try {
+                            JSONArray rep = respObject.getJSONArray("created");
+                            for (int i = 0; i < rep.length() ; i++){
+                                String tourname = rep.getString(i);
+                                createdTours.add(tourname);
+                            }
+                        }catch (Exception e){
+                            Log.e("Error", "nothing in created");
                         }
 
+                        try {
+                            JSONArray rep2 = respObject.getJSONArray("bought");
+                            Log.v("Result","Got result array from Json object");
+                            for (int i = 0; i < rep2.length() ; i++){
+                                String tourname2 = rep2.getString(i);
+                                createdTours.add(tourname2);
+                            }
+                        }catch (Exception e2){
+                            Log.e("Error", "nothing in bought");
+                        }
 
                     } catch (Exception e){
                         Log.e("User_Profile", "Exception Thrown: " + e);
@@ -331,6 +349,7 @@ public class UserProfileActivity extends AppCompatActivity implements GoogleApiC
                 startActivity(tourProfile);
             }
             else {
+               // Toast.makeText(getApplicationContext(),"Tour Doesn't Exist", Toast.LENGTH_SHORT).show();
                 Log.d("MapActivty", "tour empty");
             }
         }

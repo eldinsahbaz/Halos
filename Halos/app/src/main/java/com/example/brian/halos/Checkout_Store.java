@@ -151,6 +151,8 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
                         Log.i("paymentExample", paymentDetails);
                         UpdateBought updateBought = new UpdateBought();
                         updateBought.execute();
+                        StoreActivity.cart.clear();
+                        Checkout_Store.cart2.clear();
                         //Starting a new activity for the payment details and also putting the payment details with intent
                         startActivity(new Intent(this, ConfirmationActivity.class)
                                 .putExtra("PaymentDetails", paymentDetails)

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/halos_blue"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.brian.halos.CreateTourActivity"
     tools:showIn="@layout/activity_create_tour">
@@ -14,6 +15,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginBottom="8dp"
         android:background="@color/white"
+        android:backgroundTint="@color/halos_orange"
         android:id="@+id/tour_id"
         android:inputType="textEmailAddress"
         android:hint="Enter Tour Name" />
@@ -23,18 +25,23 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:id="@+id/tour_creator"
+        android:gravity="center"
+        android:backgroundTint="@color/halos_orange"
         android:layout_below="@+id/tour_id"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="16dp" />
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
         android:id="@+id/tour_description"
-        android:inputType="textEmailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:backgroundTint="@color/halos_orange"
         android:hint="Type Tour Description"
+        android:inputType="textEmailAddress"
         android:layout_below="@+id/tour_creator"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="25dp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -42,20 +49,22 @@
         android:background="@color/white"
         android:id="@+id/tour_price"
         android:inputType="number"
+        android:backgroundTint="@color/halos_orange"
         android:hint="Type Tour Price"
         android:layout_below="@+id/tour_description"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="41dp" />
 
 
     <Button
         android:id="@+id/create_tour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="185dp"
         android:text="Create"
-        android:layout_below="@+id/tour_id"
+        android:layout_marginStart="48dp"
+        android:layout_below="@+id/tour_price"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="52dp" />
+        android:layout_marginTop="24dp" />
 
     <Button
         android:id="@+id/create_tour_cancel"

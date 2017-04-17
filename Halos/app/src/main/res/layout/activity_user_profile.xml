@@ -56,8 +56,6 @@
             android:id="@+id/RecycleView_UserProfile"
             android:layout_height="match_parent" />
 
-
-
     </LinearLayout>
 
 </RelativeLayout>

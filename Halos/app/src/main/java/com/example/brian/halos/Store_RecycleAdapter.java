@@ -99,7 +99,7 @@ public class Store_RecycleAdapter extends RecyclerView.Adapter<Store_RecycleAdap
         }
 
         public void SetData(TourCopy tour) {
-            Picture.setImageResource(R.drawable.logo);  //Change when image is added into tour class
+            Picture.setImageResource(R.drawable.nyc);  //Change when image is added into tour class
             Title.setText(tour.getName());
             Description.setText(tour.getDescription());
             user_creator.setText(tour.getCreator());

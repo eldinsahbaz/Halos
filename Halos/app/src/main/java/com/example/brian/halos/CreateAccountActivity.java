@@ -10,9 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.content.DialogInterface;
 import org.json.JSONObject;
-
+import android.support.v7.app.AlertDialog;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,22 +52,20 @@ public class CreateAccountActivity extends AppCompatActivity {
         createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(i);
+
 
                 String username = mUsername.getText().toString();
                 String password = mPassword1.getText().toString();
                 String email = mEmail.getText().toString();
 
                 User user = new User(username, password, email);
-
-                if (mPassword1.getText().toString().equals(mPassword2.getText().toString())) {
-                    // CreateAccount cannot be run on main thread -> see code below, it extends AsyncTask
+                if (username.equals("") || password.equals("") || email.equals("")) {
+                    Toast.makeText(CreateAccountActivity.this, "Please fill out all fields", Toast.LENGTH_LONG).show();
+                }
+                else if (mPassword1.getText().toString().equals(mPassword2.getText().toString()) && !password.equals("")) {
+                    Log.e("account created", username);
                     Account account = new Account(user);
                     account.execute();
-                }
-                else {
-                    Toast.makeText(CreateAccountActivity.this, "Passwords do not match", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -118,7 +116,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     // get the response data from the server
                     String responseData = response.body().string();
 
-                    Log.e("LoginActivity.java", "onResponse:" + responseData);
+                    Log.e("CreateAccountActivity", "onResponse:" + responseData);
 
                     try {
                         JSONObject jsonObject = new JSONObject(responseData);
@@ -128,21 +126,21 @@ public class CreateAccountActivity extends AppCompatActivity {
                         retVal = result;
 
                         if (result.equals(accountCreated)) {
-                            Log.e("LoginActivity.java", "result: " + result);
+                            Log.e("CreateAccountActivity", "result: " + result);
 
                             Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
                             i.putExtra("username",username);
                             startActivity(i);
                         } else if (result.equals(emailTaken)){
-                            Log.e("LoginActivity.java: " + result, emailTaken);
+                            Log.e("CreateAccountActivity" + result, emailTaken);
                             retVal = result;
                         } else if (result.equals(usernameTaken)) {
-                            Log.e("LoginActivity.java: " + result, usernameTaken);
+                            Log.e("CreateAccountActivity" + result, usernameTaken);
                             retVal = result;
                         }
 
                     } catch (Exception e){
-                        Log.e("LoginActivity.java", "Exception Thrown: " + e);
+                        Log.e("CreateAccountActivity", "Exception Thrown: " + e);
                         retVal = e.toString();
                     }
 
@@ -156,7 +154,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
-            Toast.makeText(CreateAccountActivity.this, result, Toast.LENGTH_LONG).show();
+           // Toast.makeText(CreateAccountActivity.this, result, Toast.LENGTH_LONG).show();
         }
 
         @Override

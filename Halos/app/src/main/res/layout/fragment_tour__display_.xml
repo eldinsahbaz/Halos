@@ -30,18 +30,18 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="247dp"
                 app:srcCompat="@drawable/nyc"
                 android:id="@+id/Frag_Tour_Pic" />
 
             <TextView
-                android:text="TextView"
+                android:id="@+id/frag_tour_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/frag_tour_description" />
+                android:text="TextView" />
 
             <TextView
-                android:text="LandMarks Missing"
+                android:text=""
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/frag_tour_landmarks" />

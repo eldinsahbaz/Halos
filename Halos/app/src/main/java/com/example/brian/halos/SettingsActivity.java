@@ -347,7 +347,7 @@ public class SettingsActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             // TODO: Must check that the location was processed to the database before making announcement
             // TODO: toast is always one action behind? maybe try on real phone
-            Toast.makeText(SettingsActivity.this, retVal, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), retVal, Toast.LENGTH_LONG).show();
         }
 
         @Override

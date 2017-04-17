@@ -19,7 +19,8 @@ import java.util.Vector;
 
 public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTours.OnFragmentInteractionListener,
         Tour_Display_Frag.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInteractionListener,
-        Store_Tab_TopFree.OnFragmentInteractionListener, Store_Tab_HotTours.AddTourCopyListerner{
+        Store_Tab_TopFree.OnFragmentInteractionListener, Store_Tab_HotTours.AddTourCopyListerner,
+        Store_Tab_TopFree.AddTourCopyListerner3,Store_Tab_TopPaid.AddTourCopyListerner2{
     final int limit = 5;
     static List<TourCopy> cart = new ArrayList<TourCopy>();
     TourCopy remove1 = new TourCopy();
@@ -96,21 +97,43 @@ public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTo
 
     @Override
     public void AddTourCopy(TourCopy copy) {
+        if (cart.contains(copy)){
+            cart.remove(copy);
+            Toast.makeText(getApplicationContext(),"Removed ",Toast.LENGTH_SHORT).show();
+            Log.v("Cart","Removed"+copy.getName());
+        }else {
+            cart.add(copy);
+            Log.v("Cart","Add"+copy.getName());
+            Toast.makeText(getApplicationContext(),"Added ",Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
-               if (cart.contains(copy)){
-                    cart.remove(copy);
-                    Toast.makeText(getApplicationContext(),"Removed ",Toast.LENGTH_SHORT).show();
-                    Log.v("Cart","Removed"+copy.getName());
-                }else {
-                    cart.add(copy);
-                    Log.v("Cart","Add"+copy.getName());
-                   Toast.makeText(getApplicationContext(),"Added ",Toast.LENGTH_SHORT).show();
-                }
+    @Override
+    public void AddTourCopy3(TourCopy copy) {
 
+                    if (cart.contains(copy)){
+                        cart.remove(copy);
+                        Toast.makeText(getApplicationContext(),"Removed ",Toast.LENGTH_SHORT).show();
+                        Log.v("Cart","Removed"+copy.getName());
+                    }else {
+                        cart.add(copy);
+                        Log.v("Cart","Add"+copy.getName());
+                        Toast.makeText(getApplicationContext(),"Added ",Toast.LENGTH_SHORT).show();
+                    }
     }
 
     @Override
-    public void onBackPressed() {
+    public void AddTourCopy2(TourCopy copy) {
+
+                    if (cart.contains(copy)){
+                        cart.remove(copy);
+                        Toast.makeText(getApplicationContext(),"Removed ",Toast.LENGTH_SHORT).show();
+                        Log.v("Cart","Removed"+copy.getName());
+                    }else {
+                        cart.add(copy);
+                        Log.v("Cart","Add"+copy.getName());
+                        Toast.makeText(getApplicationContext(),"Added ",Toast.LENGTH_SHORT).show();
+                    }
     }
 }
