@@ -1,7 +1,9 @@
 package com.example.brian.halos;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,22 +55,42 @@ public class CreateAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
                 String username = mUsername.getText().toString();
                 String password = mPassword1.getText().toString();
                 String email = mEmail.getText().toString();
 
                 User user = new User(username, password, email);
+
                 if (username.equals("") || password.equals("") || email.equals("")) {
                     Toast.makeText(CreateAccountActivity.this, "Please fill out all fields", Toast.LENGTH_LONG).show();
                 }
                 else if (mPassword1.getText().toString().equals(mPassword2.getText().toString()) && !password.equals("")) {
+
+
+                if (username.equals("") || password.equals("") || email.equals("")) {
+//                    AlertDialog alertDialog = new AlertDialog.Builder(CreateAccountActivity.this).create();
+//                    alertDialog.setTitle("Missing Field");
+//                    alertDialog.setMessage("Please fill out all fields before creating account");
+//                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+//                            new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//                    alertDialog.show();
+                    Toast.makeText(CreateAccountActivity.this, "Please fill out all fields", Toast.LENGTH_LONG).show();
+                }
+
+                else if (mPassword1.getText().toString().equals(mPassword2.getText().toString()) && !password.equals("")) {
+                    // CreateAccount cannot be run on main thread -> see code below, it extends AsyncTask
+
                     Log.e("account created", username);
                     Account account = new Account(user);
                     account.execute();
                 }
             }
-        });
+        }
+    });
     }
 
     private class Account extends AsyncTask<Void, Void, String> {

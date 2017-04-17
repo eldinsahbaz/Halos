@@ -368,6 +368,7 @@ public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCal
         if (mCurrentLocationMarker != null) {
             mCurrentLocationMarker.remove();
         }
+
         // update the marker location on the map
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(currentLocation);

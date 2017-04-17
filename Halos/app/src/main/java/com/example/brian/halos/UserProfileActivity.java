@@ -60,6 +60,7 @@ import okhttp3.Response;
 
 public class UserProfileActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     String usernameSave;
+
     RecyclerView recyclerView;
     RecyclerView recyclerView2;
     Profile_Adapter adapter;
@@ -83,6 +84,7 @@ public class UserProfileActivity extends AppCompatActivity implements GoogleApiC
     protected String mRetVal;
     protected String mGeoAddr;
     Marker mCurrentLocationMarker;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

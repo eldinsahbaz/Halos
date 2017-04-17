@@ -3,16 +3,28 @@ package com.example.brian.halos;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
 import android.location.Location;
 import android.location.LocationManager;
 import java.text.DateFormat;
 import java.util.Date;
+
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,6 +32,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import android.widget.Toast;
@@ -36,7 +49,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,6 +73,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
     protected static Tour mTour;
     private static final String DIRECTION_URL = "https://maps.googleapis.com/maps/api/directions/json?";
     private static final String API_KEY = "AIzaSyD3KjHahrdF7B-e2C0h-IbRae1o7DSbYXI";
+    /*
     protected GoogleMap mMap;
     protected Marker mCurrentLocationMarker;
     protected Marker mClickedLocationMarker;
@@ -80,11 +96,92 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
     protected String mGeoAddr;
     protected HashMap<String, Landmark> mLocsOnMapSet;
     String usernameSave;
+    */
+    // map used for this activity
+    protected GoogleMap mMap;
+
+    // maps marker for users current location
+    protected Marker mCurrentLocationMarker;
+
+    // marker currently being clicked
+    protected Marker mClickedLocationMarker;
+
+    // need a location manager to handle location requests, and provider to get the location
+    protected LocationManager locationManager;
+    protected String provider;
+
+    // create tour object for when user adds locations to tour
+    protected User user;
+    protected LinkedList<Landmark> mTourList = new LinkedList<Landmark>();
+
+    private OkHttpClient client = new OkHttpClient();
+
+    /**
+     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
+     */
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
+
+    /**
+     * The fastest rate for active location updates. Exact. Updates will never be more frequent
+     * than this value.
+     */
+    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+
+    // Keys for storing activity state in the Bundle.
+    protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
+    protected final static String LOCATION_KEY = "location-key";
+    protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
+    String usernameSave;
+    /**
+     * Provides the entry point to Google Play services.
+     */
+    protected GoogleApiClient mGoogleApiClient;
+
+    /**
+     * Stores parameters for requests to the FusedLocationProviderApi.
+     */
+    protected LocationRequest mLocationRequest;
+
+    /**
+     * Represents a geographical location.
+     */
+    protected Location mCurrentLocation;
+
+    /**
+     * Tracks the status of the location updates request. Value changes when the user presses the
+     * Start Updates and Stop Updates buttons.
+     */
+    protected Boolean mRequestingLocationUpdates = true;
+
+    /**
+     * Time when the location was updated represented as a String.
+     */
+    protected String mLastUpdateTime;
+
+    // return value used for server call
+    protected String mRetVal;
+    protected String mGeoAddr;
+
+
+    /**
+     * set of locations currently on map
+     */
+    protected HashMap<String, Landmark> mLocsOnMapSet;
+
+
     ArrayList<LatLng> markerpoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Update values using data stored in the Bundle.
+        updateValuesFromBundle(savedInstanceState);
+
+        // Kick off the process of building a GoogleApiClient and requesting the LocationServices
+        // API.
+        buildGoogleApiClient();
+
         setContentView(R.layout.activity_tour_map);
         updateValuesFromBundle(savedInstanceState);
         buildGoogleApiClient();
@@ -133,6 +230,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
         //String url = directionsRequest.DirectionsRequest(mTour);
         LatLng final_stop = new LatLng(mTour.landmarks.getLast().getLatitude(),mTour.landmarks.getLast().getLongitude());
         LatLng beginning = new LatLng(mTour.landmarks.getFirst().getLatitude(),mTour.landmarks.getFirst().getLongitude());
+
         String url = getDirectionsUrl();
         DownloadTask downloadTask = new DownloadTask();
         downloadTask.execute(url);
@@ -608,6 +706,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
             double currentLatitude = 43.0392;
             double currentLongitude = -76.130772;
             LatLng currentLocation = new LatLng(currentLatitude, currentLongitude);
+
             if (mCurrentLocation != null) {
                 currentLatitude = (double) mCurrentLocation.getLatitude();        //43.0392;
                 currentLongitude = (double) mCurrentLocation.getLongitude();      //-76.130772;
@@ -629,6 +728,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
             mCurrentLocationMarker = mMap.addMarker(markerOptions);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
+
             // Add a marker in Sydney and move the camera
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
             //Workarounds right now -remove when parser works
@@ -641,6 +741,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
                 Log.v(mTour.landmarks.get(i).getName(), String.valueOf(mTour.landmarks.get(i).getLatitude()) + "," + String.valueOf(mTour.landmarks.get(i).getLongitude()));
 
                 if (i == 0) {
+
                 } else {
                     mMap.addMarker(new MarkerOptions().position(landmarkLoc).title(mTour.landmarks.get(i).getName()));
                     //Workarounds right now -remove when parser works

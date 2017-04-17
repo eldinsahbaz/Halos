@@ -40,17 +40,25 @@ def places():
 def get_places():
     latitude = request.json['lat']
     longitude = request.json['lng']
-    radius = request.json['radius'] #str(3000)   # later change this, just have to decide which way to get radius
+    radius = request.json['radius']	#str(3000)   # later change this, just have to decide which way to get radius
     keyword = request.json['keyword']
-    url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key + '&keyword='  + keyword
+    url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key + '&keyword=' + keyword
     places = requests.get(url)
-    print '\n'
-    print radius
-    print place_type
-    print keyword
-    print '\n'
     return app.response_class(places.content, content_type='application/json')
 
+#@app.route('/get_places', methods=['POST'])
+#def get_places():
+#    latitude = request.json['lat']
+#    longitude = request.json['lng']
+#    radius = request.json['radius'] 
+#    keyword = request.json['keyword']
+#    url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key + '&keyword=' + keyword
+#    places = requests.get(url)
+#    print '\n'
+#    print 'radius', radius
+#    print 'keyword', keyword
+#    print '\n'
+#    return app.response_class(places.content, content_type='application/json')
 
 # gets directions for tour from Google Maps Directions API
 directions_url = 'https://maps.googleapis.com/maps/api/directions/json?'
@@ -63,8 +71,11 @@ def get_directions():
     url = directions_url + 'origin=' + origin + '&destination=' + dest + '&mode=' + travel_mode
     if waypoints != 'none':
         url = url + '&waypoints=' + waypoints
+    else:
+        print '\n\nNO WAYPOINTS\n\n'
     url = url + '&key=' + key
     directions = requests.get(url)
+    print 'url', url
     return app.response_class(directions.content, content_type='application/json')
 
 # clears the accounts database (NOT FOR PRODUCTION ONLY FOR TESTING PRUPOSES, WE SHOULD DELETE ONCE WE GET EVERYTHING WORKING!!!!!!!!)
@@ -231,10 +242,17 @@ def get_geocode():
     })
 
 #################### SETTINGS RELATED API CALLS ####################
-@app.route('/set_settings', methods=['PUT'])
+@app.route('/set_settings', methods=['POST'])
 def put_settings():
-    username = request.args.get('username')
-    radius = request.args.get('radius')
+    username = request.json['username']
+    radius = request.json['radius']
+    category = request.json['category']
+    rankby = request.json['rankBy']
+    opennow = request.json['openNow']
+    keyword = request.json['keyword']
+    minprice = request.json['minprice']
+    maxprice = request.json['maxprice']
+
     auth = db.auth
     user = auth.find_one({
         'username'  : username
@@ -244,7 +262,15 @@ def put_settings():
         auth.update_one(
             {'username': username},
             {
-                '$set': {'radius': radius}  # add more settings to update here
+                '$set': {
+                    'radius': radius,
+                    'category' : category,
+                    'rankby'   : rankby,
+                    'opennow'  : opennow,
+                    'keyword'  : keyword,
+                    'minprice' : minprice,
+                    'maxprice' : maxprice
+                    }
             }
         )
         # if (user['radius'] == radius):
@@ -253,51 +279,158 @@ def put_settings():
         #     # print user['radius']
         #     output = {'result' : 'Settings could not be updated'}
     else:
-        output = {'result' : 'User not found'}
+        output = {'result' : 'Error updating settings, user not found'}
     return jsonify(response = output)
 
-
 #################### TOUR RELATED API CALLS ####################
+#Edited by Ray and Eldin
 @app.route('/addtour', methods=['POST'])
 def add_tour():
     tours = db.tours
 
     # get all tour arguments from url parameters
     # TODO: NAME?
-    contact_info = request.json['contact']
-    guides = request.json['guides']
-    tourists = request.json['tourists']
-    min_occ = request.json['min']
-    max_occ = request.json['max']
-    occ     = request.json['occ']
-    landmarks = request.json['landmarks']
-    radius = request.json['radius']
-    est_dur = request.json['dur']
-    start_date = request.json['start-date']
-    end_date = request.json['end-date']
-    start_time = request.json['start-time']
-    end_time = request.json['end-time']
+    #contact_info = request.json['contact']
+    tour_id = request.json['tourid']
+    creator = request.json['created-by']
+    describe = request.json['description']
+    #guides = request.json['guides']
+    #tourists = request.json['tourists']
+    #min_occ = request.json['min']
+    #max_occ = request.json['max']
+    #occ     = request.json['occ']
+    Latitude = request.json['Lat']
+    Longitude = request.json['Long']
+    #radius = request.json['radius']
+    #est_dur = request.json['dur']
+    #start_date = request.json['start-date']
+    #end_date = request.json['end-date']
+    #start_time = request.json['start-time']
+    #end_time = request.json['end-time']
     price = request.json['price']
-    cover_photo = request.json['photo'] # TODO: not sure how to get image file over the network
+    #cover_photo = request.json['photo'] # TODO: not sure how to get image file over the network
     #  put these params into the collection
-    user_id = auth.insert({
-        'contact_info' : contact_info,
-        'guides'    : [],
-        'tourists'  : [],
-        'min_occ'   : min_occ,
-    	'max_occ'  	: max_occ,
-    	'occ'       : occ,
-    	'landmarks'	: [],
-    	'radius'	: radius,
-    	'est_dur'	: est_dur,
-        'start_date': start_date,
-        'end-date'  : end-date,
-        'start_time': start_time,
-        'end_time'  : end_time,
-        'price'     : price,
-        'cover_photo' : cover_photo
-    })
+    Lat = list()
+    Lat.extend([float(x) for x in Latitude.split("|")])
+    Long = list()
+    Long.extend([float(x) for x in Longitude.split("|")])
+    tour = tours.find_one({'tour_id'  : tour_id})
+    if tour:
+        output = {'result' : 'tour by this name already exists'}
+    else:
+        user_id = tours.insert({
+            'contact_info' : '',
+            'tour_id'   : tour_id,
+            'guides'    : '',
+            'tourists'  : [],
+            'min_occ'   : 0,
+    	    'max_occ'  	: 0,
+    	    'occ'       : 0,
+    	    'Latitude' 	: Lat,
+            'Longitude'	: Long,
+            'radius'	: 0,
+    	    'est_dur'	: 0,
+            'start_date': '',
+            'end-date'  : '',
+            'start_time': '',
+            'end_time'  : '',
+            'price'     : price,
+            'cover_photo' : '',
+	    'created-by':creator,
+	    'description':describe})
+        output = {'result' : 'tour successfully created'}
+    auth = db.auth
+    user = auth.find_one({'username'  : creator})
+    
+    if user:
+        auth.update_one(
+            {'username': creator},
+                {
+                '$push': {
+                    'created': tour_id
+                    }
+                }
+            )
 
+    return jsonify(response = output)
+
+@app.route('/get_created', methods=['GET'])
+def get_created():
+    tours = db.tours
+    tour_id = request.args.get('tour_id')
+    
+    return jsonify(response=tours.find({'tour_id': tour_id}))
+
+@app.route('/bought', methods=['POST'])
+def bought():
+    username = reqest.json['username']
+    tour_id = request.json['tour_id']
+    auth = db.auth
+    tours = db.tours
+    if tours.find({'tour_id' : tour_id}):
+        if auth.find({'username':username}):
+            auth.update_one(
+            {'username': username},
+                {
+                '$push': {
+                    'created': tour_id
+                    }
+                }
+            )
+    
+    return jsonify(response={'result':'successfully added to account'})
+        
+    
+
+@app.route('/get_tour_by_user', methods=['GET'])
+def get_tour_by_user():
+    tours = db.tours
+    auth = db.auth
+    user = request.args.get('username')
+    profile = auth.find_one({'username':user})
+    created = set(tours.find({'created-by' : user}))
+    bought = set(profile['created'])
+    bought = list(bought-created)
+    created = list(created)
+    return jsonify(response={'created' : created, 'bought' : bought}) 
+    
+@app.route('/get_tour', methods=['GET'])
+def get_tour():
+    tours = db.tours
+    # find all tours with ___ in name, or in ___ city, state
+    start = request.args.get('start')
+    end = request.args.get('end')
+    start = int(start)
+    end = int(end)
+    i = 0
+    output = []
+    for tour in tours.find():
+        if i >= start and i <= end:
+            output.append({
+            'contact_info' : str(tour['contact_info']),
+            'tour_id'   : str(tour['tour_id']),
+            'guides'    : str(tour['guides']),
+            'tourists'  : str(tour['tourists']),
+            'min_occ'   : str(tour['min_occ']),
+            'max_occ'   : str(tour['max_occ']),
+            'occ'       : str(tour['occ']),
+            'Latitude'  : str(tour['Latitude']),
+            'Longitude' : str(tour['Longitude']),
+            'radius'    : str(tour['radius']),
+            'est_dur'   : str(tour['est_dur']),
+            'start_date': str(tour['start_date']),
+            'end-date'  : str(tour['end-date']),
+            'start_time': str(tour['start_time']),
+            'end_time'  : str(tour['end_time']),
+            'price'     : str(tour['price']),
+            'cover_photo' : str(tour['cover_photo']),
+            'created-by': str(tour['created-by']),
+            'description': str(tour['description'])})
+        elif i > end:
+            break
+        
+        i = i+1
+    return jsonify(response={'result': output})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=12344, debug=True)
