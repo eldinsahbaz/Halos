@@ -38,6 +38,15 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * This class is to generate a map and tour route based on the Tour the User Clicked in the
+ * UserProfile Activity. It retrieves the tour's landmarks from the server based on
+ * the unique tour_id through a Json Get request and builds a url with the data retrieved
+ * to send a http request to Google Directions Api which returns a Json Object that is parsed with
+ * DirectionJSonParser class to get a route with all the landmarks fitted onto the Map.
+ */
+
+
 public class TourMapActivity_User extends AppCompatActivity implements OnMapReadyCallback {
     protected String mDirectionsResponse;
     private LatLng origin;

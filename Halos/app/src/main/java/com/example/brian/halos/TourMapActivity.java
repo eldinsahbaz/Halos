@@ -64,6 +64,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.internal.tls.OkHostnameVerifier;
 
+
+/**
+ * This class is to generate a map and tour route based on the Tour the User created in the
+ * HalosMap Activity. It retrieves the tour's landmarks from the tour object passed
+ * from the previous activity and builds a url with it to send a http request to Google
+ * Directions Api which returns a Json Object that is parsed with
+ * DirectionJSonParser class to get a route with all the landmarks fitted onto the Map.
+ */
+
+
 public class TourMapActivity extends FragmentActivity implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     protected String TAG = "tour-map-activity";
