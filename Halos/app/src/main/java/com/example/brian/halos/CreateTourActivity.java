@@ -29,6 +29,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/*
+* This Class allows user to create a tour after inputting Name, Description, and price.
+* Tour's data is retrieved from Data based from TourMapActivity after saved is clicked
+* in current tour. We upload the tour via Json Post request to the server.
+ */
+
 public class CreateTourActivity extends AppCompatActivity {
     EditText mTourname;
     TextView mTourCreator;
@@ -42,6 +48,7 @@ public class CreateTourActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_tour);
 
+        //Cancel Creating the Tour
         Button cancel = (Button)findViewById(R.id.create_tour_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +76,7 @@ public class CreateTourActivity extends AppCompatActivity {
                 String tour_description = mTourDescription.getText().toString();
                 String tour_price = mPrice.getText().toString();
 
+                //Retrieves the Tour Information from previous activity.
                 Tour passtour = new Tour();
                 Bundle b = getIntent().getExtras();
                 if (b != null) {
@@ -76,7 +84,7 @@ public class CreateTourActivity extends AppCompatActivity {
                 } else {
                     Log.d("Bug","bundle is null");
                 }
-
+                //check is any input is missing.
                 if( (tourname.length() == 0) || (tourcreator.length() == 0) || (tour_description.length() == 0) || (tour_price.length() == 0) ){
                     Toast.makeText(getApplicationContext(), "Missing Inputs", Toast.LENGTH_LONG).show();
                 }else {
@@ -90,6 +98,8 @@ public class CreateTourActivity extends AppCompatActivity {
                     passtour.setDescription(tour_description);
                     TourCreation creation = new TourCreation(passtour);
                     creation.execute();
+
+                    //Start the home activity after tour is created.
                     Intent i = new Intent(getApplicationContext(), HalosMapActivity.class);
                     String username2 = getIntent().getStringExtra("username");
                     i.putExtra("username",username2);
@@ -102,7 +112,9 @@ public class CreateTourActivity extends AppCompatActivity {
 
     }
 
-
+    //Class that executes to upload tour from clientside to serverside
+    //by passing the tour class variables for the specific tour.
+    //Returns a Message based on if the request is successfully or not.
     private class TourCreation extends AsyncTask<Void,Void,String> {
         Tour tour;
 
@@ -121,6 +133,7 @@ public class CreateTourActivity extends AppCompatActivity {
             String Lat = "";
             String Long= "";
 
+            //Formatting the landmarks to a string for uploading and then server-side parsing.
             for(int i=0; i < tour.getLandmarks().size() ; i++){
                 Landmark point = tour.getLandmarks().get(i);
                 Lat = Lat + Double.toString(point.getLatitude())+ "|";

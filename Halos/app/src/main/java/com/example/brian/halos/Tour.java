@@ -10,6 +10,11 @@ import java.util.LinkedList;
 
 /**
  * Created by brian on 2/9/17.
+ * Class that contains the Tour created by the user which contains a list of landmarks
+ * that contains all the data on the marker points that a user selected when creating
+ * this tour including their current location at the time of creation. This class also
+ * contains commented python code that was meant to be converted to Java for future
+ * features.
  */
 
 public class Tour implements Parcelable {
@@ -68,6 +73,8 @@ public class Tour implements Parcelable {
 
     }
 
+    //Getter and Setter methods for class variables.
+
     public void setName(String n) {
         name = n;
     }
@@ -81,19 +88,12 @@ public class Tour implements Parcelable {
     public void setDescription(String n) { description=n;}
     public String getDescription() { return description;}
 
-//    def SetContactInfo(self, info):
-//            if isinstance(info, type(dict())):
-//    self.__ContactInfo = info
-//    else:
-//            return Exception("input not a dictionary")
+
     public void setContactInfo(String name, String contact) {
         contactInfo.put(name, contact);
     }
 
-//    def AddContactInfo(self, name, contact):
-//    self.__ContactInfo[str(name)] = str(contact)
-    // NOTE: this function is not need, but I kept it as legacy.
-    // to update a hash map in java, you just overwrite the previous value
+
     public void addContactInfo(String name, String contact) {
         contactInfo.put(name, contact);
     }

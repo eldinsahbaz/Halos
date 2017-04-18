@@ -64,13 +64,7 @@
             android:name=".Checkout_Store"
             android:label="Store"
             android:screenOrientation="portrait" />
-        <!--
-            <activity
-            android:name="com.paypal.android.MEP.PayPalActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-            Might not Need- Don't remove.
-        -->
+
         <activity android:name=".ConfirmationActivity" />
         <activity
             android:name=".TourMapActivity"

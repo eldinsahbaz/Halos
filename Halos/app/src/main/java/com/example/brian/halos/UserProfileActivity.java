@@ -58,13 +58,19 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ *  Class for user's Profile which contains a recycleview the data retrieved from the server
+ *  about all the tour's this user has every bought or created. It also handles retrieving
+ *  a tour's data from the database if the user clicks on a cardview of a tour and recreates that
+ *  tour by passing a copy of that Tour to TourMapActivity_User class.
+ */
 public class UserProfileActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     String usernameSave;
 
     RecyclerView recyclerView;
     RecyclerView recyclerView2;
     Profile_Adapter adapter;
-    Profile_Adapter2 adapter2;
+
     List<String> createdTours = new ArrayList<String>();
     List<String> BoughtTours = new ArrayList<String>();
     String passtoServerTour="";
@@ -90,6 +96,8 @@ public class UserProfileActivity extends AppCompatActivity implements GoogleApiC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+        //Set up toolbar and retreieve data from Server and intent.
         Toolbar toolbar = (Toolbar)findViewById(R.id.menu);
         setSupportActionBar(toolbar);
         usernameSave = getIntent().getStringExtra("username");
@@ -106,7 +114,8 @@ public class UserProfileActivity extends AppCompatActivity implements GoogleApiC
         adapter = new Profile_Adapter(getApplicationContext(),createdTours);
         recyclerView.setAdapter(adapter);
 
-
+        //Handle On-click event when user wants to take a Tour he created or Bought.
+        //Passes Tour_Id to the class constructor.
         adapter.SetTourListener(new Profile_Adapter.TourclickListerner() {
             @Override
             public void userTourClick(View view, int position) {
@@ -124,6 +133,8 @@ public class UserProfileActivity extends AppCompatActivity implements GoogleApiC
         return true ;
     }
 
+    //Methods for allows User to travel to different parts of the App
+    //when using the Toolbar.
     @Override
     public boolean onOptionsItemSelected ( MenuItem item ) {
         switch( item.getItemId() ) {
@@ -160,8 +171,8 @@ public class UserProfileActivity extends AppCompatActivity implements GoogleApiC
     }
 
 
-    // TODO: Add functionality to search for users; Ray said something about using fragments instead of TabView for the tabs?
-    // Tabs wont show because they don't have any activities within them. Need to program in either placeholder "dummy" activities for the tabs?
+    //Class to retrieve data of the User about the tours they bought or created
+    //using a Json Get request with their username as part of the request.
 
     private class getProfile extends AsyncTask<Void,Void,String> {
         OkHttpClient client = new OkHttpClient();
@@ -183,7 +194,7 @@ public class UserProfileActivity extends AppCompatActivity implements GoogleApiC
 
 
 
-
+            //Client that adds all the tours in database to the local arraylist of tours.
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -252,6 +263,10 @@ public class UserProfileActivity extends AppCompatActivity implements GoogleApiC
 
 
     }
+
+    //Class that retrieves a Json Array from the server Database containing 2 string of all
+    // the Latitudes and Longitudes of all the landmarks which is parsed to add to the local
+    // Tour Object and passed to the TourMapActivity_User to generate the tour.
 
     private class getTourID extends AsyncTask<Void,Void,String> {
         OkHttpClient client = new OkHttpClient();

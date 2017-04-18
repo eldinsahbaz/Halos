@@ -26,14 +26,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Store_Tab_TopPaid.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Store_Tab_TopPaid#newInstance} factory method to
- * create an instance of this fragment.
+ * This class is the 2nd of the store and shows the hottest paid tours in the database.
+ * Due to lack of time, there is no rating system so it just uses a Json Get Request
+ * to retrieve a number of tours from the server based on an interval
+ * and pass that data as an argument for the recycleview Adapter's constructor.
  */
 public class Store_Tab_TopPaid extends Fragment implements Tour_Display_Frag.OnFragmentInteractionListener {
     private static final String ARG_PARAM1 = "Parameter";
@@ -100,11 +97,17 @@ public class Store_Tab_TopPaid extends Fragment implements Tour_Display_Frag.OnF
         endpos = 15;
         GetTour getTour = new GetTour(startpos,endpos);
         getTour.execute();
+
+        //Sets Up the Adapter to load the data into recycleview
         recyclerView = (RecyclerView)view.findViewById(R.id.RecycleView_TopPaid);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new Store_RecycleAdapter(getActivity(),hotTourlist);
         recyclerView.setAdapter(adapter);
+
+        //Handles clicks on each cardview if the user wants more details on the tour
+        //it will load the details Tour_display Fragment or user clicked on add button
+        //to add tour to shopping list in the StoreActivity.
         adapter.SetTourListener(new Store_RecycleAdapter.TourListener() {
             @Override
             public void tourClick(View view, int position) {
@@ -179,6 +182,9 @@ public class Store_Tab_TopPaid extends Fragment implements Tour_Display_Frag.OnF
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    //Class that executes to retrieve a specific number of tours from the server-side and load the data
+    //into the store based on specific parameters. Filters out all free tours.
 
         private class GetTour extends AsyncTask<Void,Void,String> {
             OkHttpClient client = new OkHttpClient();

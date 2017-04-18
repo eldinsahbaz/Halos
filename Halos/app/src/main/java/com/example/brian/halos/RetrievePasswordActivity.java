@@ -8,6 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * Class meant for retrieving User's password but wasn't implemented
+ * due to Time constraints. For final demo it just brought user
+ * back to Login Screen.
+ */
+
 public class RetrievePasswordActivity extends AppCompatActivity {
     Button retrievePwButton;
 

@@ -8,6 +8,9 @@ import java.util.LinkedList;
 
 /**
  * Created by raych on 4/2/2017.
+ * A Copy of the Tour Class that doesn't use static variables so we don't contain the same
+ * variable data for each Tour. This is useful for adding TourCopy object into each
+ * List when data is retrieved from server rather than the Tour Object.
  */
 
 public class TourCopy implements Serializable {
@@ -31,6 +34,8 @@ public class TourCopy implements Serializable {
     public void Tour() {
 
     }
+
+    //Getter and Setter Methods for class variables.
 
     public void setName(String n) {
         name = n;

@@ -3,44 +3,26 @@ package com.example.brian.halos;
 import java.util.LinkedList;
 /**
  * Created by brian on 2/9/17.
+ * This class wasn't used for final demo but its purpose it to be used
+ * for storing tours that users add while browsing the store which be
+ * displayed when checking out. Stores tour Objects in a LinkedList.
  */
 
 public class ShoppingCart {
-    //
-//    class ShoppingCart():
-//    __ShoppingCart = None
+
    static LinkedList<Tour> shoppingCart;
 
     public void ShoppingCart() {
         shoppingCart = new LinkedList<Tour>();
     }
 
-//    def __init__(self):
-//    self.__ShoppingCart = OrderedDict()
 
-
-//    def AddToCart(self, tour, count):
-//            if isinstance(tour, type(Tour())):
-//            if tour in self.__ShoppingCart:
-//    self.__ShoppingCart[tour] += count
-//    else:
-//    self.__ShoppingCart[tour] = count
-//    else:
-//            return Exception("input is not of type Tour")
+    //Adds a Tour to Cart
     public void addToCart(Tour t) {
         shoppingCart.add(t);
     }
 
-
-//    def RemoveFromCart(self, tour):
-//            if isinstance(tour, type(Tour())):
-//            if tour in self.__ShoppingCart:
-//    self.__ShoppingCart[tour] -= 1
-//
-//            if self.__ShoppingCart[tour] <= 0:
-//    del (self.__ShoppingCart[tour])
-//    else:
-//            return Exception("input is not of type Tour")
+    //Remove a tour from cart
     public void removeFromCart(Tour t) {
         if (shoppingCart.size() <= 0) {
             return;         // no tour is in the list the remove
@@ -49,9 +31,7 @@ public class ShoppingCart {
 
     }
 
-
-//    def GetCart(self):
-//            return self.__ShoppingCart
+    //Returns current cart.
     public LinkedList<Tour> getShoppingCart() {
         return shoppingCart;
     }

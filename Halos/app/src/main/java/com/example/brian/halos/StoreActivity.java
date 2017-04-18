@@ -17,6 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * This class is the Store activity that contains the viewpager and adapter that
+ * contains each tab of the store. This class also instantiates each interface class in each
+ * tab to handle adding and removing of tours in the shopping cart and handles passing
+ * the shopping cart to the Checkout Activity.
+ */
 public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTours.OnFragmentInteractionListener,
         Tour_Display_Frag.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInteractionListener,
         Store_Tab_TopFree.OnFragmentInteractionListener, Store_Tab_HotTours.AddTourCopyListerner,
@@ -27,12 +33,14 @@ public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTo
 
 
     String usernameSave;
-    //MIGHT need FragmentInteractionListerner for all tabs- due to replacing this layouts container
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
         usernameSave = getIntent().getStringExtra("username");
+
+        //Set up Viewpager, Adapter and Toolbar support.
         Toolbar toolbar = (Toolbar)findViewById(R.id.menu);
         setSupportActionBar(toolbar);
         ViewPager viewpager = (ViewPager)findViewById(R.id.Store_Viewpager);
@@ -47,6 +55,7 @@ public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTo
         return true ;
     }
 
+    //Toolbar options to travel around the Application.
     @Override
     public boolean onOptionsItemSelected ( MenuItem item ) {
         switch( item.getItemId() ) {
@@ -94,6 +103,10 @@ public class StoreActivity extends AppCompatActivity  implements Store_Tab_HotTo
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+
+    //These methods handle adding and removing tour objects from the shopping
+    //cart list.
 
     @Override
     public void AddTourCopy(TourCopy copy) {

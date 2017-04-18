@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 
 /**
  * Created by brian on 2/9/17.
+ * This class stores information about each Google Map place's marker
+ * such as Latitude and Longitude.
  */
 //import datetime
 //import base64
@@ -34,6 +36,8 @@ public class Landmark {
 //    __OpeningHours = None
 //            __Types = None
 //    __Vicinity = None
+
+    //Constructors for Landmark class.
     public Landmark() {
         description = "";
         name = "";
@@ -59,6 +63,7 @@ public class Landmark {
         types = t;
     }
 
+    //constructor if we includes pictures.
     public Landmark(String n, int r, Bitmap bm, boolean open, double lat, double lng) {
         name = n;
         rating = r;
@@ -67,6 +72,12 @@ public class Landmark {
         latitude = lat;
         longitude = lng;
     }
+
+
+    //Getter and Setter Methods.
+    //Also includes commented code not translated from Python
+    //to Java for other un-implemented features.
+
 
 //    def __init__(self):
 //    self.__Description = ""

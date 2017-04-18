@@ -10,6 +10,10 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+/* This class is for showing the user the recipt of their transaction and notify
+* the transaction went through. Returns User to home page when clicking button.
+*/
 // Source code  from https://www.simplifiedcoding.net/android-paypal-integration-tutorial/ by belal khan
 public class ConfirmationActivity extends AppCompatActivity {
     String username3;
@@ -29,7 +33,7 @@ public class ConfirmationActivity extends AppCompatActivity {
                 startActivity(intent1);
             }
         });
-
+        //Get Info stored in Intent to show user the details of the transaction.
         try {
             JSONObject jsonDetails = new JSONObject(intent.getStringExtra("PaymentDetails"));
 
@@ -40,7 +44,7 @@ public class ConfirmationActivity extends AppCompatActivity {
         }
 
     }
-
+    //Set fields with the proper data.
     private void showDetails(JSONObject jsonDetails, String paymentAmount) throws JSONException {
         //Views
         TextView textViewId = (TextView) findViewById(R.id.paymentId);

@@ -36,7 +36,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-//check on sandbox payal -- faciliator account and buyer account
+/*This class is for showing all the tour in the cart and allows user to check
+* the total price for all the tours and pay it. Contains the Paypal API in
+* sandbox environment that processes the transaction made by the User and
+* starts ConfirmationActivity after transaction is complete.
+*/
 //Source code from https://www.simplifiedcoding.net/android-paypal-integration-tutorial/ by belal khan
 public class Checkout_Store extends AppCompatActivity implements View.OnClickListener {
     static List<TourCopy> cart2 = new ArrayList<TourCopy>();
@@ -46,7 +50,7 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
     public static final int PAYPAL_REQUEST_CODE = 123;
     private static PayPalConfiguration config = new PayPalConfiguration()
 
-            // Start with mock environment.  When ready, switch to sandbox (ENVIRONMENT_SANDBOX)
+            //  (ENVIRONMENT_SANDBOX)
             // or live (ENVIRONMENT_PRODUCTION)
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
 
@@ -66,9 +70,11 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
         cart2.clear();
         buttonPay = (Button) findViewById(R.id.checkout_button);
         showamount = (TextView)findViewById(R.id.cart_total);
+        //Retrieves information passed by bundle and intent from store activity.
         Intent intent2 = this.getIntent();
         username3 = getIntent().getStringExtra("username");
         Bundle bundle = intent2.getExtras();
+
         amount = 0;
         cart2 = (List<TourCopy>) bundle.getSerializable("list");
 
@@ -77,6 +83,8 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
             cart_tour_ids.add(cart2.get(i).getName());
         }
         buttonPay.setOnClickListener(this);
+
+        //Button to cancels and return back to the store.
         Button cancel = (Button)findViewById(R.id.cancel_buy);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +119,7 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
         getPayment();
     }
 
+    //Method to give Paypal API parameters to run.
     private void getPayment() {
         //Getting the amount from editText
         //Change to Tour amount.
@@ -133,6 +142,8 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
         //the request code will be used on the method onActivityResult
         startActivityForResult(intent, PAYPAL_REQUEST_CODE);
     }
+
+    //Method that starts the transaction and returns result of transaction
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //If the result is from paypal
@@ -171,6 +182,8 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    //Class that executes a JSON Post request to server to update User's information on
+    //tours they bought.
     private class UpdateBought extends AsyncTask<Void,Void,String> {
         OkHttpClient client = new OkHttpClient();
 

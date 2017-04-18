@@ -12,6 +12,8 @@ import java.util.List;
 
 /**
  * Created by brian on 3/5/17.
+ * Class that takes a Json Object containing the directions from Google Directions API
+ * and parses it to return the route of the tour.
  */
 
 public class DirectionsJSONParser {

@@ -2,6 +2,8 @@ package com.example.brian.halos;
 
 /**
  * Created by brian on 2/9/17.
+ * Class contains method for rating each Tour given the number of votes for the Tour
+ * by each user. This class was un-implemented due to Time Constraints.
  */
 
 public class Rating {
@@ -37,6 +39,8 @@ public class Rating {
 //            return Exception("vote is either less than 0 or greater than 10")
 //    else:
 //            return Exception("invalid input")
+
+    //Adds a vote to the tour and recalculates the average.
     public void addVote() {
         sum++;
         votes++;
@@ -45,6 +49,7 @@ public class Rating {
 
 //    def GetAverage(self):
 //            return self.__Average
+    //return average rating.
     public double getAverage() {
         return average;
     }

@@ -14,12 +14,8 @@ import java.io.Serializable;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Tour_Display_Frag.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Tour_Display_Frag#newInstance} factory method to
- * create an instance of this fragment.
+ * Class that handle displaying and setting all the details/Information for the UI
+ * when given a Tour Object in a new instance.
  */
 public class Tour_Display_Frag extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -54,6 +50,7 @@ public class Tour_Display_Frag extends Fragment {
         }
     }
 
+    //Sets the data into each view id.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,10 +63,7 @@ public class Tour_Display_Frag extends Fragment {
         TextView title = (TextView)view.findViewById(R.id.frag_tour_title);
         TextView Description = (TextView)view.findViewById(R.id.frag_tour_description);
         TextView creator = (TextView)view.findViewById(R.id.frag_tour_Creator);
-        //set image when tour image attribute is created.
-        //NEED ATTRIBUTES of creator, title, Description in Tour class.
-        //attributes might be contact info?
-        //And Landmarks
+
         imageView.setImageResource(R.drawable.nyc);
         title.setText("Tour Name: " +Tourdata.getName());
         Description.setText("Description: "+Tourdata.getDescription());

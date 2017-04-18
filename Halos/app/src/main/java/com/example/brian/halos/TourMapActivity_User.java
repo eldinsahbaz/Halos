@@ -56,6 +56,7 @@ public class TourMapActivity_User extends AppCompatActivity implements OnMapRead
         Log.d("TourMapActivityUSer","HERE");
         setContentView(R.layout.activity_tour_map__user);
         Button finish;
+        //Button to finish the tour and return home.
         finish = (Button)findViewById(R.id.finish_tour);
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +68,7 @@ public class TourMapActivity_User extends AppCompatActivity implements OnMapRead
             }
         });
 
+        //Retrieve Tour from previous activity.
         markerpoints = new ArrayList<LatLng>();
         Bundle b = this.getIntent().getExtras();
         if (b != null)
@@ -81,8 +83,7 @@ public class TourMapActivity_User extends AppCompatActivity implements OnMapRead
         Log.v("URL",url);
         DownloadTask downloadTask = new DownloadTask();
         downloadTask.execute(url);
-        //DownloadTask downloadTask = new DownloadTask();
-        //downloadTask.execute(url);
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -92,6 +93,7 @@ public class TourMapActivity_User extends AppCompatActivity implements OnMapRead
     }
 
 
+    //Method for formating the Url.
 
     private String getDirectionsUrl() {
 
@@ -119,6 +121,8 @@ public class TourMapActivity_User extends AppCompatActivity implements OnMapRead
 
         return url;
     }
+
+    //Method that uses an Http connection to download the the directions after passing the Url.
 
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
@@ -156,6 +160,7 @@ public class TourMapActivity_User extends AppCompatActivity implements OnMapRead
         return data;
     }
 
+    //Class that parses the data given by the directions API.
     private class DownloadTask extends AsyncTask<String, Void, String> {
 
         // Downloading data in non-ui thread
@@ -187,6 +192,8 @@ public class TourMapActivity_User extends AppCompatActivity implements OnMapRead
         }
     }
 
+    //Class that parses the directions through the DirectionsJsonParser class
+    //and fits the route onto the Google Map fragment.
     private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>>> {
 
         @Override
@@ -311,6 +318,11 @@ public class TourMapActivity_User extends AppCompatActivity implements OnMapRead
         }
         return false;
     }
+
+
+    //Server-side code that wasn't implemented to retrieve directions
+    //from the server (which made the call) rather than making a front-end
+    //making an http request to google for the directions.
 
     private class DirectionsRequest extends AsyncTask<Void, Void, String> {
         String origin;

@@ -35,6 +35,13 @@ import okhttp3.Response;
 import static com.example.brian.halos.R.id.store;
 
 
+/**
+ * This class is the main page of the store and shows the hottest tours in the database.
+ * Due to lack of time, there is no rating system so it just uses a Json Get Request
+ * to retrieve a number of tours from the server based on an interval
+ * and pass that data as an argument for the recycleview Adapter's constructor.
+ */
+
 public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.OnFragmentInteractionListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,9 +49,10 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
     public int startpos;
     public int endpos;
     RecyclerView recyclerView;
-    //public List<Tour> hotTourlist = new ArrayList<Tour>();
+
+    //List for storing the data from server
     public List<TourCopy> hotTourlist = new ArrayList<TourCopy>();
-    TourCopy test1 = new TourCopy();
+    TourCopy test1 = new TourCopy(); //test of a tour object
     Double zero = 0.0;
 
     // TODO: Rename and change types of parameters
@@ -85,7 +93,7 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
 
     }
 
-
+    //Interface for adding Tours
     public interface AddTourCopyListerner{
         public void AddTourCopy(TourCopy copy);
     }
@@ -110,12 +118,17 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
         endpos = 9;
         GetTour getTour = new GetTour(startpos,endpos);
         getTour.execute();
+
+        //Sets Up the Adapter to load the data into recycleview
         recyclerView = (RecyclerView)view.findViewById(R.id.RecycleView_HotTours);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new Store_RecycleAdapter(getActivity(),hotTourlist);
         recyclerView.setAdapter(adapter);
 
+        //Handles clicks on each cardview if the user wants more details on the tour
+        //it will load the details Tour_display Fragment or user clicked on add button
+        //to add tour to shopping list in the StoreActivity.
         adapter.SetTourListener(new Store_RecycleAdapter.TourListener() {
             @Override
             public void tourClick(View view, int position) {
@@ -189,7 +202,8 @@ public class Store_Tab_HotTours extends Fragment implements Tour_Display_Frag.On
     }
 
 
-
+    //Class that executes to retrieve a specific number of tours from the server-side and load the data
+    //into the store based on specific parameters.
     private class GetTour extends AsyncTask<Void,Void,String> {
         OkHttpClient client = new OkHttpClient();
         String retVal;

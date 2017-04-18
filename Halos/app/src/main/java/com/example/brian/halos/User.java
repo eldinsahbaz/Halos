@@ -9,6 +9,10 @@ import java.util.Map;
 
 /**
  * Created by brian on 2/9/17.
+ * Class meant to store User information such as the tours
+ * they created and bought but wasn't implemented since
+ * we pulled data about User through requests to server instead.
+ * Contains commented python code that hasn't been converted to Java.
  */
 
 public class User implements Parcelable {
@@ -43,6 +47,8 @@ public class User implements Parcelable {
     protected static double maxPrice;
     protected static String mode;
     protected static String id;
+
+
 
 //    def __init__(self):
 //    self.__Name = ""

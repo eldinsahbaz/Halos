@@ -12,6 +12,8 @@ import java.util.List;
 
 /**
  * Created by raych on 2/24/2017.
+ * Adapter to implement viewpager and create the tabs and creating them when user clicks on each tab.
+ * Sets up the name of each tab and number of tabs.
  */
 
 public class Store_TabAdapter extends FragmentPagerAdapter implements Store_Tab_TopFree.OnFragmentInteractionListener,Store_Tab_TopPaid.OnFragmentInteractionListener,
@@ -22,6 +24,7 @@ public class Store_TabAdapter extends FragmentPagerAdapter implements Store_Tab_
         super(fm);
     }
 
+    //creates the tab on tab switch.
     @Override
     public Fragment getItem(int position) {
         switch (position) {
@@ -37,11 +40,13 @@ public class Store_TabAdapter extends FragmentPagerAdapter implements Store_Tab_
         }
         return null;
     }
-
+    //return Tab count
     @Override
     public int getCount() {
         return tab_count;
     }
+
+    //Return title of tab.
     @Override
     public CharSequence getPageTitle(int position) {
     return tab_titles[position];

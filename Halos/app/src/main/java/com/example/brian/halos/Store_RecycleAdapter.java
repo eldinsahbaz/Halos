@@ -14,6 +14,9 @@ import java.util.List;
 
 /**
  * Created by raych on 2/24/2017.
+ * Adapter for the Store and the page for each Viewpager Tab. This class is meant to customize
+ * and load data into each cardview in each recycleview in each viewPager Tab. It is the connection
+ * between the UI and the data.
  */
 
 public class Store_RecycleAdapter extends RecyclerView.Adapter<Store_RecycleAdapter.ViewHolder> implements Store_Tab_TopPaid.OnFragmentInteractionListener,
@@ -33,11 +36,14 @@ public class Store_RecycleAdapter extends RecyclerView.Adapter<Store_RecycleAdap
     public void SetTourListener(final TourListener listener) {
         this.tourListener =listener;
     }
+
+    //Main constructor
     public Store_RecycleAdapter(Context content, List<TourCopy> data) {
         tourcontext=content;
         tourlist=data;
     }
 
+    //Inflates the view for each card.
     @Override
     public Store_RecycleAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View cardlayout;
@@ -45,18 +51,20 @@ public class Store_RecycleAdapter extends RecyclerView.Adapter<Store_RecycleAdap
         ViewHolder cardholder =new ViewHolder(cardlayout);
         return cardholder;
     }
-
+    //Binds a tour object to each card view.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         TourCopy tour = tourlist.get(position);
         holder.SetData(tour);
     }
-
+    //Interface for interaction between the viewpager fragments (Child views) and the
+    //Store Activity (Parent view). Used for adding and removing tours from shopping cart.
     public interface TourListener {
         public void tourClick(View view,int position);
         public void addClick(View view,int position);
     }
 
+    //Return tour list size.
     @Override
     public int getItemCount() {
         if (tourlist == null){
@@ -67,6 +75,7 @@ public class Store_RecycleAdapter extends RecyclerView.Adapter<Store_RecycleAdap
 
     }
 
+    //Finds the view
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView Picture,Add;
         public TextView Title,Description,user_creator,Price;
@@ -98,6 +107,7 @@ public class Store_RecycleAdapter extends RecyclerView.Adapter<Store_RecycleAdap
             });
         }
 
+        //Sets data for each cardview given a tour
         public void SetData(TourCopy tour) {
             Picture.setImageResource(R.drawable.nyc);  //Change when image is added into tour class
             Title.setText(tour.getName());

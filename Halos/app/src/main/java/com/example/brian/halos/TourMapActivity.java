@@ -73,30 +73,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
     protected static Tour mTour;
     private static final String DIRECTION_URL = "https://maps.googleapis.com/maps/api/directions/json?";
     private static final String API_KEY = "AIzaSyD3KjHahrdF7B-e2C0h-IbRae1o7DSbYXI";
-    /*
-    protected GoogleMap mMap;
-    protected Marker mCurrentLocationMarker;
-    protected Marker mClickedLocationMarker;
-    protected LocationManager locationManager;
-    protected String provider;
-    protected User user;
-    protected LinkedList<Landmark> mTourList = new LinkedList<Landmark>();
-    private OkHttpClient client = new OkHttpClient();
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
-    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-    protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
-    protected final static String LOCATION_KEY = "location-key";
-    protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
-    protected GoogleApiClient mGoogleApiClient;
-    protected LocationRequest mLocationRequest;
-    protected Location mCurrentLocation;
-    protected Boolean mRequestingLocationUpdates = true;
-    protected String mLastUpdateTime;
-    protected String mRetVal;
-    protected String mGeoAddr;
-    protected HashMap<String, Landmark> mLocsOnMapSet;
-    String usernameSave;
-    */
+
     // map used for this activity
     protected GoogleMap mMap;
 
@@ -181,11 +158,13 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
         buildGoogleApiClient();
-
+        //Set up the toolbar and map support.
         setContentView(R.layout.activity_tour_map);
         updateValuesFromBundle(savedInstanceState);
         buildGoogleApiClient();
         Button endtour;
+
+        //End the Tour and return to home activity.
         endtour = (Button)findViewById(R.id.tour_map_canceltour);
         endtour.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,6 +175,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
                 startActivity(homeactivity);
             }
         });
+        //Save the tour by passing it to CreateTourActivity
         Button createtour = (Button)findViewById(R.id.tour_map_save);
         createtour.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,13 +190,13 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
                 startActivity(createtour);
             }
         });
-
+        //Obtain the Tour passed from HalosMapActivity
         markerpoints = new ArrayList<LatLng>();
         Bundle b = this.getIntent().getExtras();
         if (b != null)
             mTour = b.getParcelable("Tour");
 
-        // ELDIN AND RAY -- THE TOUR OBJECT IS PASSED CORRECTLY AND IT IS STORED IN mTour, I believe that is all you need for the waypoints, but let me know if you need more
+
         if (mTour == null) {
             Log.e(TAG, "Tour object not passed by intent");
         } else if (mTour.landmarks.size() == 0) {
@@ -226,19 +206,16 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
                 Log.v(TAG, String.valueOf(mTour.landmarks.get(i).getName()));
             }
         }
-        //DirectionsRequest directionsRequest = new DirectionsRequest();
-        //String url = directionsRequest.DirectionsRequest(mTour);
+
         LatLng final_stop = new LatLng(mTour.landmarks.getLast().getLatitude(),mTour.landmarks.getLast().getLongitude());
         LatLng beginning = new LatLng(mTour.landmarks.getFirst().getLatitude(),mTour.landmarks.getFirst().getLongitude());
 
+        //Formatting the directions request by building the url
+        //using all the landmarks and current location.
         String url = getDirectionsUrl();
         DownloadTask downloadTask = new DownloadTask();
         downloadTask.execute(url);
 
-        //DownloadTask downloadTask = new DownloadTask();
-        //downloadTask.execute(url);
-        //EXTEMRE PROBLEM- USING back button and trying to restart tour again. will not work. need garbage colleciton?
-        // -  maximum number of waypoints is 23 for direction api
 
                 // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -247,6 +224,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
         Log.v(TAG, "Arrived");
     }
 
+    //Method for formating the Url.
     private String getDirectionsUrl() {
 
         // Origin of route
@@ -274,6 +252,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
         return url;
     }
 
+    //Method that uses an Http connection to download the the directions after passing the Url.
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
@@ -310,6 +289,7 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
         return data;
     }
 
+    //Class that parses the data given by the directions API.
     private class DownloadTask extends AsyncTask<String, Void, String> {
 
         // Downloading data in non-ui thread
@@ -627,6 +607,8 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    //Class that parses the directions through the DirectionsJsonParser class
+    //and fits the route onto the Google Map fragment.
     private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>>> {
 
         @Override
@@ -773,6 +755,11 @@ public class TourMapActivity extends FragmentActivity implements OnMapReadyCallb
             }
             return false;
         }
+
+
+        //Server-side code that wasn't implemented to retrieve directions
+        //from the server (which made the call) rather than making a front-end
+        //making an http request to google for the directions.
 
         private class DirectionsRequest extends AsyncTask<Void, Void, String> {
             String origin;
