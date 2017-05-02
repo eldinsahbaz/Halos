@@ -5,11 +5,11 @@ Android and IOS code is found in this github link : https://github.com/eldinsahb
 
 Instructions for running Program on Android - Requires Actual Android Device for all functionalities.
 
-1. Download Android Studio and clone this code from Github.
+1. Download Android Studio and clone this code from Github into a empty git repository through git init command in GIT bash.
 
 2. Open Android Studio, set it up and download the required libraries through the SDK manager which includes
-    google play services, etc. All packages required can be figured out after an error is generated when you
-    sync the project with Android Studio.
+    Android SDK tools, Google Play APK expansion Library, Google Play services, Google Play Licensing Library,
+	Google USB Driver, Google Web Drive, Android Support Repository.
 
 3. Open project and sync project with android Studio. - Change gradle files and package names
    to your own package name if required. Another possible solution is cleaning and refactoring the project.
