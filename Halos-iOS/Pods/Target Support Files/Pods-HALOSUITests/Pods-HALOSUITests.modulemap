@@ -1,0 +1,6 @@
+framework module Pods_HALOSUITests {
+  umbrella header "Pods-HALOSUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
