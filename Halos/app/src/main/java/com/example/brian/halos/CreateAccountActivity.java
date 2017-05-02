@@ -28,6 +28,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/*
+    This class allows Users to create an account which will be registered in the server
+    and checks if username already exists or not within the server.
+ */
 public class CreateAccountActivity extends AppCompatActivity {
     OkHttpClient client = new OkHttpClient();
 

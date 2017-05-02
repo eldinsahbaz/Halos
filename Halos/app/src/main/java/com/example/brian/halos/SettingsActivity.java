@@ -32,7 +32,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
+/*
+This class stores User's preferences including the types of places they want from the Google
+Places Api and tracks the radius they want to get locations from in miles which the User can change.
+ */
 public class SettingsActivity extends AppCompatActivity {
     Button submitButton;
     String usernameSave;

@@ -41,7 +41,10 @@ import okhttp3.Route;
 //import com.google.gson.JsonDeserializer;
 //import com.google.gson.JsonElement;
 //import com.google.gson.JsonParseException;
-
+/*
+    This class allows users to login with their credentials or create an account on our server.
+     We check the username and password if they choose to login with the server.
+ */
 public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     Button createAccountButton;

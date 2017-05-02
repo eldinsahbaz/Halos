@@ -93,6 +93,13 @@ import java.util.Map;
  * uses Google Play services for authentication, see
  * https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart.
  */
+
+/*
+    this class is our "home" page of our application which displays points of interest around you
+    usings Google places API retreieved from our server. It tracks your location and displays it on
+    the map.
+ */
+
 public class HalosMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener  {
 
     // map used for this activity
