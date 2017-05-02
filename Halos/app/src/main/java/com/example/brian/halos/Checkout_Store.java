@@ -109,7 +109,7 @@ public class Checkout_Store extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onDestroy() {
-       stopService(new Intent(this, PayPalService.class));
+        stopService(new Intent(this, PayPalService.class));
         super.onDestroy();
     }
 
