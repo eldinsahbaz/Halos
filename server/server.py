@@ -10,23 +10,11 @@ import requests
 from datadog import statsd
 
 app = Flask(__name__)
-
-# context = SSL.Context(SSL.SSLv23_METHOD)
-# context.use_privatekey_file('yourserver.key')
-# context.use_certificate_file('yourserver.crt')
-
 client = MongoClient()
 db = client.test
 
 # Increment a counter for datadog metrics.
 statsd.increment('page.views')
-
-# radius = 10
-# key = 'AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ'
-# location = '44.0124,-78.63421'
-# type = 'restaurant'
-# keyword = 'italian'
-# url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise&key=AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ'
 base_url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
 key = 'AIzaSyBuoo0QB2PhkrJpNww_yTq4dGwiJnWL-AQ'
 
@@ -40,25 +28,11 @@ def places():
 def get_places():
     latitude = request.json['lat']
     longitude = request.json['lng']
-    radius = request.json['radius']	#str(3000)   # later change this, just have to decide which way to get radius
+    radius = request.json['radius']
     keyword = request.json['keyword']
     url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key + '&keyword=' + keyword
     places = requests.get(url)
     return app.response_class(places.content, content_type='application/json')
-
-#@app.route('/get_places', methods=['POST'])
-#def get_places():
-#    latitude = request.json['lat']
-#    longitude = request.json['lng']
-#    radius = request.json['radius'] 
-#    keyword = request.json['keyword']
-#    url = base_url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&key=' + key + '&keyword=' + keyword
-#    places = requests.get(url)
-#    print '\n'
-#    print 'radius', radius
-#    print 'keyword', keyword
-#    print '\n'
-#    return app.response_class(places.content, content_type='application/json')
 
 # gets directions for tour from Google Maps Directions API
 directions_url = 'https://maps.googleapis.com/maps/api/directions/json?'
@@ -166,7 +140,7 @@ def new_login():
     radius = 1000   # radius in meters ~.6 miles
     # TODO: check that username or email is not in login collection
     username_exists = auth.find_one({'username' : username})
-    if username_exists:
+        if username_exists:
         return jsonify({'result' : 'username is taken'})
     email_in_use = auth.find_one({'email' : email})
     if email_in_use:
@@ -188,6 +162,7 @@ def new_login():
         'result'    : 'account created successfully'
     })
 
+#returns a list of all the users in the database
 @app.route('/users', methods=['GET'])
 def get_all_users():
     auth = db.auth
@@ -232,18 +207,24 @@ def get_pw():
     })
 
 #################### GEOCODING RELATED API CALLS ####################
+#return the geocode
 @app.route('/geocode', methods=['GET'])
 def get_geocode():
+    #get latitude and longitude
     lat = str(request.args.get('lat'))
     lng = str(request.args.get('lng'))
+    #get the geocode
     results = requests.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng + '&key=AIzaSyDGN5Mu7yTL6x_lP2hZzhP9T0f4uqIXUYI').json()
+    #return the geocode
     return jsonify(response = {
         'result' : results['results'][0]['formatted_address']
     })
 
 #################### SETTINGS RELATED API CALLS ####################
+#used to update the settings
 @app.route('/set_settings', methods=['POST'])
 def put_settings():
+    #get data from request
     username = request.json['username']
     radius = request.json['radius']
     category = request.json['category']
@@ -253,12 +234,15 @@ def put_settings():
     minprice = request.json['minprice']
     maxprice = request.json['maxprice']
 
+    #find the user
     auth = db.auth
     user = auth.find_one({
         'username'  : username
     })
+
+    #if the user exists
     if user:
-        #  TODO: the update method works, except it will always fall to the else clause (even though settings are updated, not sure why? time delay?)
+        #update the user's settings
         auth.update_one(
             {'username': username},
             {
@@ -273,51 +257,37 @@ def put_settings():
                     }
             }
         )
-        # if (user['radius'] == radius):
-        output = {'result' : 'Settings updated'}    # when the surrounding code is uncommented, this is the if statement, so indent
-        # else:
-        #     # print user['radius']
-        #     output = {'result' : 'Settings could not be updated'}
+        output = {'result' : 'Settings updated'}
     else:
         output = {'result' : 'Error updating settings, user not found'}
     return jsonify(response = output)
 
 #################### TOUR RELATED API CALLS ####################
-#Edited by Ray and Eldin
+#add a tour to the database
 @app.route('/addtour', methods=['POST'])
 def add_tour():
     tours = db.tours
 
     # get all tour arguments from url parameters
-    # TODO: NAME?
-    #contact_info = request.json['contact']
     tour_id = request.json['tourid']
     creator = request.json['created-by']
     describe = request.json['description']
-    #guides = request.json['guides']
-    #tourists = request.json['tourists']
-    #min_occ = request.json['min']
-    #max_occ = request.json['max']
-    #occ     = request.json['occ']
     Latitude = request.json['Lat']
     Longitude = request.json['Long']
-    #radius = request.json['radius']
-    #est_dur = request.json['dur']
-    #start_date = request.json['start-date']
-    #end_date = request.json['end-date']
-    #start_time = request.json['start-time']
-    #end_time = request.json['end-time']
     price = request.json['price']
-    #cover_photo = request.json['photo'] # TODO: not sure how to get image file over the network
-    #  put these params into the collection
+
+    #lat and long are formatted as a string separated by '|'
     Lat = list()
     Lat.extend([float(x) for x in Latitude.split("|")])
     Long = list()
     Long.extend([float(x) for x in Longitude.split("|")])
+
+    #if the tour already exists, find it
     tour = tours.find_one({'tour_id'  : tour_id})
     if tour:
         output = {'result' : 'tour by this name already exists'}
     else:
+        #if the tour doesn't exits then create it
         user_id = tours.insert({
             'contact_info' : '',
             'tour_id'   : tour_id,
@@ -341,7 +311,7 @@ def add_tour():
         output = {'result' : 'tour successfully created'}
     auth = db.auth
     user = auth.find_one({'username'  : creator})
-    
+    #add the created tour to the list of tour's the user created in his/her profile
     if user:
         auth.update_one(
             {'username': creator},
@@ -352,48 +322,77 @@ def add_tour():
                 }
             )
 
+    #return confirmation of addition/already exists
     return jsonify(response = output)
 
+#get a tour by its ID
 @app.route('/get_created', methods=['GET'])
 def get_created():
+    #get the tour id and find the tour in the database
     tours = db.tours
     tour_id = request.args.get('tour_id')
-    
-    return jsonify(response=tours.find({'tour_id': tour_id}))
+    created = tours.find({'tour_id' : tour_id})
+    output = []
+    #add the tour's Latitude and Longitude to a list
+    for tour in tours.find({'tour_id' : tour_id}):
+        output.append({'tour_id' : tour['tour_id'], 'Lat' : tour['Latitude'], 'Long' : tour['Longitude']})
 
+    #return the tour
+    return jsonify(response = {'result' : output})
+
+#add bought tour to a user's account
 @app.route('/bought', methods=['POST'])
 def bought():
-    username = reqest.json['username']
-    tour_id = request.json['tour_id']
+    #get the tour name and the user ID
+    username = request.json['username']
+    tour_ids = request.json['tour_id']
     auth = db.auth
     tours = db.tours
-    if tours.find({'tour_id' : tour_id}):
-        if auth.find({'username':username}):
-            auth.update_one(
-            {'username': username},
-                {
-                '$push': {
-                    'created': tour_id
-                    }
-                }
-            )
-    
-    return jsonify(response={'result':'successfully added to account'})
-        
-    
 
+    #for each tour in the list of tours, find them in the tour database
+    #and update the user account
+    for tour_id in tour_ids:
+        if tours.find({'tour_id' : tour_id}):
+            if auth.find({'username':username}):
+                auth.update_one(
+                {'username': username},
+                    {
+                    '$push': {
+                        'created': tour_id
+                        }
+                    }
+                )
+
+    #return success message
+    return jsonify(response={'result':'successfully added to account'})
+
+#get all the tours that belong to a user
 @app.route('/get_tour_by_user', methods=['GET'])
 def get_tour_by_user():
     tours = db.tours
     auth = db.auth
+    #get the user and tours they created in the tours database
     user = request.args.get('username')
     profile = auth.find_one({'username':user})
-    created = set(tours.find({'created-by' : user}))
+    created = tours.find({'created-by' : user})
+
+    #get unique created tour IDs
+    ts = set()
+    for t in created:
+        ts.add(t['tour_id'])
+
+    #get unique tour IDs of all tours
     bought = set(profile['created'])
-    bought = list(bought-created)
-    created = list(created)
-    return jsonify(response={'created' : created, 'bought' : bought}) 
-    
+
+    #bought = all-created
+    bought = list(bought-ts)
+
+    #convert created to list
+    created = list(ts)
+
+    #return bought and created
+    return jsonify(response={'created' : created, 'bought' : bought})
+
 @app.route('/get_tour', methods=['GET'])
 def get_tour():
     tours = db.tours
@@ -428,9 +427,13 @@ def get_tour():
             'description': str(tour['description'])})
         elif i > end:
             break
-        
+
         i = i+1
     return jsonify(response={'result': output})
+
+@app.route('/forgot', methods=['POST'])
+def forgot():
+    request.json['email']
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=12344, debug=True)
